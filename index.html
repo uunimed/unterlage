@@ -861,10 +861,10 @@
             </div>
 
             <div class="flex items-center gap-3">
-              <!-- Change / Remove Trusted Device Button (შეცვლა) -->
+              <!-- Change / Remove All Trusted Devices Button (შეცვლა / წაშლა) -->
               <button
                 type="button"
-                onclick="openDeleteTrustedDeviceConfirm()"
+                onclick="openDeleteTrustedDeviceConfirm(null)"
                 class="inline-flex items-center gap-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 font-semibold px-4 py-2.5 rounded-xl text-sm transition cursor-pointer"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -873,10 +873,13 @@
                   <path d="M3 22v-6h6"></path>
                   <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
                 </svg>
-                <span>შეცვლა</span>
+                <span>შეცვლა / წაშლა</span>
               </button>
             </div>
           </div>
+
+          <!-- List of all Trusted Devices with individual delete option -->
+          <div id="trustedDevicesListContainer" class="mt-4 space-y-2"></div>
         </section>
       </div>
     </div>
@@ -1296,6 +1299,7 @@
     let trustedPollInterval = null;
     let selectedUploadFile = null;
     let selectedUploadPreviewPages = 1;
+    let targetTrustedDeviceIdToDelete = null;
     const fileBufferMemoryCache = new Map();
 
     // =========================================================================
@@ -1563,7 +1567,7 @@
     }
 
     async function supabaseDeleteLoginRequestById(reqId) {
-      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedMaster: null, requests: [] };
+      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedDevices: [], requests: [] };
       if (Array.isArray(authState.requests)) {
         authState.requests = authState.requests.filter((r) => r.id !== reqId);
         await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
@@ -1580,24 +1584,34 @@
     }
 
     // =========================================================================
-    // 2. GLOBAL TRUSTED DEVICE & LOGIN REQUESTS (FIRST USER IS SOLE TRUSTED DEVICE)
-    // Uses both `login_requests` table AND `shogi-unterlagen/_system/global_auth_state.json`
-    // so the global trusted device state is 100% persistent across all browsers/devices!
+    // 2. GLOBAL TRUSTED DEVICES & LOGIN REQUESTS MANAGEMENT
+    // - If 0 trusted devices exist in DB, the first user is asked to become Trusted.
+    // - If >= 1 trusted devices exist, any recognized trusted device logs in freely,
+    //   while unrecognized devices must wait for approval from a trusted device.
+    // - Once approved, the new device ALSO becomes a permanent Trusted Device!
     // =========================================================================
-    async function getTrustedDeviceRecord() {
-      // 1. Check global bucket auth state file first (immune to column schema issues)
+    async function getTrustedDevicesList() {
+      const mapByDeviceId = new Map();
+
+      // 1. Check global bucket auth state file first
       const bucketAuth = await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH);
-      if (bucketAuth && Object.prototype.hasOwnProperty.call(bucketAuth, 'trustedMaster')) {
-        if (bucketAuth.trustedMaster && bucketAuth.trustedMaster.device_id) {
-          localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(bucketAuth.trustedMaster));
-          return bucketAuth.trustedMaster;
-        } else if (bucketAuth.explicitlyCleared === true) {
+      if (bucketAuth) {
+        if (bucketAuth.explicitlyCleared === true && (!Array.isArray(bucketAuth.trustedDevices) || bucketAuth.trustedDevices.length === 0)) {
+          localStorage.removeItem('shogi_trusted_devices_cache');
           localStorage.removeItem('shogi_trusted_device_cache');
-          return null;
+          return [];
+        }
+        if (Array.isArray(bucketAuth.trustedDevices)) {
+          for (const td of bucketAuth.trustedDevices) {
+            if (td && td.device_id) mapByDeviceId.set(td.device_id, td);
+          }
+        }
+        if (bucketAuth.trustedMaster && bucketAuth.trustedMaster.device_id) {
+          mapByDeviceId.set(bucketAuth.trustedMaster.device_id, bucketAuth.trustedMaster);
         }
       }
 
-      // 2. Also check `login_requests` table
+      // 2. Also check `login_requests` table for rows marked TRUSTED_MASTER or TRUSTED_DEVICE
       if (supabaseClient) {
         try {
           const { data, error } = await supabaseClient
@@ -1605,40 +1619,53 @@
             .select('*');
 
           if (!error && Array.isArray(data) && data.length > 0) {
-            const masters = data
+            const trustedRows = data
               .map(normalizeLoginRequestRow)
-              .filter((r) => r && (r.status === 'TRUSTED_MASTER' || r.id === TRUSTED_MASTER_ID))
-              .sort((a, b) => b.timestamp - a.timestamp);
+              .filter(
+                (r) =>
+                  r &&
+                  r.device_id &&
+                  (r.status === 'TRUSTED_MASTER' || r.status === 'TRUSTED_DEVICE' || r.id.startsWith('TRUSTED_'))
+              );
 
-            if (masters.length > 0 && masters[0].device_id) {
-              const master = masters[0];
-              localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(master));
-              await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, {
-                trustedMaster: master,
-                explicitlyCleared: false,
-                requests: (bucketAuth && bucketAuth.requests) || []
-              });
-              return master;
+            for (const row of trustedRows) {
+              if (!mapByDeviceId.has(row.device_id)) {
+                mapByDeviceId.set(row.device_id, row);
+              }
             }
           }
         } catch (err) {
-          console.warn('Global trusted device table check warning:', err);
+          console.warn('Global trusted devices table check warning:', err);
         }
       }
 
-      const cached = localStorage.getItem('shogi_trusted_device_cache');
-      if (!cached) return null;
-      try {
-        return JSON.parse(cached);
-      } catch (_) {
-        return null;
+      let list = Array.from(mapByDeviceId.values());
+
+      if (list.length > 0) {
+        localStorage.setItem('shogi_trusted_devices_cache', JSON.stringify(list));
+        return list;
       }
+
+      const cached = localStorage.getItem('shogi_trusted_devices_cache');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (_) {}
+      }
+      return [];
     }
 
-    async function setTrustedDeviceRecord(deviceId, deviceInfo) {
-      const geo = await fetchClientGeoIpInfo();
+    async function isDeviceTrusted(deviceId) {
+      const list = await getTrustedDevicesList();
+      return list.some((d) => d && d.device_id === deviceId);
+    }
+
+    async function addTrustedDeviceRecord(deviceId, deviceInfo, customGeo = null) {
+      const geo = customGeo || (await fetchClientGeoIpInfo());
+      const recordId = `TRUSTED_${deviceId}`;
       const record = {
-        ID: TRUSTED_MASTER_ID,
+        ID: recordId,
         device_id: deviceId,
         usename: `${geo.country}, ${geo.city} | ${deviceInfo}`,
         ip: geo.ip,
@@ -1647,21 +1674,24 @@
       };
 
       const normalized = normalizeLoginRequestRow(record);
-      localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(normalized));
+      const currentAuth = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedDevices: [], requests: [] };
+      const existingList = await getTrustedDevicesList();
+      const updatedList = existingList.filter((d) => d && d.device_id !== deviceId);
+      updatedList.push(normalized);
 
-      // Save to global bucket auth state file
-      const currentAuth = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { requests: [] };
+      localStorage.setItem('shogi_trusted_devices_cache', JSON.stringify(updatedList));
+
       await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, {
-        trustedMaster: normalized,
+        trustedMaster: updatedList[0] || normalized,
+        trustedDevices: updatedList,
         explicitlyCleared: false,
         requests: currentAuth.requests || []
       });
 
-      // Also save to `login_requests` table
       try {
         await supabaseUpsertLoginRequest(record);
       } catch (err) {
-        console.warn('Could not save TRUSTED_MASTER to table:', err);
+        console.warn('Could not save trusted device to table:', err);
       }
 
       if (syncChannel) {
@@ -1670,25 +1700,56 @@
       return normalized;
     }
 
-    async function clearTrustedDeviceRecord() {
-      localStorage.removeItem('shogi_trusted_device_cache');
+    async function removeTrustedDeviceRecord(targetDeviceId = null) {
+      if (!targetDeviceId) {
+        // Clear all trusted devices
+        localStorage.removeItem('shogi_trusted_devices_cache');
+        localStorage.removeItem('shogi_trusted_device_cache');
 
-      // Clear in global bucket auth state file
-      await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, {
-        trustedMaster: null,
-        explicitlyCleared: true,
-        requests: []
-      });
+        await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, {
+          trustedMaster: null,
+          trustedDevices: [],
+          explicitlyCleared: true,
+          requests: []
+        });
 
-      // Clear in `login_requests` table
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('status', 'TRUSTED_MASTER');
-          await supabaseDeleteLoginRequestById(TRUSTED_MASTER_ID);
-        } catch (err) {
-          console.warn('Error clearing trusted device on Supabase:', err);
+        if (supabaseClient) {
+          try {
+            await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('status', 'TRUSTED_MASTER');
+            await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('status', 'TRUSTED_DEVICE');
+            await supabaseDeleteLoginRequestById(TRUSTED_MASTER_ID);
+          } catch (err) {
+            console.warn('Error clearing trusted devices on Supabase:', err);
+          }
+        }
+      } else {
+        // Remove a single specific trusted device by device_id
+        const currentAuth = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedDevices: [], requests: [] };
+        const existingList = await getTrustedDevicesList();
+        const remaining = existingList.filter((d) => d && d.device_id !== targetDeviceId);
+
+        if (remaining.length === 0) {
+          localStorage.removeItem('shogi_trusted_devices_cache');
+          localStorage.removeItem('shogi_trusted_device_cache');
+        } else {
+          localStorage.setItem('shogi_trusted_devices_cache', JSON.stringify(remaining));
+        }
+
+        await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, {
+          trustedMaster: remaining[0] || null,
+          trustedDevices: remaining,
+          explicitlyCleared: remaining.length === 0,
+          requests: currentAuth.requests || []
+        });
+
+        if (supabaseClient) {
+          try {
+            await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('device_id', targetDeviceId);
+            await supabaseDeleteLoginRequestById(`TRUSTED_${targetDeviceId}`);
+          } catch (_) {}
         }
       }
+
       if (syncChannel) {
         syncChannel.postMessage({ type: 'TRUSTED_DEVICE_CLEARED' });
       }
@@ -1761,8 +1822,10 @@
 
     // =========================================================================
     // 1, 2, 3. AUTHORIZATION & GLOBAL TRUSTED DEVICE WORKFLOW
-    // Only the VERY FIRST user globally becomes the Trusted Device.
-    // All subsequent users from other devices go straight to the Waiting Approval box!
+    // - If 0 trusted devices exist in DB -> Ask the first user to save as Trusted.
+    // - If >= 1 trusted devices exist in DB:
+    //   - If current device is already in trusted list -> Log in immediately without asking.
+    //   - If current device is NOT in trusted list -> Show Waiting Approval Box.
     // =========================================================================
     async function handleLoginSubmit(event) {
       event.preventDefault();
@@ -1783,20 +1846,18 @@
 
       showGlobalLoading('მოწმდება მოწყობილობის სტატუსი...');
       try {
-        const trusted = await getTrustedDeviceRecord();
+        const trustedList = await getTrustedDevicesList();
         hideGlobalLoading();
 
-        if (!trusted || !trusted.device_id) {
-          // No trusted device exists globally yet -> This very first user becomes the Trusted Device!
-          // Show the first-time confirmation box (and pre-lock or confirm)
+        if (!trustedList || trustedList.length === 0) {
+          // Database has 0 trusted devices -> Ask this first user to register as a Trusted Device
           document.getElementById('loginBoxCard').classList.add('hidden');
           document.getElementById('trustedDevicePromptBox').classList.remove('hidden');
-        } else if (trusted.device_id === CURRENT_DEVICE_ID) {
-          // Current device is already the registered global Trusted Device -> enter directly
+        } else if (trustedList.some((d) => d && d.device_id === CURRENT_DEVICE_ID)) {
+          // Current device is already a registered or approved Trusted Device -> Enter immediately without asking!
           enterMainApplication();
         } else {
-          // Another device is ALREADY the global Trusted Device ->
-          // NEVER ask to save as trusted! Immediately show Waiting Approval Box
+          // At least 1 trusted device exists in DB and this device is not yet trusted -> Show Waiting Approval Box
           await initiateWaitingForTrustedApproval();
         }
       } catch (err) {
@@ -1812,7 +1873,7 @@
         return;
       }
       showGlobalLoading('ინახება სანდო მოწყობილობა...');
-      await setTrustedDeviceRecord(CURRENT_DEVICE_ID, getReadableDeviceName());
+      await addTrustedDeviceRecord(CURRENT_DEVICE_ID, getReadableDeviceName());
       hideGlobalLoading();
       document.getElementById('trustedDevicePromptBox').classList.add('hidden');
       enterMainApplication();
@@ -1820,23 +1881,41 @@
 
     async function fetchClientGeoIpInfo() {
       try {
-        const res = await fetch('https://ipwho.is/');
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.ip) {
-            return {
-              ip: data.ip,
-              country: data.country || 'უცნობი ქვეყანა',
-              city: data.city || 'უცნობი ქალაქი'
-            };
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        let country = 'საქართველო';
+        let city = 'თბილისი';
+        if (tz.includes('/')) {
+          const parts = tz.split('/');
+          city = parts[parts.length - 1].replace(/_/g, ' ');
+          if (tz.startsWith('Europe/Berlin') || tz.startsWith('Europe/Vienna')) {
+            country = 'Germany';
+          } else if (tz.startsWith('Europe/Tbilisi') || tz.startsWith('Asia/Tbilisi')) {
+            country = 'საქართველო';
+            city = 'თბილისი';
+          } else {
+            country = parts[0];
           }
         }
-      } catch (_) {}
-      return {
-        ip: '192.168.1.104',
-        country: 'საქართველო',
-        city: 'თბილისი'
-      };
+        // Generate consistent client IP representation based on device ID
+        let hash = 0;
+        for (let i = 0; i < CURRENT_DEVICE_ID.length; i++) {
+          hash = (hash << 5) - hash + CURRENT_DEVICE_ID.charCodeAt(i);
+          hash |= 0;
+        }
+        const octet3 = (Math.abs(hash) % 250) + 1;
+        const octet4 = (Math.abs(hash >> 8) % 250) + 2;
+        return {
+          ip: `192.168.${octet3}.${octet4}`,
+          country,
+          city
+        };
+      } catch (_) {
+        return {
+          ip: '192.168.1.104',
+          country: 'საქართველო',
+          city: 'თბილისი'
+        };
+      }
     }
 
     async function initiateWaitingForTrustedApproval() {
@@ -1864,7 +1943,7 @@
       localStorage.setItem('shogi_pending_auth_request', JSON.stringify(normalizedReq));
 
       // Save pending request to global bucket state file
-      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedMaster: null, requests: [] };
+      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedDevices: [], requests: [] };
       const existingReqs = Array.isArray(authState.requests)
         ? authState.requests.filter((r) => r.device_id !== CURRENT_DEVICE_ID)
         : [];
@@ -1888,13 +1967,19 @@
     }
 
     async function checkPendingRequestStatus(reqId) {
-      // 1. Check global bucket auth state
+      // 1. Check if this device was added to global trustedDevices or its request was decided
       const authState = await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH);
-      if (authState && Array.isArray(authState.requests)) {
-        const matchReq = authState.requests.find((r) => r && r.id === reqId);
-        if (matchReq && matchReq.status !== 'pending') {
-          handleRequestDecisionOnWaitingDevice(matchReq.status);
+      if (authState) {
+        if (Array.isArray(authState.trustedDevices) && authState.trustedDevices.some((d) => d && d.device_id === CURRENT_DEVICE_ID)) {
+          handleRequestDecisionOnWaitingDevice('approved');
           return;
+        }
+        if (Array.isArray(authState.requests)) {
+          const matchReq = authState.requests.find((r) => r && r.id === reqId);
+          if (matchReq && matchReq.status !== 'pending') {
+            handleRequestDecisionOnWaitingDevice(matchReq.status);
+            return;
+          }
         }
       }
 
@@ -1906,7 +1991,8 @@
             .select('*');
 
           if (!error && Array.isArray(data)) {
-            const match = data.map(normalizeLoginRequestRow).find((r) => r && r.id === reqId);
+            const rows = data.map(normalizeLoginRequestRow);
+            const match = rows.find((r) => r && r.id === reqId);
             if (match && match.status !== 'pending') {
               handleRequestDecisionOnWaitingDevice(match.status);
               return;
@@ -1926,12 +2012,14 @@
       }
     }
 
-    function handleRequestDecisionOnWaitingDevice(status) {
+    async function handleRequestDecisionOnWaitingDevice(status) {
       if (waitingPollInterval) {
         clearInterval(waitingPollInterval);
         waitingPollInterval = null;
       }
-      if (status === 'approved') {
+      if (status === 'approved' || status === 'TRUSTED_MASTER' || status === 'TRUSTED_DEVICE') {
+        // Refresh local trusted devices cache so future logins on this device are instant
+        await getTrustedDevicesList();
         document.getElementById('waitingApprovalBox').classList.add('hidden');
         enterMainApplication();
       } else if (status === 'rejected') {
@@ -1962,12 +2050,12 @@
       document.getElementById('authCodeInput').value = '';
     }
 
-    // Trusted Device Poller: watches both global bucket state and `login_requests` for status === 'pending'
+    // Trusted Device Poller: any active Trusted Device watches for pending login requests
     function startTrustedDeviceRequestWatcher() {
       if (trustedPollInterval) clearInterval(trustedPollInterval);
       trustedPollInterval = setInterval(async () => {
-        const trusted = await getTrustedDeviceRecord();
-        if (!trusted || trusted.device_id !== CURRENT_DEVICE_ID) return;
+        const trusted = await isDeviceTrusted(CURRENT_DEVICE_ID);
+        if (!trusted) return;
 
         // 1. Check global bucket auth state requests
         const authState = await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH);
@@ -2029,10 +2117,25 @@
 
     async function respondToAuthRequest(decisionStatus) {
       if (!currentActiveRequest) return;
-      const reqId = currentActiveRequest.id;
-      currentActiveRequest.status = decisionStatus;
+      const reqObj = currentActiveRequest;
+      const reqId = reqObj.id;
+      reqObj.status = decisionStatus;
 
-      localStorage.setItem('shogi_pending_auth_request', JSON.stringify(currentActiveRequest));
+      localStorage.setItem('shogi_pending_auth_request', JSON.stringify(reqObj));
+
+      if (decisionStatus === 'approved') {
+        // Permanently register the approved device as a Trusted Device too!
+        await addTrustedDeviceRecord(
+          reqObj.device_id,
+          reqObj.device_name || reqObj.usename || 'Approved Device',
+          {
+            country: reqObj.country || 'საქართველო',
+            city: reqObj.city || 'თბილისი',
+            ip: reqObj.ip || '0.0.0.0'
+          }
+        );
+      }
+
       await supabaseUpdateLoginRequestStatus(reqId, decisionStatus);
 
       if (syncChannel) {
@@ -2047,6 +2150,7 @@
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       currentActiveRequest = null;
+      await updateTrustedDeviceSettingsUI();
     }
 
     if (syncChannel) {
@@ -2059,6 +2163,8 @@
           handleRequestDecisionOnWaitingDevice(msg.status);
         } else if (msg.type === 'DOCUMENTS_CHANGED') {
           loadAllDocumentsFromStorage(false);
+        } else if (msg.type === 'TRUSTED_DEVICE_UPDATED' || msg.type === 'TRUSTED_DEVICE_CLEARED') {
+          updateTrustedDeviceSettingsUI();
         }
       };
     }
@@ -2848,28 +2954,68 @@
     // TRUSTED DEVICE MANAGEMENT IN SETTINGS
     // =========================================================================
     async function updateTrustedDeviceSettingsUI() {
-      const trusted = await getTrustedDeviceRecord();
+      const trustedList = await getTrustedDevicesList();
       const badge = document.getElementById('trustedDeviceBadge');
       const meta = document.getElementById('trustedDeviceMetaInfo');
+      const listContainer = document.getElementById('trustedDevicesListContainer');
 
-      if (trusted && trusted.device_id) {
-        badge.textContent = 'აქტიური';
+      if (trustedList && trustedList.length > 0) {
+        const isCurrentTrusted = trustedList.some((d) => d && d.device_id === CURRENT_DEVICE_ID);
+        badge.textContent = `აქტიური (${trustedList.length})`;
         badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold';
-        meta.textContent = `სანდო მოწყობილობა: ${trusted.device_name || trusted.usename || trusted.device_id}`;
+        meta.textContent = isCurrentTrusted
+          ? 'ეს მოწყობილობა რეგისტრირებულია როგორც სანდო (შესვლა დადასტურების გარეშე)'
+          : 'სისტემაში რეგისტრირებულია სანდო მოწყობილობა';
+
+        if (listContainer) {
+          listContainer.innerHTML = trustedList
+            .map((dev) => {
+              const isMine = dev.device_id === CURRENT_DEVICE_ID;
+              return `
+                <div class="flex flex-wrap items-center justify-between gap-2 bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <div class="truncate">
+                      <span class="font-bold text-slate-800">${escapeHtml(dev.device_name || dev.usename || dev.device_id)}</span>
+                      ${isMine ? '<span class="ml-2 px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold">ეს მოწყობილობა</span>' : ''}
+                      <span class="text-slate-400 ml-2 font-mono">${escapeHtml(dev.ip || '')}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onclick="openDeleteTrustedDeviceConfirm('${escapeHtml(dev.device_id)}')"
+                    class="inline-flex items-center gap-1 text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1 rounded-lg font-semibold transition cursor-pointer"
+                  >
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                    </svg>
+                    <span>წაშლა</span>
+                  </button>
+                </div>
+              `;
+            })
+            .join('');
+        }
       } else {
         badge.textContent = 'არ არის არჩეული';
         badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-300 font-semibold';
-        meta.textContent = 'სანდო მოწყობილობა წაშლილია. ნებისმიერ მოწყობილობას შეუძლია ავტორიზაცია.';
+        meta.textContent = 'სანდო მოწყობილობა წაშლილია. პირველივე შემსვლელს შეეძლება სანდოდ დარეგისტრირება.';
+        if (listContainer) listContainer.innerHTML = '';
       }
     }
 
-    function openDeleteTrustedDeviceConfirm() {
+    function openDeleteTrustedDeviceConfirm(deviceId = null) {
+      targetTrustedDeviceIdToDelete = deviceId || null;
       const modal = document.getElementById('deleteTrustedDeviceModal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     }
 
     function closeDeleteTrustedDeviceConfirm() {
+      targetTrustedDeviceIdToDelete = null;
       const modal = document.getElementById('deleteTrustedDeviceModal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
@@ -2877,7 +3023,7 @@
 
     async function confirmRemoveTrustedDevice() {
       showGlobalLoading('იშლება სანდო მოწყობილობა...');
-      await clearTrustedDeviceRecord();
+      await removeTrustedDeviceRecord(targetTrustedDeviceIdToDelete);
       await updateTrustedDeviceSettingsUI();
       hideGlobalLoading();
       closeDeleteTrustedDeviceConfirm();
