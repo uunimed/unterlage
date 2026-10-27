@@ -481,7 +481,7 @@
               type="password"
               inputmode="numeric"
               autocomplete="off"
-              placeholder="••••••"
+              placeholder=""
               class="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-500/20 rounded-xl px-4 py-3.5 text-center text-xl tracking-[0.35em] text-slate-900 outline-none transition"
             />
           </div>
@@ -514,12 +514,12 @@
           </div>
           <h2 class="text-xl font-bold text-slate-900 mb-2">სანდო მოწყობილობა</h2>
           <p class="text-sm text-slate-600 mb-5">
-            პირველი ავტორიზაცია: გთხოვთ მონიშნოთ ეს მოწყობილობა როგორც სანდო. ერთდროულად მხოლოდ 1 მოწყობილობა შეიძლება იყოს სანდო.
+            სანდო მოწყობილობებს პრივილეგიას ანიჭებს ადმინისტრატორი.
           </p>
 
           <label class="flex items-center gap-3 bg-slate-50 border border-slate-200 hover:border-emerald-500 rounded-xl px-4 py-3.5 w-full cursor-pointer transition mb-5">
             <input id="trustThisDeviceCheckbox" type="checkbox" checked class="w-5 h-5 accent-emerald-600 rounded cursor-pointer" />
-            <span class="text-sm font-semibold text-slate-800 select-none">სანდო მოწყობილობა (ეს მოწყობილობა არის სანდო)</span>
+            <span class="text-sm font-semibold text-slate-800 select-none">ეს მოწყობილობა არის სანდო</span>
           </label>
 
           <div class="flex justify-end w-full">
@@ -546,14 +546,14 @@
               <path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
             </svg>
           </div>
-          <h2 class="text-xl font-bold text-slate-900 mb-2">ველოდებით დადასტურებას</h2>
+          <h2 class="text-xl font-bold text-slate-900 mb-2">მოლოდინში</h2>
           <p class="text-sm text-slate-600 mb-4">
             სისტემაში უკვე რეგისტრირებულია სხვა სანდო მოწყობილობა. შესვლის მოთხოვნა გაგზავნილია სანდო მოწყობილობაზე დასადასტურებლად.
           </p>
 
           <div id="waitingRequestDetails" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-left text-xs text-slate-700 space-y-1.5 mb-5">
             <div class="flex justify-between"><span class="text-slate-500">მდებარეობა:</span> <span id="waitLocText" class="font-semibold text-slate-900">იტვირთება...</span></div>
-            <div class="flex justify-between"><span class="text-slate-500">IP მისამართი:</span> <span id="waitIpText" class="font-mono font-semibold text-blue-600">იტვირთება...</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">IP:</span> <span id="waitIpText" class="font-mono font-semibold text-blue-600">იტვირთება...</span></div>
             <div class="flex justify-between"><span class="text-slate-500">მოწყობილობა:</span> <span id="waitDevText" class="font-semibold text-slate-900 truncate max-w-[200px]">იტვირთება...</span></div>
           </div>
 
@@ -567,7 +567,7 @@
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
-              <span>უკან დაბრუნება</span>
+              <span>უკან</span>
             </button>
           </div>
         </div>
@@ -728,18 +728,18 @@
             <div class="space-y-4">
               <!-- Title Input -->
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">სათაური (NAME)</label>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">სათაური</label>
                 <input
                   id="uploadTitleInput"
                   type="text"
-                  placeholder="შეიყვანეთ დოკუმენტის სათაური..."
+                  placeholder="სათაური"
                   class="w-full bg-white border border-slate-300 focus:border-blue-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 outline-none transition"
                 />
               </div>
 
               <!-- Category Input with Custom Dropdown of existing categories -->
               <div class="relative" id="categoryDropdownContainer">
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">კატეგორია (LOCATION)</label>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">კატეგორია</label>
                 <div class="relative">
                   <input
                     id="uploadCategoryInput"
@@ -747,7 +747,7 @@
                     autocomplete="off"
                     onfocus="showCategoryDropdown()"
                     oninput="filterCategoryDropdown()"
-                    placeholder="ჩაწერეთ ან აირჩიეთ კატეგორია..."
+                    placeholder="კატეგორია"
                     class="w-full bg-white border border-slate-300 focus:border-blue-600 rounded-xl px-4 py-2.5 pr-10 text-sm text-slate-900 outline-none transition"
                   />
                   <button
@@ -780,7 +780,7 @@
                     <line x1="12" y1="18" x2="12" y2="12"></line>
                     <line x1="9" y1="15" x2="15" y2="15"></line>
                   </svg>
-                  <span id="selectedFileNameLabel" class="text-sm font-semibold text-slate-700">დააჭირეთ ფაილის ასარჩევად (PNG, JPG, PDF, Word, Excel, და სხვა)</span>
+                  <span id="selectedFileNameLabel" class="text-sm font-semibold text-slate-700">აირჩიეთ</span>
                   <span id="selectedFileSizeLabel" class="text-xs text-slate-500 mt-1">ნებისმიერი ფორმატის ფაილი</span>
                   <input id="uploadFileInput" type="file" onchange="handleFileSelectionForPreview(event)" class="hidden" />
                 </label>
@@ -794,7 +794,7 @@
                       <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="5" class="opacity-25"></circle>
                       <path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="5" stroke-linecap="round"></path>
                     </svg>
-                    მიმდინარეობს ატვირთვა (shogi-unterlagen)...
+                    მიმდინარეობს ატვირთვა
                   </span>
                   <span id="uploadProgressPercentText" class="font-bold text-blue-600">0%</span>
                 </div>
@@ -816,7 +816,7 @@
                     <polyline points="17 8 12 3 7 8"></polyline>
                     <line x1="12" y1="3" x2="12" y2="15"></line>
                   </svg>
-                  <span>ფაილის ატვირთვა</span>
+                  <span>ატვირთვა</span>
                 </button>
               </div>
             </div>
@@ -824,7 +824,7 @@
             <!-- Right Live Preview Box -->
             <div class="flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden min-h-[280px] shadow-sm">
               <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-600">Preview (წინასწარი ნახვა)</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-600">Preview</span>
                 <span id="previewBadgeType" class="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold hidden"></span>
               </div>
               <div id="settingsFilePreviewBox" class="flex-1 p-4 flex items-center justify-center overflow-auto max-h-[360px] bg-slate-50/40">
@@ -834,7 +834,7 @@
                     <circle cx="8.5" cy="8.5" r="1.5"></circle>
                     <polyline points="21 15 16 10 5 21"></polyline>
                   </svg>
-                  <span>აირჩიეთ ფაილი წინასწარი ნახვისთვის</span>
+                  <span>PREVIEW</span>
                 </div>
               </div>
             </div>
@@ -873,7 +873,7 @@
                   <path d="M3 22v-6h6"></path>
                   <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
                 </svg>
-                <span>შეცვლა / წაშლა</span>
+                <span>წაშლა</span>
               </button>
             </div>
           </div>
@@ -911,7 +911,7 @@
               id="inDocSearchInput"
               type="text"
               oninput="handleInDocumentSearch()"
-              placeholder="ძებნა დოკუმენტში..."
+              placeholder="ძებნა..."
               class="w-full bg-white border border-slate-300 focus:border-blue-600 rounded-xl pl-9 pr-20 py-1.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition"
             />
             <span id="inDocSearchCounter" class="absolute inset-y-0 right-2.5 flex items-center text-xs text-blue-600 font-semibold font-mono"></span>
@@ -974,7 +974,7 @@
                 <polyline points="15 18 9 12 15 6"></polyline>
               </svg>
             </button>
-            <span class="text-xs text-slate-500">გვერდი</span>
+            <span class="text-xs text-slate-500"></span>
             <input
               id="viewerPageNumberInput"
               type="number"
@@ -1037,7 +1037,7 @@
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
               <rect x="6" y="14" width="12" height="8"></rect>
             </svg>
-            <span>ბეჭდვა</span>
+            <span></span>
           </button>
 
           <!-- 2. Download (გადმოწერა) -->
@@ -1051,7 +1051,7 @@
               <polyline points="7 10 12 15 17 10"></polyline>
               <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
-            <span>გადმოწერა</span>
+            <span></span>
           </button>
 
           <!-- 3. Delete (წაშლა) -->
@@ -1066,7 +1066,7 @@
               <line x1="10" y1="11" x2="10" y2="17"></line>
               <line x1="14" y1="11" x2="14" y2="17"></line>
             </svg>
-            <span>წაშლა</span>
+            <span></span>
           </button>
         </div>
       </div>
@@ -1107,7 +1107,7 @@
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          <span>დიახ, წაშლა</span>
+          <span>წაშლა</span>
         </button>
       </div>
     </div>
@@ -1167,7 +1167,7 @@
           </svg>
         </div>
         <div>
-          <h3 class="text-base font-bold text-slate-900">ავტორიზაციის მოთხოვნა</h3>
+          <h3 class="text-base font-bold text-slate-900">მოთხოვნა</h3>
           <p class="text-xs text-slate-500">სხვა მოწყობილობა ითხოვს სისტემაში შესვლას</p>
         </div>
       </div>
@@ -1178,7 +1178,7 @@
           <span id="incomingReqLocation" class="font-bold text-slate-900 text-right"></span>
         </div>
         <div class="flex items-center justify-between gap-2">
-          <span class="text-slate-500 text-xs">IP მისამართი:</span>
+          <span class="text-slate-500 text-xs">IP:</span>
           <span id="incomingReqIp" class="font-mono text-blue-600 font-bold"></span>
         </div>
         <div class="flex items-center justify-between gap-2">
@@ -1207,7 +1207,7 @@
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          <span>დათანხმება</span>
+          <span>დადასტურება</span>
         </button>
       </div>
     </div>
@@ -1833,12 +1833,12 @@
       const enteredCode = (input.value || '').trim();
 
       if (!enteredCode) {
-        showBottomRightNotification('გთხოვთ შეიყვანოთ ავტორიზაციის კოდი.', 'error');
+        showBottomRightNotification('გთხოვთ შეიტანოთ კოდი.', 'error');
         return;
       }
 
       if (enteredCode !== VALID_AUTH_CODE) {
-        showBottomRightNotification('არასწორი კოდი! გთხოვთ შეამოწმოთ მონაცემი და სცადოთ თავიდან.', 'error');
+        showBottomRightNotification('კოდი არასწორია!', 'error');
         input.value = '';
         input.focus();
         return;
@@ -1872,7 +1872,7 @@
         showBottomRightNotification('გთხოვთ მონიშნოთ სანდო მოწყობილობის უჯრა გასაგრძელებლად.', 'error');
         return;
       }
-      showGlobalLoading('ინახება სანდო მოწყობილობა...');
+      showGlobalLoading('ინახება...');
       await addTrustedDeviceRecord(CURRENT_DEVICE_ID, getReadableDeviceName());
       hideGlobalLoading();
       document.getElementById('trustedDevicePromptBox').classList.add('hidden');
@@ -2026,7 +2026,7 @@
         document.getElementById('waitingApprovalBox').classList.add('hidden');
         document.getElementById('loginBoxCard').classList.remove('hidden');
         document.getElementById('authCodeInput').value = '';
-        showBottomRightNotification('სანდო მოწყობილობამ უარყო ავტორიზაციის მოთხოვნა.', 'error');
+        showBottomRightNotification('ადმინისტრატორმა უარყო ავტორიზაციის მოთხოვნა.', 'error');
       }
     }
 
@@ -2213,7 +2213,7 @@
     }
 
     async function loadAllDocumentsFromStorage(showSpinner = true) {
-      if (showSpinner) showGlobalLoading('დოკუმენტები იტვირთება ბაზიდან...');
+      if (showSpinner) showGlobalLoading('იტვირთება...');
       try {
         let tableDocs = [];
 
@@ -2264,7 +2264,7 @@
         populateCategoryDropdownMenu();
       } catch (err) {
         console.error('Load documents error:', err);
-        showBottomRightNotification('ბაზიდან მონაცემების წამოღებისას დაფიქსირდა შეცდომა.', 'error');
+        showBottomRightNotification('დაფიქსირდა შეცდომა.', 'error');
       } finally {
         if (showSpinner) hideGlobalLoading();
       }
@@ -2716,7 +2716,7 @@
             <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="4" class="opacity-25"></circle>
             <path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
           </svg>
-          <span class="text-xs font-medium">მზადდება წინასწარი ნახვა...</span>
+          <span class="text-xs font-medium">იტვირთება...</span>
         </div>
       `;
 
@@ -3550,7 +3550,7 @@
       if (!currentOpenDocument) return;
       const docToDelete = currentOpenDocument;
       closeDeleteFileConfirmModal();
-      showGlobalLoading('მიმდინარეობს ფაილის წაშლა ბაზიდან...');
+      showGlobalLoading('მიმდინარეობს წაშლა ...');
 
       try {
         if (supabaseClient && docToDelete.storage_path) {
