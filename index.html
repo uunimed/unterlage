@@ -32,12 +32,14 @@
 
   <style>
     :root {
-      --bg-primary: #0b0f19;
-      --bg-secondary: #111827;
-      --bg-card: #1e293b;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --border-color: #334155;
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --border-color: #e2e8f0;
     }
 
     * {
@@ -49,19 +51,19 @@
       margin: 0;
       padding: 0;
       background-color: var(--bg-primary);
-      color: #f8fafc;
+      color: var(--text-primary);
       overflow-x: hidden;
       min-height: 100vh;
     }
 
-    /* Particles Background */
+    /* 1 & 2. Light Background with Dark Particles.js */
     #particles-js {
       position: fixed;
       inset: 0;
       width: 100%;
       height: 100%;
       z-index: 1;
-      background: radial-gradient(circle at center, #131c31 0%, #090d16 100%);
+      background: radial-gradient(circle at center, #ffffff 0%, #eef2f6 100%);
     }
 
     /* 1. Authorization Box stretched 15cm from left and right edges */
@@ -80,16 +82,16 @@
       margin-left: 15cm;
       margin-right: 15cm;
       min-width: 310px;
-      background: rgba(17, 24, 39, 0.88);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      border: 1px solid #cbd5e1;
       border-radius: 16px;
       padding: 2.5rem 2.25rem;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(59, 130, 246, 0.12);
+      box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.14), 0 0 24px rgba(37, 99, 235, 0.06);
       transition: all 0.3s ease;
     }
 
-    /* Fallback if screen width is smaller than 32cm so box never collapses */
+    /* Responsive fallback if screen is narrower than 32cm */
     @media (max-width: 1350px) {
       .auth-box-stretched {
         margin-left: max(1rem, calc(50vw - 240px));
@@ -145,12 +147,12 @@
       bottom: 1cm;
       left: 1cm;
       z-index: 100;
-      background: #0f172a;
-      border: 1px solid #334155;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
       border-radius: 14px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 25px 70px rgba(15, 23, 42, 0.22);
       overflow: hidden;
     }
 
@@ -162,29 +164,29 @@
       bottom: 0.5cm;
       left: 0.5cm;
       z-index: 120;
-      background: #0b1120;
-      border: 1px solid #334155;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
       border-radius: 12px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 30px 90px rgba(15, 23, 42, 0.28);
       overflow: hidden;
     }
 
-    /* Custom Scrollbars */
+    /* Light Custom Scrollbars */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: #0f172a;
+      background: #f1f5f9;
     }
     ::-webkit-scrollbar-thumb {
-      background: #334155;
+      background: #cbd5e1;
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #475569;
+      background: #94a3b8;
     }
 
     /* PDF.js Custom Styling & Selectable Text Layer */
@@ -192,7 +194,8 @@
       position: relative;
       margin: 0 auto 24px auto;
       background: #ffffff;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.12);
+      border: 1px solid #e2e8f0;
       border-radius: 2px;
       overflow: hidden;
     }
@@ -231,7 +234,7 @@
     }
 
     .textLayer ::selection {
-      background: rgba(59, 130, 246, 0.35);
+      background: rgba(37, 99, 235, 0.28);
     }
 
     /* Highlighted search matches inside PDF, Word, Excel, Text */
@@ -260,7 +263,8 @@
     .docx-wrapper > section.docx {
       background: #ffffff !important;
       color: #000000 !important;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55) !important;
+      box-shadow: 0 8px 28px rgba(15, 23, 42, 0.14) !important;
+      border: 1px solid #e2e8f0 !important;
       margin-bottom: 24px !important;
       box-sizing: border-box !important;
       overflow: hidden !important;
@@ -269,11 +273,11 @@
     /* Authentic Excel Grid Styling */
     .excel-grid-wrapper {
       background: #ffffff;
-      color: #1e293b;
+      color: #0f172a;
       border: 1px solid #cbd5e1;
       border-radius: 4px;
       overflow: auto;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
     }
 
     .excel-table {
@@ -366,19 +370,19 @@
 <body>
 
   <!-- GLOBAL LOADING OVERLAY (9. Loading Circle whenever document or info loads) -->
-  <div id="globalLoadingOverlay" class="fixed inset-0 z-[250] bg-slate-950/75 backdrop-blur-sm hidden items-center justify-center flex-col gap-3">
-    <svg class="w-14 h-14 text-blue-500 svg-spinner" viewBox="0 0 50 50" fill="none">
+  <div id="globalLoadingOverlay" class="fixed inset-0 z-[250] bg-white/80 backdrop-blur-sm hidden items-center justify-center flex-col gap-3">
+    <svg class="w-14 h-14 text-blue-600 svg-spinner" viewBox="0 0 50 50" fill="none">
       <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="4" class="opacity-20"></circle>
       <path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
     </svg>
-    <span id="globalLoadingText" class="text-sm font-medium text-slate-200 tracking-wide">იტვირთება...</span>
+    <span id="globalLoadingText" class="text-sm font-semibold text-slate-800 tracking-wide">იტვირთება...</span>
   </div>
 
   <!-- BOTTOM-RIGHT TOAST CONTAINER (2. Right-to-left error notifications) -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-[300] flex flex-col gap-2 max-w-md pointer-events-none"></div>
 
   <!-- =========================================================================
-       1 & 2 & 3. AUTHORIZATION PAGE (With particles.js & 15cm stretched box)
+       1 & 2 & 3. AUTHORIZATION PAGE (Light Theme + Dark particles.js & 15cm box)
        ========================================================================= -->
   <div id="authPageSection" class="relative min-h-screen w-full">
     <div id="particles-js"></div>
@@ -388,8 +392,8 @@
       <div id="loginBoxCard" class="auth-box-stretched">
         <div class="flex flex-col items-center justify-center mb-6">
           <!-- Relevant Document Vault Security SVG -->
-          <div class="w-16 h-16 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center mb-4 shadow-inner">
-            <svg class="w-9 h-9 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <div class="w-16 h-16 rounded-2xl bg-slate-900/5 border border-slate-300 flex items-center justify-center mb-4 shadow-sm">
+            <svg class="w-9 h-9 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
               <rect x="9" y="12" width="6" height="5" rx="1"></rect>
@@ -397,7 +401,7 @@
             </svg>
           </div>
           <!-- ONLY text: ShogiUnterlagen -->
-          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white select-none">ShogiUnterlagen</h1>
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 select-none">ShogiUnterlagen</h1>
         </div>
 
         <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="w-full">
@@ -408,7 +412,7 @@
               inputmode="numeric"
               autocomplete="off"
               placeholder="••••••"
-              class="w-full bg-slate-900/90 border border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 rounded-xl px-4 py-3.5 text-center text-xl tracking-[0.35em] text-white outline-none transition"
+              class="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-500/20 rounded-xl px-4 py-3.5 text-center text-xl tracking-[0.35em] text-slate-900 outline-none transition"
             />
           </div>
 
@@ -416,7 +420,7 @@
           <div class="flex justify-end mt-4">
             <button
               type="submit"
-              class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/25 transition cursor-pointer"
+              class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md shadow-slate-900/15 transition cursor-pointer"
             >
               <span>შესვლა</span>
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -432,27 +436,27 @@
       <!-- 3. First-time Authorization: Trusted Device Registration Box -->
       <div id="trustedDevicePromptBox" class="auth-box-stretched hidden">
         <div class="flex flex-col items-center text-center">
-          <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mb-3">
-            <svg class="w-8 h-8 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-3">
+            <svg class="w-8 h-8 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
               <polyline points="9 12 11 14 15 10"></polyline>
             </svg>
           </div>
-          <h2 class="text-xl font-bold text-white mb-2">სანდო მოწყობილობა</h2>
-          <p class="text-sm text-slate-300 mb-5">
+          <h2 class="text-xl font-bold text-slate-900 mb-2">სანდო მოწყობილობა</h2>
+          <p class="text-sm text-slate-600 mb-5">
             პირველი ავტორიზაცია: გთხოვთ მონიშნოთ ეს მოწყობილობა როგორც სანდო. ერთდროულად მხოლოდ 1 მოწყობილობა შეიძლება იყოს სანდო.
           </p>
 
-          <label class="flex items-center gap-3 bg-slate-900/80 border border-slate-700 hover:border-emerald-500/50 rounded-xl px-4 py-3.5 w-full cursor-pointer transition mb-5">
-            <input id="trustThisDeviceCheckbox" type="checkbox" checked class="w-5 h-5 accent-emerald-500 rounded cursor-pointer" />
-            <span class="text-sm font-medium text-slate-100 select-none">სანდო მოწყობილობა (ეს მოწყობილობა არის სანდო)</span>
+          <label class="flex items-center gap-3 bg-slate-50 border border-slate-200 hover:border-emerald-500 rounded-xl px-4 py-3.5 w-full cursor-pointer transition mb-5">
+            <input id="trustThisDeviceCheckbox" type="checkbox" checked class="w-5 h-5 accent-emerald-600 rounded cursor-pointer" />
+            <span class="text-sm font-semibold text-slate-800 select-none">სანდო მოწყობილობა (ეს მოწყობილობა არის სანდო)</span>
           </label>
 
           <div class="flex justify-end w-full">
             <button
               type="button"
               onclick="confirmFirstTrustedDevice()"
-              class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-600/25 transition"
+              class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition cursor-pointer"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
@@ -466,28 +470,28 @@
       <!-- 3. Waiting / Confirmation Box when logging in from another non-trusted device -->
       <div id="waitingApprovalBox" class="auth-box-stretched hidden">
         <div class="flex flex-col items-center text-center">
-          <div class="w-16 h-16 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center mb-4">
-            <svg class="w-9 h-9 text-amber-400 svg-spinner" viewBox="0 0 50 50" fill="none">
+          <div class="w-16 h-16 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center mb-4">
+            <svg class="w-9 h-9 text-amber-600 svg-spinner" viewBox="0 0 50 50" fill="none">
               <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="4" class="opacity-25"></circle>
               <path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
             </svg>
           </div>
-          <h2 class="text-xl font-bold text-white mb-2">ველოდებით დადასტურებას</h2>
-          <p class="text-sm text-slate-300 mb-4">
+          <h2 class="text-xl font-bold text-slate-900 mb-2">ველოდებით დადასტურებას</h2>
+          <p class="text-sm text-slate-600 mb-4">
             სისტემაში უკვე რეგისტრირებულია სხვა სანდო მოწყობილობა. შესვლის მოთხოვნა გაგზავნილია სანდო მოწყობილობაზე დასადასტურებლად.
           </p>
 
-          <div id="waitingRequestDetails" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 text-left text-xs text-slate-300 space-y-1.5 mb-5">
-            <div class="flex justify-between"><span class="text-slate-400">მდებარეობა:</span> <span id="waitLocText" class="font-medium text-white">იტვირთება...</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">IP მისამართი:</span> <span id="waitIpText" class="font-mono text-blue-400">იტვირთება...</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">მოწყობილობა:</span> <span id="waitDevText" class="font-medium text-white truncate max-w-[200px]">იტვირთება...</span></div>
+          <div id="waitingRequestDetails" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-left text-xs text-slate-700 space-y-1.5 mb-5">
+            <div class="flex justify-between"><span class="text-slate-500">მდებარეობა:</span> <span id="waitLocText" class="font-semibold text-slate-900">იტვირთება...</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">IP მისამართი:</span> <span id="waitIpText" class="font-mono font-semibold text-blue-600">იტვირთება...</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">მოწყობილობა:</span> <span id="waitDevText" class="font-semibold text-slate-900 truncate max-w-[200px]">იტვირთება...</span></div>
           </div>
 
           <div class="flex items-center justify-between w-full gap-2">
             <button
               type="button"
               onclick="cancelWaitingApproval()"
-              class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-medium px-4 py-2 rounded-xl transition"
+              class="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium px-4 py-2 rounded-xl transition cursor-pointer"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -502,11 +506,11 @@
   </div>
 
   <!-- =========================================================================
-       4. MAIN PAGE (Stretched 0.2cm from left and right edges)
+       4. MAIN PAGE (Stretched 0.2cm from left and right edges, Light Theme)
        ========================================================================= -->
   <div id="mainPageSection" class="main-page-container hidden">
     <!-- HEADER -->
-    <header class="sticky top-2 z-40 mt-2 bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+    <header class="sticky top-2 z-40 mt-2 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
       <!-- 4.1 & 4.2 Left Corner: Relevant SVG + ShogiUnterlagen (clicks refresh data without page reload) -->
       <div class="flex items-center gap-3">
         <button
@@ -515,8 +519,8 @@
           title="მონაცემების განახლება"
           class="group flex items-center gap-2.5 text-left focus:outline-none cursor-pointer"
         >
-          <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center group-hover:bg-blue-600/30 transition">
-            <svg id="headerBrandSvg" class="w-6 h-6 text-blue-400 transition-transform duration-300 group-hover:scale-105" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center group-hover:bg-blue-100 transition">
+            <svg id="headerBrandSvg" class="w-6 h-6 text-blue-600 transition-transform duration-300 group-hover:scale-105" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
               <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -524,7 +528,7 @@
               <line x1="10" y1="9" x2="8" y2="9"></line>
             </svg>
           </div>
-          <span class="text-xl font-bold tracking-tight text-white group-hover:text-blue-400 transition">ShogiUnterlagen</span>
+          <span class="text-xl font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition">ShogiUnterlagen</span>
         </button>
       </div>
 
@@ -543,13 +547,13 @@
             type="text"
             oninput="handleGlobalSearch()"
             placeholder="ძებნა..."
-            class="w-full bg-slate-950/90 border border-slate-700/80 focus:border-blue-500 rounded-xl pl-9 pr-8 py-2 text-sm text-white placeholder-slate-400 outline-none transition"
+            class="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white rounded-xl pl-9 pr-8 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none transition"
           />
           <button
             id="clearGlobalSearchBtn"
             type="button"
             onclick="clearGlobalSearch()"
-            class="hidden absolute inset-y-0 right-0 pr-2.5 items-center text-slate-400 hover:text-white"
+            class="hidden absolute inset-y-0 right-0 pr-2.5 items-center text-slate-400 hover:text-slate-700"
           >
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -563,9 +567,9 @@
           type="button"
           onclick="openSettingsPopup()"
           title="პარამეტრები"
-          class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium transition cursor-pointer"
+          class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 px-3.5 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
         >
-          <svg class="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
           </svg>
@@ -577,7 +581,7 @@
           type="button"
           onclick="logoutImmediately()"
           title="გასვლა"
-          class="inline-flex items-center gap-2 bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 px-3.5 py-2 rounded-xl text-sm font-medium transition cursor-pointer"
+          class="inline-flex items-center gap-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 px-3.5 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
         >
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -596,7 +600,7 @@
 
       <!-- Empty Search / No Files State ("ფაილი ვერ მოიძებნა" + relevant SVG) -->
       <div id="noFilesFoundState" class="hidden flex-col items-center justify-center py-24 text-center">
-        <div class="w-20 h-20 rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center mb-4">
+        <div class="w-20 h-20 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mb-4">
           <svg class="w-10 h-10 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
@@ -604,7 +608,7 @@
             <line x1="13.5" y1="16.5" x2="15.5" y2="18.5"></line>
           </svg>
         </div>
-        <p class="text-lg font-semibold text-slate-200">ფაილი ვერ მოიძებნა</p>
+        <p class="text-lg font-bold text-slate-700">ფაილი ვერ მოიძებნა</p>
       </div>
     </main>
   </div>
@@ -612,22 +616,22 @@
   <!-- =========================================================================
        4.3 SETTINGS POPUP (Stretched 1cm from left, right, top, bottom edges)
        ========================================================================= -->
-  <div id="settingsPopupOverlay" class="fixed inset-0 z-[95] bg-black/70 backdrop-blur-sm hidden">
+  <div id="settingsPopupOverlay" class="fixed inset-0 z-[95] bg-slate-900/40 backdrop-blur-sm hidden">
     <div class="settings-popup-window">
       <!-- Settings Header -->
-      <div class="flex items-center justify-between px-6 py-4 bg-slate-900 border-b border-slate-800">
+      <div class="flex items-center justify-between px-6 py-4 bg-slate-50 border-b border-slate-200">
         <div class="flex items-center gap-3">
-          <svg class="w-6 h-6 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
           </svg>
-          <h2 class="text-lg font-bold text-white">პარამეტრები</h2>
+          <h2 class="text-lg font-bold text-slate-900">პარამეტრები</h2>
         </div>
 
         <button
           type="button"
           onclick="closeSettingsPopup()"
-          class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition"
+          class="p-2 rounded-xl bg-slate-200/70 hover:bg-slate-200 text-slate-600 hover:text-slate-900 transition cursor-pointer"
         >
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -637,16 +641,16 @@
       </div>
 
       <!-- Settings Body -->
-      <div class="flex-1 overflow-y-auto p-6 space-y-8">
+      <div class="flex-1 overflow-y-auto p-6 space-y-8 bg-white">
         <!-- SECTION 1: FILE ADDITION FUNCTION (ფაილის დამატების ფუნქცია) -->
-        <section class="bg-slate-900/70 border border-slate-800 rounded-2xl p-6">
+        <section class="bg-slate-50/70 border border-slate-200 rounded-2xl p-6">
           <div class="flex items-center gap-2.5 mb-5">
-            <svg class="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="17 8 12 3 7 8"></polyline>
               <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
-            <h3 class="text-base font-bold text-white">ფაილის დამატება</h3>
+            <h3 class="text-base font-bold text-slate-900">ფაილის დამატება</h3>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -654,18 +658,18 @@
             <div class="space-y-4">
               <!-- Title Input -->
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">სათაური</label>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">სათაური (NAME)</label>
                 <input
                   id="uploadTitleInput"
                   type="text"
                   placeholder="შეიყვანეთ დოკუმენტის სათაური..."
-                  class="w-full bg-slate-950 border border-slate-700 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white outline-none transition"
+                  class="w-full bg-white border border-slate-300 focus:border-blue-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 outline-none transition"
                 />
               </div>
 
               <!-- Category Input with Custom Dropdown of existing categories -->
               <div class="relative" id="categoryDropdownContainer">
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">კატეგორია</label>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">კატეგორია (LOCATION)</label>
                 <div class="relative">
                   <input
                     id="uploadCategoryInput"
@@ -674,12 +678,12 @@
                     onfocus="showCategoryDropdown()"
                     oninput="filterCategoryDropdown()"
                     placeholder="ჩაწერეთ ან აირჩიეთ კატეგორია..."
-                    class="w-full bg-slate-950 border border-slate-700 focus:border-blue-500 rounded-xl px-4 py-2.5 pr-10 text-sm text-white outline-none transition"
+                    class="w-full bg-white border border-slate-300 focus:border-blue-600 rounded-xl px-4 py-2.5 pr-10 text-sm text-slate-900 outline-none transition"
                   />
                   <button
                     type="button"
                     onclick="toggleCategoryDropdown()"
-                    class="absolute inset-y-0 right-0 px-3 flex items-center text-slate-400 hover:text-white"
+                    class="absolute inset-y-0 right-0 px-3 flex items-center text-slate-500 hover:text-slate-800"
                   >
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="6 9 12 15 18 9"></polyline>
@@ -689,43 +693,43 @@
                 <!-- Existing Categories Dropdown Menu -->
                 <div
                   id="existingCategoriesMenu"
-                  class="hidden absolute left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-30 divide-y divide-slate-800"
+                  class="hidden absolute left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-slate-200 rounded-xl shadow-xl z-30 divide-y divide-slate-100"
                 ></div>
               </div>
 
               <!-- File Picker Input (Supports all file formats) -->
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">ფაილის არჩევა</label>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">ფაილის არჩევა</label>
                 <label
                   for="uploadFileInput"
-                  class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-blue-500 bg-slate-950/60 rounded-xl p-5 cursor-pointer transition text-center"
+                  class="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 hover:border-blue-600 bg-white rounded-xl p-5 cursor-pointer transition text-center"
                 >
-                  <svg class="w-8 h-8 text-blue-400 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <svg class="w-8 h-8 text-blue-600 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <line x1="12" y1="18" x2="12" y2="12"></line>
                     <line x1="9" y1="15" x2="15" y2="15"></line>
                   </svg>
-                  <span id="selectedFileNameLabel" class="text-sm font-medium text-slate-200">დააჭირეთ ფაილის ასარჩევად (PNG, JPG, PDF, Word, Excel, და სხვა)</span>
-                  <span id="selectedFileSizeLabel" class="text-xs text-slate-400 mt-1">ნებისმიერი ფორმატის ფაილი</span>
+                  <span id="selectedFileNameLabel" class="text-sm font-semibold text-slate-700">დააჭირეთ ფაილის ასარჩევად (PNG, JPG, PDF, Word, Excel, და სხვა)</span>
+                  <span id="selectedFileSizeLabel" class="text-xs text-slate-500 mt-1">ნებისმიერი ფორმატის ფაილი</span>
                   <input id="uploadFileInput" type="file" onchange="handleFileSelectionForPreview(event)" class="hidden" />
                 </label>
               </div>
 
               <!-- 8. Upload Progress Bar with Percentage -->
-              <div id="uploadProgressWrapper" class="hidden space-y-1.5 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div id="uploadProgressWrapper" class="hidden space-y-1.5 bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
                 <div class="flex items-center justify-between text-xs">
-                  <span class="text-slate-300 font-medium flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-400 svg-spinner" viewBox="0 0 50 50" fill="none">
+                  <span class="text-slate-700 font-semibold flex items-center gap-2">
+                    <svg class="w-4 h-4 text-blue-600 svg-spinner" viewBox="0 0 50 50" fill="none">
                       <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="5" class="opacity-25"></circle>
                       <path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="5" stroke-linecap="round"></path>
                     </svg>
-                    მიმდინარეობს ატვირთვა...
+                    მიმდინარეობს ატვირთვა (shogi-unterlagen)...
                   </span>
-                  <span id="uploadProgressPercentText" class="font-bold text-blue-400">0%</span>
+                  <span id="uploadProgressPercentText" class="font-bold text-blue-600">0%</span>
                 </div>
-                <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
-                  <div id="uploadProgressBarFill" class="h-full bg-blue-500 transition-all duration-150" style="width: 0%"></div>
+                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div id="uploadProgressBarFill" class="h-full bg-blue-600 transition-all duration-150" style="width: 0%"></div>
                 </div>
               </div>
 
@@ -735,7 +739,7 @@
                   id="submitUploadBtn"
                   type="button"
                   onclick="uploadDocumentHandler()"
-                  class="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-5 rounded-xl shadow-lg shadow-blue-600/25 transition cursor-pointer"
+                  class="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-5 rounded-xl shadow-md shadow-blue-600/20 transition cursor-pointer"
                 >
                   <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -748,14 +752,14 @@
             </div>
 
             <!-- Right Live Preview Box -->
-            <div class="flex flex-col bg-slate-950 border border-slate-800 rounded-xl overflow-hidden min-h-[280px]">
-              <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Preview (წინასწარი ნახვა)</span>
-                <span id="previewBadgeType" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 hidden"></span>
+            <div class="flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden min-h-[280px] shadow-sm">
+              <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-600">Preview (წინასწარი ნახვა)</span>
+                <span id="previewBadgeType" class="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold hidden"></span>
               </div>
-              <div id="settingsFilePreviewBox" class="flex-1 p-4 flex items-center justify-center overflow-auto max-h-[360px]">
-                <div class="text-center text-slate-500 text-sm flex flex-col items-center gap-2">
-                  <svg class="w-10 h-10 stroke-slate-600" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <div id="settingsFilePreviewBox" class="flex-1 p-4 flex items-center justify-center overflow-auto max-h-[360px] bg-slate-50/40">
+                <div class="text-center text-slate-400 text-sm flex flex-col items-center gap-2">
+                  <svg class="w-10 h-10 stroke-slate-400" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                     <circle cx="8.5" cy="8.5" r="1.5"></circle>
                     <polyline points="21 15 16 10 5 21"></polyline>
@@ -768,21 +772,21 @@
         </section>
 
         <!-- SECTION 2: TRUSTED DEVICE FUNCTION (სანდო მოწყობილობის ფუნქცია) -->
-        <section class="bg-slate-900/70 border border-slate-800 rounded-2xl p-6">
+        <section class="bg-slate-50/70 border border-slate-200 rounded-2xl p-6">
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
               <!-- Green Checkmark SVG (მწვანე სტიკი) -->
-              <div id="trustedDeviceStatusIconWrap" class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center">
-                <svg class="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <div id="trustedDeviceStatusIconWrap" class="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                <svg class="w-6 h-6 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="text-base font-bold text-white">სანდო მოწყობილობა</span>
-                  <span id="trustedDeviceBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">აქტიური</span>
+                  <span class="text-base font-bold text-slate-900">სანდო მოწყობილობა</span>
+                  <span id="trustedDeviceBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">აქტიური</span>
                 </div>
-                <p id="trustedDeviceMetaInfo" class="text-xs text-slate-400 mt-0.5">მიმდინარე მოწყობილობა რეგისტრირებულია როგორც სანდო</p>
+                <p id="trustedDeviceMetaInfo" class="text-xs text-slate-500 mt-0.5">მიმდინარე მოწყობილობა რეგისტრირებულია როგორც სანდო</p>
               </div>
             </div>
 
@@ -791,7 +795,7 @@
               <button
                 type="button"
                 onclick="openDeleteTrustedDeviceConfirm()"
-                class="inline-flex items-center gap-2 bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-300 font-semibold px-4 py-2.5 rounded-xl text-sm transition cursor-pointer"
+                class="inline-flex items-center gap-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 font-semibold px-4 py-2.5 rounded-xl text-sm transition cursor-pointer"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 2v6h-6"></path>
@@ -807,9 +811,9 @@
                 type="button"
                 onclick="simulateIncomingAuthRequest()"
                 title="სხვა მოწყობილობიდან შემოსვლის მოთხოვნის ტესტირება"
-                class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-3.5 py-2.5 rounded-xl text-xs font-medium transition cursor-pointer"
+                class="inline-flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer"
               >
-                <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
                   <line x1="12" y1="18" x2="12.01" y2="18"></line>
                 </svg>
@@ -819,25 +823,25 @@
           </div>
         </section>
 
-        <!-- SECTION 3: SUPABASE CONNECTION STATUS & SQL SCHEMA HELPER -->
-        <section class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+        <!-- SECTION 3: SUPABASE GLOBAL CONNECTION STATUS -->
+        <section class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-3">
-            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
               <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
               <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
             </svg>
             <div>
-              <span class="text-xs font-semibold text-slate-300">Supabase სინქრონიზაცია: </span>
-              <span id="supabaseStatusText" class="text-xs text-emerald-400 font-medium">დაკავშირებულია (tvdvxjikmwohrnjzyefb.supabase.co)</span>
+              <span class="text-xs font-semibold text-slate-600">Supabase გლობალური ბაზა: </span>
+              <span id="supabaseStatusText" class="text-xs text-emerald-700 font-bold">Bucket: shogi-unterlagen | Tables: unterlagen, login_requests</span>
             </div>
           </div>
           <button
             type="button"
             onclick="toggleSqlHelperModal()"
-            class="text-xs text-blue-400 hover:text-blue-300 underline cursor-pointer"
+            class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline cursor-pointer"
           >
-            Supabase SQL კონფიგურაცია
+            RLS / კონფიგურაციის შემოწმება
           </button>
         </section>
       </div>
@@ -847,14 +851,14 @@
   <!-- =========================================================================
        5. ADVANCED FILE VIEWER POPUP (Stretched 0.5cm from left, right, top, bottom)
        ========================================================================= -->
-  <div id="fileViewerPopupOverlay" class="fixed inset-0 z-[115] bg-black/80 backdrop-blur-sm hidden">
+  <div id="fileViewerPopupOverlay" class="fixed inset-0 z-[115] bg-slate-900/50 backdrop-blur-sm hidden">
     <div class="viewer-popup-window">
       <!-- 5.5 TOP BAR OF POPUP: Title (Left) | Dynamic In-Document Search (Center) | Close Button (Right) -->
-      <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-900 border-b border-slate-800">
+      <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-50 border-b border-slate-200">
         <!-- Left: Document Title -->
         <div class="flex items-center gap-2.5 min-w-0 max-w-xs sm:max-w-md">
-          <div id="viewerTopFileIcon" class="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center shrink-0"></div>
-          <h3 id="viewerTopTitleText" class="text-base font-bold text-white truncate"></h3>
+          <div id="viewerTopFileIcon" class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0"></div>
+          <h3 id="viewerTopTitleText" class="text-base font-bold text-slate-900 truncate"></h3>
         </div>
 
         <!-- Center: Automatic In-Document Search (PDF, Word, Excel, Text) -->
@@ -871,9 +875,9 @@
               type="text"
               oninput="handleInDocumentSearch()"
               placeholder="ძებნა დოკუმენტში..."
-              class="w-full bg-slate-950 border border-slate-700 focus:border-blue-500 rounded-xl pl-9 pr-20 py-1.5 text-sm text-white placeholder-slate-400 outline-none transition"
+              class="w-full bg-white border border-slate-300 focus:border-blue-600 rounded-xl pl-9 pr-20 py-1.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition"
             />
-            <span id="inDocSearchCounter" class="absolute inset-y-0 right-2.5 flex items-center text-xs text-slate-400 font-mono"></span>
+            <span id="inDocSearchCounter" class="absolute inset-y-0 right-2.5 flex items-center text-xs text-blue-600 font-semibold font-mono"></span>
           </div>
         </div>
 
@@ -883,7 +887,7 @@
             type="button"
             onclick="closeFileViewerPopup()"
             title="დახურვა"
-            class="p-2 rounded-xl bg-slate-800 hover:bg-rose-600/80 text-slate-300 hover:text-white transition cursor-pointer"
+            class="p-2 rounded-xl bg-slate-200/80 hover:bg-rose-600 text-slate-700 hover:text-white transition cursor-pointer"
           >
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -894,13 +898,13 @@
       </div>
 
       <!-- Excel Sheet Tabs Bar (Shown only when an Excel file with multiple sheets is open) -->
-      <div id="excelSheetTabsBar" class="hidden items-center gap-1.5 px-5 py-2 bg-slate-900/90 border-b border-slate-800 overflow-x-auto"></div>
+      <div id="excelSheetTabsBar" class="hidden items-center gap-1.5 px-5 py-2 bg-slate-100 border-b border-slate-200 overflow-x-auto"></div>
 
       <!-- MIDDLE DOCUMENT VIEWPORT -->
       <div
         id="viewerScrollViewport"
         onscroll="handleViewerScrollUpdatePage()"
-        class="flex-1 overflow-auto bg-slate-950/90 p-4 sm:p-8 flex flex-col items-center relative"
+        class="flex-1 overflow-auto bg-slate-100/90 p-4 sm:p-8 flex flex-col items-center relative"
       >
         <div id="viewerViewportContent" class="w-full flex flex-col items-center transition-transform duration-150 origin-top"></div>
       </div>
@@ -909,10 +913,10 @@
            Left: Actual filename, Type, Page count (e.g. xxx.png, PNG, 1 გვერდი)
            Center: 1) Page switcher input & scroll  2) Zoom - / % / +
            Right: 1) Print  2) Download  3) Delete -->
-      <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-900 border-t border-slate-800 text-xs sm:text-sm">
+      <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-50 border-t border-slate-200 text-xs sm:text-sm">
         <!-- Bottom Left Corner: Uploaded Filename, Type, Page count -->
-        <div class="flex items-center gap-2 text-slate-300 font-medium min-w-0 max-w-xs sm:max-w-sm truncate">
-          <svg class="w-4 h-4 text-blue-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="flex items-center gap-2 text-slate-700 font-semibold min-w-0 max-w-xs sm:max-w-sm truncate">
+          <svg class="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
           </svg>
@@ -922,18 +926,18 @@
         <!-- Bottom Center: 1. Page Navigation & 2. Zoom Controls -->
         <div class="flex items-center gap-4 mx-auto">
           <!-- 1. Page Switcher -->
-          <div class="flex items-center gap-1.5 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1">
+          <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-2.5 py-1 shadow-sm">
             <button
               type="button"
               onclick="stepViewerPage(-1)"
               title="წინა გვერდი"
-              class="p-1 text-slate-400 hover:text-white transition"
+              class="p-1 text-slate-500 hover:text-slate-900 transition cursor-pointer"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"></polyline>
               </svg>
             </button>
-            <span class="text-xs text-slate-400">გვერდი</span>
+            <span class="text-xs text-slate-500">გვერდი</span>
             <input
               id="viewerPageNumberInput"
               type="number"
@@ -941,14 +945,14 @@
               value="1"
               onchange="jumpToViewerPage(this.value)"
               onkeydown="if(event.key==='Enter') jumpToViewerPage(this.value)"
-              class="w-12 bg-slate-900 border border-slate-700 rounded-lg px-1.5 py-0.5 text-center text-xs text-white outline-none"
+              class="w-12 bg-slate-50 border border-slate-300 rounded-lg px-1.5 py-0.5 text-center text-xs font-semibold text-slate-900 outline-none"
             />
-            <span class="text-xs text-slate-400">/ <span id="viewerTotalPagesLabel">1</span></span>
+            <span class="text-xs text-slate-500">/ <span id="viewerTotalPagesLabel">1</span></span>
             <button
               type="button"
               onclick="stepViewerPage(1)"
               title="შემდეგი გვერდი"
-              class="p-1 text-slate-400 hover:text-white transition"
+              class="p-1 text-slate-500 hover:text-slate-900 transition cursor-pointer"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"></polyline>
@@ -957,23 +961,23 @@
           </div>
 
           <!-- 2. File Zoom Size (- SVG, %, + SVG) -->
-          <div class="flex items-center gap-1.5 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1">
+          <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-2.5 py-1 shadow-sm">
             <button
               type="button"
               onclick="adjustViewerZoom(-15)"
               title="დაპატარავება"
-              class="p-1 text-slate-400 hover:text-white transition cursor-pointer"
+              class="p-1 text-slate-500 hover:text-slate-900 transition cursor-pointer"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
               </svg>
             </button>
-            <span id="viewerZoomPercentLabel" class="text-xs font-mono font-semibold text-blue-400 min-w-[44px] text-center">100%</span>
+            <span id="viewerZoomPercentLabel" class="text-xs font-mono font-bold text-blue-600 min-w-[44px] text-center">100%</span>
             <button
               type="button"
               onclick="adjustViewerZoom(15)"
               title="გადიდება"
-              class="p-1 text-slate-400 hover:text-white transition cursor-pointer"
+              class="p-1 text-slate-500 hover:text-slate-900 transition cursor-pointer"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -989,9 +993,9 @@
           <button
             type="button"
             onclick="printCurrentOpenFile()"
-            class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer"
+            class="inline-flex items-center gap-1.5 bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer shadow-sm"
           >
-            <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 6 2 18 2 18 9"></polyline>
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
               <rect x="6" y="14" width="12" height="8"></rect>
@@ -1003,7 +1007,7 @@
           <button
             type="button"
             onclick="downloadCurrentOpenFile()"
-            class="inline-flex items-center gap-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 px-3 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer"
+            class="inline-flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
           >
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1017,7 +1021,7 @@
           <button
             type="button"
             onclick="openDeleteFileConfirmModal()"
-            class="inline-flex items-center gap-1.5 bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 px-3 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer"
+            class="inline-flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
           >
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="3 6 5 6 21 6"></polyline>
@@ -1035,33 +1039,33 @@
   <!-- =========================================================================
        CONFIRMATION POPUP 1: DELETE TRUSTED DEVICE ("ნამდვილად გინდათ სანდო მოწყობილობის წაშლა?")
        ========================================================================= -->
-  <div id="deleteTrustedDeviceModal" class="fixed inset-0 z-[180] bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+  <div id="deleteTrustedDeviceModal" class="fixed inset-0 z-[180] bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0">
-          <svg class="w-6 h-6 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="w-11 h-11 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
             <line x1="12" y1="9" x2="12" y2="13"></line>
             <line x1="12" y1="17" x2="12.01" y2="17"></line>
           </svg>
         </div>
-        <h3 class="text-base font-bold text-white">ნამდვილად გინდათ სანდო მოწყობილობის წაშლა?</h3>
+        <h3 class="text-base font-bold text-slate-900">ნამდვილად გინდათ სანდო მოწყობილობის წაშლა?</h3>
       </div>
-      <p class="text-xs text-slate-300 mb-6 leading-relaxed">
+      <p class="text-xs text-slate-600 mb-6 leading-relaxed">
         როგორც კი სანდო მოწყობილობა წაიშლება, სხვა მოწყობილობიდან ნებისმიერს ნებართვის გარეშე შეეძლება ავტორიზაცია.
       </p>
       <div class="flex items-center justify-end gap-3">
         <button
           type="button"
           onclick="closeDeleteTrustedDeviceConfirm()"
-          class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition"
+          class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition cursor-pointer"
         >
           გაუქმება
         </button>
         <button
           type="button"
           onclick="confirmRemoveTrustedDevice()"
-          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-semibold transition"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold transition cursor-pointer"
         >
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
@@ -1075,32 +1079,32 @@
   <!-- =========================================================================
        CONFIRMATION POPUP 2: DELETE FILE ("ნამდვილად გინდათ ფაილის წაშლა?")
        ========================================================================= -->
-  <div id="deleteFileConfirmModal" class="fixed inset-0 z-[190] bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+  <div id="deleteFileConfirmModal" class="fixed inset-0 z-[190] bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-11 h-11 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shrink-0">
-          <svg class="w-6 h-6 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="w-11 h-11 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="3 6 5 6 21 6"></polyline>
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
           </svg>
         </div>
         <div>
-          <h3 class="text-base font-bold text-white">ნამდვილად გინდათ ფაილის წაშლა?</h3>
-          <p id="deleteFileModalName" class="text-xs text-slate-400 mt-0.5 truncate max-w-[260px]"></p>
+          <h3 class="text-base font-bold text-slate-900">ნამდვილად გინდათ ფაილის წაშლა?</h3>
+          <p id="deleteFileModalName" class="text-xs text-slate-500 mt-0.5 truncate max-w-[260px]"></p>
         </div>
       </div>
       <div class="flex items-center justify-end gap-3 mt-6">
         <button
           type="button"
           onclick="closeDeleteFileConfirmModal()"
-          class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition"
+          class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition cursor-pointer"
         >
           უარყოფა
         </button>
         <button
           type="button"
           onclick="confirmDeleteOpenFile()"
-          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-semibold transition"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold transition cursor-pointer"
         >
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="3 6 5 6 21 6"></polyline>
@@ -1116,33 +1120,33 @@
        POPUP 3: INCOMING AUTHORIZATION REQUEST ON TRUSTED DEVICE
        (Shows Country/City, IP Address, Device, and Approve / Reject buttons)
        ========================================================================= -->
-  <div id="incomingAuthRequestModal" class="fixed inset-0 z-[220] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border-2 border-blue-500/50 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+  <div id="incomingAuthRequestModal" class="fixed inset-0 z-[220] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border-2 border-blue-500 rounded-2xl max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center shrink-0">
-          <svg class="w-7 h-7 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0">
+          <svg class="w-7 h-7 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             <circle cx="12" cy="11" r="3"></circle>
           </svg>
         </div>
         <div>
-          <h3 class="text-base font-bold text-white">ავტორიზაციის მოთხოვნა</h3>
-          <p class="text-xs text-slate-400">სხვა მოწყობილობა ითხოვს სისტემაში შესვლას</p>
+          <h3 class="text-base font-bold text-slate-900">ავტორიზაციის მოთხოვნა</h3>
+          <p class="text-xs text-slate-500">სხვა მოწყობილობა ითხოვს სისტემაში შესვლას</p>
         </div>
       </div>
 
-      <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2.5 text-sm mb-6">
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2.5 text-sm mb-6">
         <div class="flex items-center justify-between gap-2">
-          <span class="text-slate-400 text-xs">ქვეყანა, ქალაქი:</span>
-          <span id="incomingReqLocation" class="font-semibold text-white text-right"></span>
+          <span class="text-slate-500 text-xs">ქვეყანა, ქალაქი:</span>
+          <span id="incomingReqLocation" class="font-bold text-slate-900 text-right"></span>
         </div>
         <div class="flex items-center justify-between gap-2">
-          <span class="text-slate-400 text-xs">IP მისამართი:</span>
-          <span id="incomingReqIp" class="font-mono text-blue-400 font-semibold"></span>
+          <span class="text-slate-500 text-xs">IP მისამართი:</span>
+          <span id="incomingReqIp" class="font-mono text-blue-600 font-bold"></span>
         </div>
         <div class="flex items-center justify-between gap-2">
-          <span class="text-slate-400 text-xs">მოწყობილობა:</span>
-          <span id="incomingReqDevice" class="font-medium text-slate-200 text-right truncate max-w-[210px]"></span>
+          <span class="text-slate-500 text-xs">მოწყობილობა:</span>
+          <span id="incomingReqDevice" class="font-semibold text-slate-800 text-right truncate max-w-[210px]"></span>
         </div>
       </div>
 
@@ -1150,7 +1154,7 @@
         <button
           type="button"
           onclick="respondToAuthRequest('rejected')"
-          class="inline-flex items-center justify-center gap-2 bg-rose-600/20 hover:bg-rose-600 border border-rose-500/40 text-rose-300 hover:text-white font-semibold py-2.5 px-4 rounded-xl transition cursor-pointer"
+          class="inline-flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-600 border border-rose-200 text-rose-700 hover:text-white font-semibold py-2.5 px-4 rounded-xl transition cursor-pointer"
         >
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -1161,7 +1165,7 @@
         <button
           type="button"
           onclick="respondToAuthRequest('approved')"
-          class="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow-lg shadow-emerald-600/25 transition cursor-pointer"
+          class="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition cursor-pointer"
         >
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
@@ -1172,54 +1176,31 @@
     </div>
   </div>
 
-  <!-- SUPABASE SQL SETUP MODAL (Optional helper for Supabase Table Creation) -->
-  <div id="sqlHelperModal" class="fixed inset-0 z-[230] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl">
+  <!-- SUPABASE SQL / RLS HELPER MODAL -->
+  <div id="sqlHelperModal" class="fixed inset-0 z-[230] bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full p-6 shadow-2xl">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-base font-bold text-white">Supabase SQL ცხრილების ინსტრუქცია</h3>
-        <button type="button" onclick="toggleSqlHelperModal()" class="text-slate-400 hover:text-white">
+        <h3 class="text-base font-bold text-slate-900">Supabase გლობალური წვდომის (RLS & Storage) კოდი</h3>
+        <button type="button" onclick="toggleSqlHelperModal()" class="text-slate-400 hover:text-slate-800">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
-      <p class="text-xs text-slate-300 mb-3">
-        აპლიკაცია ავტომატურად ინახავს ფაილებს როგორც Supabase-ში, ასევე ბრაუზერის IndexedDB საცავში. თუ გსურთ Supabase-ის ცხრილების ხელით ინიციალიზაცია SQL Editor-ში, გამოიყენეთ ეს კოდი:
+      <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+        თუ Supabase-ზე ცხრილებზე (`unterlagen`, `login_requests`) ან Bucket-ზე (`shogi-unterlagen`) ჩართულია Row Level Security (RLS), გაუშვით ეს SQL კოდი Supabase SQL Editor-ში, რათა გლობალურად ყველა მოწყობილობიდან შეუფერხებლად ჩაიწეროს და წაიკითხოს ფაილები:
       </p>
-      <pre id="sqlSchemaCode" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-[11px] font-mono text-blue-300 overflow-x-auto max-h-64 select-all">CREATE TABLE IF NOT EXISTS public.documents (
-  id TEXT PRIMARY KEY,
-  title TEXT NOT NULL,
-  category TEXT NOT NULL,
-  file_name TEXT NOT NULL,
-  file_type TEXT,
-  file_ext TEXT,
-  file_size BIGINT,
-  file_data_base64 TEXT,
-  page_count INT DEFAULT 1,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+      <pre id="sqlSchemaCode" class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 text-[11px] font-mono text-blue-200 overflow-x-auto max-h-64 select-all">-- 1. გათიშეთ RLS ცხრილებზე გლობალური წვდომისთვის
+ALTER TABLE public.unterlagen DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.login_requests DISABLE ROW LEVEL SECURITY;
 
-CREATE TABLE IF NOT EXISTS public.trusted_device (
-  id INT PRIMARY KEY DEFAULT 1,
-  device_id TEXT,
-  device_info TEXT,
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- 2. გახადეთ საცავი 'shogi-unterlagen' საჯარო (Public) და დაუშვით ატვირთვა/წაშლა
+UPDATE storage.buckets SET public = true WHERE id = 'shogi-unterlagen';
 
-CREATE TABLE IF NOT EXISTS public.auth_requests (
-  id TEXT PRIMARY KEY,
-  device_id TEXT,
-  ip TEXT,
-  country TEXT,
-  city TEXT,
-  device_name TEXT,
-  status TEXT DEFAULT 'pending',
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-ALTER TABLE public.documents DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.trusted_device DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
+CREATE POLICY "Public Access shogi-unterlagen"
+ON storage.objects FOR ALL
+USING ( bucket_id = 'shogi-unterlagen' )
+WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       <div class="flex justify-end mt-4">
-        <button type="button" onclick="copySqlSchema()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold">SQL კოდის კოპირება</button>
+        <button type="button" onclick="copySqlSchema()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold cursor-pointer">SQL კოდის კოპირება</button>
       </div>
     </div>
   </div>
@@ -1233,10 +1214,14 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
 
-    // 13. SUPABASE CONFIGURATION
+    // 13. SUPABASE GLOBAL CONFIGURATION (Bucket: shogi-unterlagen | Tables: unterlagen, login_requests)
     const SUPABASE_URL = 'https://tvdvxjikmwohrnjzyefb.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2ZHZ4amlrbXdvaHJuanp5ZWZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMjQyMDAsImV4cCI6MjEwODcwMDIwMH0.UzFWzUVOPWPxofZ1_JkPD0weQVzP1n5aFms2Z5b_oB0';
+    const SUPABASE_BUCKET = 'shogi-unterlagen';
+    const TABLE_UNTERLAGEN = 'unterlagen';
+    const TABLE_LOGIN_REQUESTS = 'login_requests';
     const VALID_AUTH_CODE = '200011';
+    const TRUSTED_MASTER_ID = 'GLOBAL_TRUSTED_DEVICE_MASTER';
 
     let supabaseClient = null;
     try {
@@ -1244,11 +1229,23 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       }
     } catch (err) {
-      console.warn('Supabase init fallback:', err);
+      console.warn('Supabase client init error:', err);
     }
 
-    // Cross-tab / Device Sync Channel
-    const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('shogi_unterlagen_channel') : null;
+    // Cross-tab BroadcastChannel for instant local tab sync in addition to global Supabase polling
+    const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('shogi_unterlagen_global') : null;
+
+    // Generate valid RFC4122 UUID v4 for `unterlagen.ID` (uuid column)
+    function generateUuidV4() {
+      if (window.crypto && window.crypto.randomUUID) {
+        return window.crypto.randomUUID();
+      }
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    }
 
     // Persistent Unique Device ID
     function getOrCreateDeviceId() {
@@ -1282,6 +1279,8 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     // Application State
     let allDocuments = [];
     let currentOpenDocument = null;
+    let currentOpenFileArrayBuffer = null;
+    let currentOpenFileBlobUrl = null;
     let currentViewerZoom = 100;
     let currentViewerTotalPages = 1;
     let currentExcelWorkbook = null;
@@ -1292,115 +1291,271 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     let selectedUploadPreviewPages = 1;
 
     // =========================================================================
-    // INDEXEDDB + SUPABASE HYBRID STORAGE ENGINE
-    // Guarantees 100% persistence for large Word/Excel/PDF/Image files
+    // CASE-INSENSITIVE ROW NORMALIZERS FOR SUPABASE TABLES
+    // Handles both uppercase (ID, LOCATION, NAME, TYPE, URL, CREATED_AT)
+    // and lowercase (id, location, name, type, url, created_at) seamlessly
     // =========================================================================
-    const IDB_NAME = 'ShogiUnterlagenDB';
-    const IDB_VERSION = 2;
+    function pickField(row, ...keys) {
+      if (!row || typeof row !== 'object') return undefined;
+      for (const k of keys) {
+        if (row[k] !== undefined && row[k] !== null) return row[k];
+      }
+      const lowerMap = {};
+      for (const existingKey of Object.keys(row)) {
+        lowerMap[existingKey.toLowerCase()] = row[existingKey];
+      }
+      for (const k of keys) {
+        const val = lowerMap[k.toLowerCase()];
+        if (val !== undefined && val !== null) return val;
+      }
+      return undefined;
+    }
 
-    function openLocalDB() {
-      return new Promise((resolve, reject) => {
-        const req = indexedDB.open(IDB_NAME, IDB_VERSION);
-        req.onupgradeneeded = (e) => {
-          const db = e.target.result;
-          if (!db.objectStoreNames.contains('documents')) {
-            db.createObjectStore('documents', { keyPath: 'id' });
-          }
-          if (!db.objectStoreNames.contains('kv_store')) {
-            db.createObjectStore('kv_store', { keyPath: 'key' });
-          }
+    // Parse URL hash metadata `#orig=...&pages=...&size=...&path=...`
+    function parseUrlMetadata(rawUrl = '', fallbackTitle = '', fallbackType = 'FILE') {
+      const cleanUrl = rawUrl.split('#')[0];
+      const hashPart = rawUrl.includes('#') ? rawUrl.split('#').slice(1).join('#') : '';
+      const params = new URLSearchParams(hashPart);
+
+      const extLower = (fallbackType || 'file').toLowerCase();
+      const defaultFileName = `${fallbackTitle || 'document'}.${extLower}`;
+
+      return {
+        cleanUrl,
+        rawUrl,
+        origFileName: params.get('orig') ? decodeURIComponent(params.get('orig')) : defaultFileName,
+        pageCount: parseInt(params.get('pages') || '1', 10) || 1,
+        fileSize: parseInt(params.get('size') || '0', 10) || 0,
+        storagePath: params.get('path') ? decodeURIComponent(params.get('path')) : ''
+      };
+    }
+
+    function normalizeUnterlagenRow(row) {
+      const id = String(pickField(row, 'ID', 'id') || generateUuidV4());
+      const category = String(pickField(row, 'LOCATION', 'location') || 'სხვა დოკუმენტები');
+      const title = String(pickField(row, 'NAME', 'name') || 'უსათაურო');
+      const fileExt = String(pickField(row, 'TYPE', 'type') || 'FILE').toUpperCase();
+      const rawUrl = String(pickField(row, 'URL', 'url') || '');
+      const createdAt = String(pickField(row, 'CREATED_AT', 'created_at') || new Date().toISOString());
+
+      const meta = parseUrlMetadata(rawUrl, title, fileExt);
+
+      return {
+        id,
+        title,
+        category,
+        file_ext: fileExt,
+        file_name: meta.origFileName,
+        file_size: meta.fileSize,
+        page_count: meta.pageCount,
+        storage_path: meta.storagePath,
+        url: meta.cleanUrl,
+        raw_url: rawUrl,
+        created_at: createdAt
+      };
+    }
+
+    function normalizeLoginRequestRow(row) {
+      if (!row) return null;
+      const id = String(pickField(row, 'ID', 'id') || '');
+      const device_id = String(pickField(row, 'device_id', 'DEVICE_ID') || '');
+      const usename = String(pickField(row, 'usename', 'USENAME', 'username') || '');
+      const ip = String(pickField(row, 'ip', 'IP') || '');
+      const timestamp = Number(pickField(row, 'timestamp', 'TIMESTAMP') || Date.now());
+      const status = String(pickField(row, 'status', 'STATUS') || 'pending');
+
+      // Parse `usename` (can be "Country, City | Device" or JSON)
+      let country = 'უცნობი';
+      let city = 'უცნობი';
+      let device_name = usename || 'უცნობი მოწყობილობა';
+
+      if (usename.includes('|')) {
+        const parts = usename.split('|');
+        const locParts = (parts[0] || '').split(',');
+        country = (locParts[0] || 'უცნობი').trim();
+        city = (locParts.slice(1).join(',') || 'უცნობი').trim();
+        device_name = (parts.slice(1).join('|') || 'Device').trim();
+      }
+
+      return {
+        id,
+        device_id,
+        usename,
+        ip,
+        timestamp,
+        status,
+        country,
+        city,
+        device_name
+      };
+    }
+
+    // =========================================================================
+    // SUPABASE FLEXIBLE DATABASE HELPERS (Auto-adapts to Uppercase or Lowercase Columns)
+    // =========================================================================
+    async function supabaseInsertUnterlagen(docRecord) {
+      if (!supabaseClient) throw new Error('Supabase client not initialized');
+
+      // Try exact schema from prompt first: ID, LOCATION, NAME, TYPE, URL, CREATED_AT
+      const upperPayload = {
+        ID: docRecord.ID,
+        LOCATION: docRecord.LOCATION,
+        NAME: docRecord.NAME,
+        TYPE: docRecord.TYPE,
+        URL: docRecord.URL,
+        CREATED_AT: docRecord.CREATED_AT
+      };
+
+      let { data, error } = await supabaseClient.from(TABLE_UNTERLAGEN).insert([upperPayload]).select();
+      if (error) {
+        // Fallback if Postgres normalized columns to lowercase
+        const lowerPayload = {
+          id: docRecord.ID,
+          location: docRecord.LOCATION,
+          name: docRecord.NAME,
+          type: docRecord.TYPE,
+          url: docRecord.URL,
+          created_at: docRecord.CREATED_AT
         };
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
+        const retry = await supabaseClient.from(TABLE_UNTERLAGEN).insert([lowerPayload]).select();
+        if (retry.error) throw error;
+        return retry.data;
+      }
+      return data;
     }
 
-    async function idbGetAllDocuments() {
-      const db = await openLocalDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction('documents', 'readonly');
-        const store = tx.objectStore('documents');
-        const req = store.getAll();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror = () => reject(req.error);
-      });
+    async function supabaseDeleteUnterlagen(docId) {
+      if (!supabaseClient) return;
+      let { error } = await supabaseClient.from(TABLE_UNTERLAGEN).delete().eq('ID', docId);
+      if (error) {
+        await supabaseClient.from(TABLE_UNTERLAGEN).delete().eq('id', docId);
+      }
     }
 
-    async function idbSaveDocument(doc) {
-      const db = await openLocalDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction('documents', 'readwrite');
-        const store = tx.objectStore('documents');
-        store.put(doc);
-        tx.oncomplete = () => resolve(true);
-        tx.onerror = () => reject(tx.error);
-      });
+    async function supabaseUpsertLoginRequest(reqPayload) {
+      if (!supabaseClient) return null;
+      // Delete existing with same ID first (in case ID is not constrained as PK in user's table)
+      try {
+        const del1 = await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('ID', reqPayload.ID);
+        if (del1.error) {
+          await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('id', reqPayload.ID);
+        }
+      } catch (_) {}
+
+      const exactRow = {
+        ID: reqPayload.ID,
+        device_id: reqPayload.device_id,
+        usename: reqPayload.usename,
+        ip: reqPayload.ip,
+        timestamp: reqPayload.timestamp,
+        status: reqPayload.status
+      };
+
+      let { data, error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).insert([exactRow]).select();
+      if (error) {
+        const lowerRow = {
+          id: reqPayload.ID,
+          device_id: reqPayload.device_id,
+          usename: reqPayload.usename,
+          ip: reqPayload.ip,
+          timestamp: reqPayload.timestamp,
+          status: reqPayload.status
+        };
+        const retry = await supabaseClient.from(TABLE_LOGIN_REQUESTS).insert([lowerRow]).select();
+        if (retry.error) throw error;
+        return retry.data;
+      }
+      return data;
     }
 
-    async function idbDeleteDocument(id) {
-      const db = await openLocalDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction('documents', 'readwrite');
-        const store = tx.objectStore('documents');
-        store.delete(id);
-        tx.oncomplete = () => resolve(true);
-        tx.onerror = () => reject(tx.error);
-      });
+    async function supabaseUpdateLoginRequestStatus(reqId, newStatus) {
+      if (!supabaseClient) return;
+      let { error } = await supabaseClient
+        .from(TABLE_LOGIN_REQUESTS)
+        .update({ status: newStatus })
+        .eq('ID', reqId);
+      if (error) {
+        await supabaseClient
+          .from(TABLE_LOGIN_REQUESTS)
+          .update({ status: newStatus })
+          .eq('id', reqId);
+      }
+    }
+
+    async function supabaseDeleteLoginRequestById(reqId) {
+      if (!supabaseClient) return;
+      let { error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('ID', reqId);
+      if (error) {
+        await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('id', reqId);
+      }
     }
 
     // =========================================================================
-    // TRUSTED DEVICE & AUTH REQUEST STORAGE HELPERS
+    // GLOBAL TRUSTED DEVICE & LOGIN REQUESTS VIA `login_requests` TABLE
     // =========================================================================
     async function getTrustedDeviceRecord() {
-      // Try Supabase first
       if (supabaseClient) {
         try {
           const { data, error } = await supabaseClient
-            .from('trusted_device')
+            .from(TABLE_LOGIN_REQUESTS)
             .select('*')
-            .eq('id', 1)
-            .maybeSingle();
-          if (!error && data && data.device_id) {
-            localStorage.setItem('shogi_trusted_device', JSON.stringify(data));
-            return data;
+            .eq('status', 'TRUSTED_MASTER');
+
+          if (!error && Array.isArray(data) && data.length > 0) {
+            // Sort by timestamp desc and pick latest
+            const normalized = data.map(normalizeLoginRequestRow).sort((a, b) => b.timestamp - a.timestamp);
+            const master = normalized[0];
+            localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(master));
+            return master;
+          } else if (!error && Array.isArray(data) && data.length === 0) {
+            localStorage.removeItem('shogi_trusted_device_cache');
+            return null;
           }
-        } catch (_) {}
+        } catch (err) {
+          console.warn('Global trusted device check fallback:', err);
+        }
       }
-      const raw = localStorage.getItem('shogi_trusted_device');
-      if (!raw) return null;
+      const cached = localStorage.getItem('shogi_trusted_device_cache');
+      if (!cached) return null;
       try {
-        const parsed = JSON.parse(raw);
-        return parsed && parsed.device_id ? parsed : null;
+        return JSON.parse(cached);
       } catch (_) {
         return null;
       }
     }
 
     async function setTrustedDeviceRecord(deviceId, deviceInfo) {
+      const geo = await fetchClientGeoIpInfo();
       const record = {
-        id: 1,
+        ID: TRUSTED_MASTER_ID,
         device_id: deviceId,
-        device_info: deviceInfo,
-        updated_at: new Date().toISOString()
+        usename: `${geo.country}, ${geo.city} | ${deviceInfo}`,
+        ip: geo.ip,
+        timestamp: Date.now(),
+        status: 'TRUSTED_MASTER'
       };
-      localStorage.setItem('shogi_trusted_device', JSON.stringify(record));
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('trusted_device').upsert(record);
-        } catch (_) {}
+
+      localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(normalizeLoginRequestRow(record)));
+      try {
+        await supabaseUpsertLoginRequest(record);
+      } catch (err) {
+        console.warn('Could not save TRUSTED_MASTER to Supabase:', err);
       }
       if (syncChannel) {
-        syncChannel.postMessage({ type: 'TRUSTED_DEVICE_UPDATED', record });
+        syncChannel.postMessage({ type: 'TRUSTED_DEVICE_UPDATED' });
       }
       return record;
     }
 
     async function clearTrustedDeviceRecord() {
-      localStorage.removeItem('shogi_trusted_device');
+      localStorage.removeItem('shogi_trusted_device_cache');
       if (supabaseClient) {
         try {
-          await supabaseClient.from('trusted_device').delete().eq('id', 1);
-        } catch (_) {}
+          await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('status', 'TRUSTED_MASTER');
+          await supabaseDeleteLoginRequestById(TRUSTED_MASTER_ID);
+        } catch (err) {
+          console.warn('Error clearing trusted device on Supabase:', err);
+        }
       }
       if (syncChannel) {
         syncChannel.postMessage({ type: 'TRUSTED_DEVICE_CLEARED' });
@@ -1430,14 +1585,14 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       const toast = document.createElement('div');
       const isError = type === 'error';
 
-      toast.className = `pointer-events-auto toast-enter flex items-center gap-3 px-4 py-3.5 rounded-xl border shadow-2xl backdrop-blur-md ${
+      toast.className = `pointer-events-auto toast-enter flex items-center gap-3 px-4 py-3.5 rounded-xl border shadow-xl backdrop-blur-md ${
         isError
-          ? 'bg-slate-900/95 border-rose-500/60 text-rose-100 shadow-rose-950/50'
-          : 'bg-slate-900/95 border-emerald-500/60 text-emerald-100 shadow-emerald-950/50'
+          ? 'bg-white border-rose-300 text-rose-900 shadow-rose-900/10'
+          : 'bg-white border-emerald-300 text-emerald-900 shadow-emerald-900/10'
       }`;
 
       toast.innerHTML = `
-        <div class="w-8 h-8 rounded-lg ${isError ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'} flex items-center justify-center shrink-0">
+        <div class="w-8 h-8 rounded-lg ${isError ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600'} flex items-center justify-center shrink-0">
           ${
             isError
               ? `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -1450,7 +1605,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
                  </svg>`
           }
         </div>
-        <div class="text-xs sm:text-sm font-medium pr-2">${escapeHtml(message)}</div>
+        <div class="text-xs sm:text-sm font-semibold pr-2">${escapeHtml(message)}</div>
       `;
 
       container.appendChild(toast);
@@ -1459,7 +1614,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         toast.classList.remove('toast-enter');
         toast.classList.add('toast-exit');
         setTimeout(() => toast.remove(), 320);
-      }, 4000);
+      }, 4200);
     }
 
     function escapeHtml(str) {
@@ -1473,7 +1628,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     }
 
     // =========================================================================
-    // 1, 2, 3. AUTHORIZATION & TRUSTED DEVICE WORKFLOW
+    // 1, 2, 3. AUTHORIZATION & GLOBAL TRUSTED DEVICE WORKFLOW
     // =========================================================================
     async function handleLoginSubmit(event) {
       event.preventDefault();
@@ -1498,14 +1653,14 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         hideGlobalLoading();
 
         if (!trusted || !trusted.device_id) {
-          // 3. First authorization: Show Trusted Device registration box
+          // 3. First authorization globally: Show Trusted Device registration box
           document.getElementById('loginBoxCard').classList.add('hidden');
           document.getElementById('trustedDevicePromptBox').classList.remove('hidden');
         } else if (trusted.device_id === CURRENT_DEVICE_ID) {
-          // Current device is already the single trusted device
+          // Current device is the registered global trusted device
           enterMainApplication();
         } else {
-          // Another device is registered as trusted -> Show Waiting/Confirmation Box
+          // Another device is registered as trusted -> Show Waiting/Confirmation Box & insert into `login_requests`
           await initiateWaitingForTrustedApproval();
         }
       } catch (err) {
@@ -1559,48 +1714,49 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       document.getElementById('waitIpText').textContent = geo.ip;
       document.getElementById('waitDevText').textContent = devName;
 
-      const reqObj = {
-        id: 'req_' + Date.now(),
+      const reqId = 'req_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+      const dbPayload = {
+        ID: reqId,
         device_id: CURRENT_DEVICE_ID,
+        usename: `${geo.country}, ${geo.city} | ${devName}`,
         ip: geo.ip,
-        country: geo.country,
-        city: geo.city,
-        device_name: devName,
-        status: 'pending',
-        created_at: new Date().toISOString()
+        timestamp: Date.now(),
+        status: 'pending'
       };
 
-      localStorage.setItem('shogi_pending_auth_request', JSON.stringify(reqObj));
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('auth_requests').upsert(reqObj);
-        } catch (_) {}
-      }
-      if (syncChannel) {
-        syncChannel.postMessage({ type: 'NEW_AUTH_REQUEST', request: reqObj });
+      localStorage.setItem('shogi_pending_auth_request', JSON.stringify(normalizeLoginRequestRow(dbPayload)));
+
+      try {
+        await supabaseUpsertLoginRequest(dbPayload);
+      } catch (err) {
+        console.warn('Supabase login_requests insert error:', err);
       }
 
-      // Poll for decision from the trusted device
+      if (syncChannel) {
+        syncChannel.postMessage({ type: 'NEW_AUTH_REQUEST', request: normalizeLoginRequestRow(dbPayload) });
+      }
+
       if (waitingPollInterval) clearInterval(waitingPollInterval);
-      waitingPollInterval = setInterval(() => checkPendingRequestStatus(reqObj.id), 2000);
+      waitingPollInterval = setInterval(() => checkPendingRequestStatus(reqId), 2000);
     }
 
     async function checkPendingRequestStatus(reqId) {
-      // Check Supabase first
       if (supabaseClient) {
         try {
-          const { data } = await supabaseClient
-            .from('auth_requests')
-            .select('*')
-            .eq('id', reqId)
-            .maybeSingle();
-          if (data && data.status !== 'pending') {
-            handleRequestDecisionOnWaitingDevice(data.status);
-            return;
+          const { data, error } = await supabaseClient
+            .from(TABLE_LOGIN_REQUESTS)
+            .select('*');
+
+          if (!error && Array.isArray(data)) {
+            const match = data.map(normalizeLoginRequestRow).find((r) => r && r.id === reqId);
+            if (match && match.status !== 'pending') {
+              handleRequestDecisionOnWaitingDevice(match.status);
+              return;
+            }
           }
         } catch (_) {}
       }
-      // Check localStorage fallback
+
       const raw = localStorage.getItem('shogi_pending_auth_request');
       if (raw) {
         try {
@@ -1628,10 +1784,17 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       }
     }
 
-    function cancelWaitingApproval() {
+    async function cancelWaitingApproval() {
       if (waitingPollInterval) {
         clearInterval(waitingPollInterval);
         waitingPollInterval = null;
+      }
+      const raw = localStorage.getItem('shogi_pending_auth_request');
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.id) await supabaseDeleteLoginRequestById(parsed.id);
+        } catch (_) {}
       }
       localStorage.removeItem('shogi_pending_auth_request');
       document.getElementById('waitingApprovalBox').classList.add('hidden');
@@ -1639,30 +1802,34 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       document.getElementById('authCodeInput').value = '';
     }
 
-    // Trusted Device Listener for incoming login requests
+    // Trusted Device Poller: watches `login_requests` globally for status === 'pending'
     function startTrustedDeviceRequestWatcher() {
       if (trustedPollInterval) clearInterval(trustedPollInterval);
       trustedPollInterval = setInterval(async () => {
         const trusted = await getTrustedDeviceRecord();
         if (!trusted || trusted.device_id !== CURRENT_DEVICE_ID) return;
 
-        // Check Supabase for pending requests
         if (supabaseClient) {
           try {
-            const { data } = await supabaseClient
-              .from('auth_requests')
+            const { data, error } = await supabaseClient
+              .from(TABLE_LOGIN_REQUESTS)
               .select('*')
-              .eq('status', 'pending')
-              .order('created_at', { ascending: false })
-              .limit(1);
-            if (data && data.length > 0) {
-              showIncomingRequestPopup(data[0]);
-              return;
+              .eq('status', 'pending');
+
+            if (!error && Array.isArray(data) && data.length > 0) {
+              const pendingList = data
+                .map(normalizeLoginRequestRow)
+                .filter((r) => r && r.device_id !== CURRENT_DEVICE_ID)
+                .sort((a, b) => b.timestamp - a.timestamp);
+
+              if (pendingList.length > 0) {
+                showIncomingRequestPopup(pendingList[0]);
+                return;
+              }
             }
           } catch (_) {}
         }
 
-        // Check localStorage fallback
         const raw = localStorage.getItem('shogi_pending_auth_request');
         if (raw) {
           try {
@@ -1680,7 +1847,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       currentActiveRequest = reqObj;
       document.getElementById('incomingReqLocation').textContent = `${reqObj.country || 'უცნობი'}, ${reqObj.city || 'უცნობი'}`;
       document.getElementById('incomingReqIp').textContent = reqObj.ip || '0.0.0.0';
-      document.getElementById('incomingReqDevice').textContent = reqObj.device_name || 'უცნობი მოწყობილობა';
+      document.getElementById('incomingReqDevice').textContent = reqObj.device_name || reqObj.usename || 'უცნობი მოწყობილობა';
 
       const modal = document.getElementById('incomingAuthRequestModal');
       modal.classList.remove('hidden');
@@ -1693,14 +1860,8 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       currentActiveRequest.status = decisionStatus;
 
       localStorage.setItem('shogi_pending_auth_request', JSON.stringify(currentActiveRequest));
-      if (supabaseClient) {
-        try {
-          await supabaseClient
-            .from('auth_requests')
-            .update({ status: decisionStatus })
-            .eq('id', reqId);
-        } catch (_) {}
-      }
+      await supabaseUpdateLoginRequestStatus(reqId, decisionStatus);
+
       if (syncChannel) {
         syncChannel.postMessage({
           type: 'AUTH_REQUEST_DECISION',
@@ -1715,20 +1876,22 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       currentActiveRequest = null;
     }
 
-    // Simulate incoming authorization request from another device (for easy testing)
+    // Simulate incoming authorization request in `login_requests` for testing
     async function simulateIncomingAuthRequest() {
       const geo = await fetchClientGeoIpInfo();
-      const mockReq = {
-        id: 'req_sim_' + Date.now(),
-        device_id: 'external_device_99',
+      const simId = 'req_sim_' + Date.now();
+      const simPayload = {
+        ID: simId,
+        device_id: 'external_device_sim',
+        usename: `${geo.country}, ${geo.city} | iPhone 16 Pro • Safari (iOS)`,
         ip: geo.ip,
-        country: geo.country,
-        city: geo.city,
-        device_name: 'iPhone 16 Pro • Safari (iOS)',
-        status: 'pending',
-        created_at: new Date().toISOString()
+        timestamp: Date.now(),
+        status: 'pending'
       };
-      showIncomingRequestPopup(mockReq);
+      try {
+        await supabaseUpsertLoginRequest(simPayload);
+      } catch (_) {}
+      showIncomingRequestPopup(normalizeLoginRequestRow(simPayload));
     }
 
     if (syncChannel) {
@@ -1777,7 +1940,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     }
 
     // =========================================================================
-    // 4.2 DYNAMIC REFRESH & LOADING DOCUMENTS (Sorted newest to oldest)
+    // 4.2 GLOBAL LOADING OF DOCUMENTS FROM SUPABASE `unterlagen` TABLE
     // =========================================================================
     async function refreshDocumentsData() {
       const icon = document.getElementById('headerBrandSvg');
@@ -1789,85 +1952,39 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     }
 
     async function loadAllDocumentsFromStorage(showSpinner = true) {
-      if (showSpinner) showGlobalLoading('დოკუმენტები იტვირთება...');
+      if (showSpinner) showGlobalLoading('დოკუმენტები იტვირთება ბაზიდან...');
       try {
-        const localDocs = await idbGetAllDocuments();
-        let remoteDocs = [];
+        let fetchedDocs = [];
 
         if (supabaseClient) {
-          try {
-            const { data, error } = await supabaseClient
-              .from('documents')
-              .select('*')
-              .order('created_at', { ascending: false });
+          const { data, error } = await supabaseClient
+            .from(TABLE_UNTERLAGEN)
+            .select('*');
 
-            if (!error && Array.isArray(data)) {
-              remoteDocs = data;
-              for (const rDoc of remoteDocs) {
-                await idbSaveDocument(rDoc);
-              }
-            }
-          } catch (_) {}
+          if (!error && Array.isArray(data)) {
+            fetchedDocs = data.map(normalizeUnterlagenRow);
+          } else if (error) {
+            console.warn('Supabase unterlagen fetch warning:', error.message);
+          }
         }
 
-        // Merge local and remote documents by ID
-        const mergedMap = new Map();
-        for (const doc of localDocs) mergedMap.set(doc.id, doc);
-        for (const doc of remoteDocs) mergedMap.set(doc.id, doc);
-
-        allDocuments = Array.from(mergedMap.values());
-
-        // Seed initial sample documents if the vault is completely empty on first launch
-        if (allDocuments.length === 0 && !localStorage.getItem('shogi_initial_seeded')) {
-          await seedStarterSampleDocuments();
-          localStorage.setItem('shogi_initial_seeded', 'true');
-          allDocuments = await idbGetAllDocuments();
-        }
+        allDocuments = fetchedDocs;
 
         // 11. Sort files from newest to oldest (უახლესიდან უძველესისკენ)
-        allDocuments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        allDocuments.sort((a, b) => {
+          const tA = new Date(a.created_at).getTime() || 0;
+          const tB = new Date(b.created_at).getTime() || 0;
+          return tB - tA;
+        });
 
         renderMainCategoriesAndFiles();
         populateCategoryDropdownMenu();
       } catch (err) {
         console.error('Load documents error:', err);
+        showBottomRightNotification('ბაზიდან მონაცემების წამოღებისას დაფიქსირდა შეცდომა.', 'error');
       } finally {
         if (showSpinner) hideGlobalLoading();
       }
-    }
-
-    // Create sample Excel & Text documents on first empty start so user can test immediately
-    async function seedStarterSampleDocuments() {
-      try {
-        if (window.XLSX) {
-          const wb = XLSX.utils.book_new();
-          const wsData = [
-            ['დოკუმენტის ID', 'დასახელება', 'კატეგორია', 'სტატუსი', 'თარიღი'],
-            ['DOC-101', 'ფინანსური ანგარიშგება 2026', 'ფინანსები', 'დადასტურებული', '2026-03-20'],
-            ['DOC-102', 'ShogiUnterlagen არქივი', 'ადმინისტრაცია', 'აქტიური', '2026-03-25'],
-            ['DOC-103', 'ხელშეკრულება №44', 'იურიდიული', 'განხილვაში', '2026-03-28']
-          ];
-          const ws = XLSX.utils.aoa_to_sheet(wsData);
-          XLSX.utils.book_append_sheet(wb, ws, 'ანგარიშგება');
-          const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-          const sampleExcelDoc = {
-            id: 'doc_sample_excel',
-            title: 'ფინანსური ცხრილი 2026',
-            category: 'ფინანსური დოკუმენტები',
-            file_name: 'finansuri_angarisheba_2026.xlsx',
-            file_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            file_ext: 'XLSX',
-            file_size: 14820,
-            file_data_base64: 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + wbout,
-            page_count: 1,
-            created_at: new Date().toISOString()
-          };
-          await idbSaveDocument(sampleExcelDoc);
-          if (supabaseClient) {
-            try { await supabaseClient.from('documents').upsert(sampleExcelDoc); } catch (_) {}
-          }
-        }
-      } catch (_) {}
     }
 
     // =========================================================================
@@ -1877,7 +1994,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       const cleanExt = (ext || '').toUpperCase();
       if (cleanExt === 'PDF') {
         return `
-          <svg class="w-6 h-6 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-6 h-6 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
             <path d="M9 15h6"></path>
@@ -1886,7 +2003,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       }
       if (['DOC', 'DOCX', 'ODT', 'RTF'].includes(cleanExt)) {
         return `
-          <svg class="w-6 h-6 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
             <line x1="8" y1="13" x2="16" y2="13"></line>
@@ -1896,7 +2013,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       }
       if (['XLS', 'XLSX', 'CSV', 'ODS'].includes(cleanExt)) {
         return `
-          <svg class="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-6 h-6 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             <line x1="3" y1="9" x2="21" y2="9"></line>
             <line x1="3" y1="15" x2="21" y2="15"></line>
@@ -1906,21 +2023,21 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       }
       if (['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP', 'SVG', 'BMP'].includes(cleanExt)) {
         return `
-          <svg class="w-6 h-6 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-6 h-6 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             <circle cx="8.5" cy="8.5" r="1.5"></circle>
             <polyline points="21 15 16 10 5 21"></polyline>
           </svg>`;
       }
       return `
-        <svg class="w-6 h-6 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
           <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
           <polyline points="13 2 13 9 20 9"></polyline>
         </svg>`;
     }
 
     function formatFileSize(bytes) {
-      if (!bytes || isNaN(bytes)) return '0 KB';
+      if (!bytes || isNaN(bytes) || bytes <= 0) return '';
       if (bytes < 1024) return bytes + ' B';
       if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
       return (bytes / 1048576).toFixed(2) + ' MB';
@@ -1929,6 +2046,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     function formatGeorgianDate(isoString) {
       try {
         const d = new Date(isoString);
+        if (isNaN(d.getTime())) return isoString || '';
         const pad = (n) => String(n).padStart(2, '0');
         return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
       } catch (_) {
@@ -1937,7 +2055,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     }
 
     // =========================================================================
-    // 5.1 MAIN PAGE RENDERING: CATEGORIES & FILES
+    // 5.1 MAIN PAGE RENDERING: CATEGORIES & FILES (Light Theme)
     // =========================================================================
     function renderMainCategoriesAndFiles() {
       const query = (document.getElementById('globalSearchInput')?.value || '').trim().toLowerCase();
@@ -1947,7 +2065,6 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         clearBtn.classList.toggle('flex', !!query);
       }
 
-      // Filter documents by search query (title, filename, category, extension)
       const filteredDocs = allDocuments.filter((doc) => {
         if (!query) return true;
         return (
@@ -1971,7 +2088,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       emptyState.classList.add('hidden');
       emptyState.classList.remove('flex');
 
-      // Group by Category preserving newest-first order
+      // Group by Category (`LOCATION`) preserving newest-first order
       const categoriesMap = new Map();
       for (const doc of filteredDocs) {
         const catName = doc.category || 'სხვა დოკუმენტები';
@@ -1983,49 +2100,48 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
 
       let html = '';
       for (const [catName, docsInCat] of categoriesMap.entries()) {
-        // Ensure newest-to-oldest inside each category
-        docsInCat.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        docsInCat.sort((a, b) => (new Date(b.created_at).getTime() || 0) - (new Date(a.created_at).getTime() || 0));
 
         html += `
-          <section class="bg-slate-900/50 border border-slate-800/90 rounded-2xl p-4 sm:p-5 shadow-md">
+          <section class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
             <!-- 1. Full-width category bar: Left has SVG + Category Name | Right has count of files -->
             <div class="w-full flex items-center justify-between gap-4 pb-3.5">
               <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center shrink-0">
-                  <svg class="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                   </svg>
                 </div>
-                <h2 class="text-base sm:text-lg font-bold text-white truncate">${escapeHtml(catName)}</h2>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 truncate">${escapeHtml(catName)}</h2>
               </div>
 
-              <div class="shrink-0 flex items-center gap-1.5 bg-slate-800/90 border border-slate-700 px-3 py-1 rounded-full text-xs font-semibold text-blue-300">
+              <div class="shrink-0 flex items-center gap-1.5 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full text-xs font-bold text-blue-700">
                 <span>${docsInCat.length}</span>
                 <span>ფაილი</span>
               </div>
             </div>
 
             <!-- Divider before files -->
-            <div class="w-full h-px bg-slate-800 mb-4"></div>
+            <div class="w-full h-px bg-slate-200 mb-4"></div>
 
             <!-- Files Grid sorted newest to oldest -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
               ${docsInCat.map((doc) => `
                 <div
                   onclick="openFileViewerById('${escapeHtml(doc.id)}')"
-                  class="group bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-blue-500/50 rounded-xl p-4 flex items-start gap-3.5 cursor-pointer transition shadow-sm hover:shadow-blue-950/20"
+                  class="group bg-slate-50/70 hover:bg-white border border-slate-200 hover:border-blue-500 rounded-xl p-4 flex items-start gap-3.5 cursor-pointer transition shadow-sm hover:shadow-md"
                 >
-                  <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-blue-500/40 flex items-center justify-center shrink-0 transition">
+                  <div class="w-12 h-12 rounded-xl bg-white border border-slate-200 group-hover:border-blue-300 flex items-center justify-center shrink-0 transition shadow-sm">
                     ${getFileTypeSvgIcon(doc.file_ext)}
                   </div>
                   <div class="min-w-0 flex-1">
-                    <h3 class="text-sm font-bold text-slate-100 group-hover:text-blue-400 transition truncate">${escapeHtml(doc.title)}</h3>
-                    <p class="text-xs text-slate-400 truncate mt-0.5">${escapeHtml(doc.file_name)}</p>
+                    <h3 class="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition truncate">${escapeHtml(doc.title)}</h3>
+                    <p class="text-xs text-slate-500 truncate mt-0.5">${escapeHtml(doc.file_name)}</p>
                     <div class="flex items-center justify-between gap-2 mt-2.5 text-[11px] text-slate-500">
-                      <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300 font-mono">${escapeHtml(doc.file_ext || 'FILE')}</span>
+                      <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 font-mono font-semibold">${escapeHtml(doc.file_ext || 'FILE')}</span>
                       <span>${formatFileSize(doc.file_size)}</span>
                     </div>
-                    <div class="text-[10px] text-slate-500 mt-1">${formatGeorgianDate(doc.created_at)}</div>
+                    <div class="text-[10px] text-slate-400 mt-1">${formatGeorgianDate(doc.created_at)}</div>
                   </div>
                 </div>
               `).join('')}
@@ -2048,7 +2164,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     }
 
     // =========================================================================
-    // 4.3 SETTINGS POPUP: CATEGORY DROPDOWN, FILE PREVIEW & UPLOAD WITH PROGRESS %
+    // 4.3 SETTINGS POPUP: CATEGORY DROPDOWN, FILE PREVIEW & GLOBAL SUPABASE UPLOAD
     // =========================================================================
     function openSettingsPopup() {
       updateTrustedDeviceSettingsUI();
@@ -2087,12 +2203,12 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
           <button
             type="button"
             onclick="selectCategoryFromDropdown('${escapeHtml(cat)}')"
-            class="w-full text-left px-4 py-2.5 text-sm text-slate-200 hover:bg-blue-600/20 hover:text-blue-300 flex items-center gap-2 transition"
+            class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 transition cursor-pointer"
           >
-            <svg class="w-4 h-4 text-blue-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
             </svg>
-            <span class="truncate">${escapeHtml(cat)}</span>
+            <span class="truncate font-medium">${escapeHtml(cat)}</span>
           </button>
         `
         )
@@ -2138,7 +2254,6 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       hideCategoryDropdown();
     }
 
-    // Close category dropdown if clicking outside
     document.addEventListener('click', (e) => {
       const container = document.getElementById('categoryDropdownContainer');
       if (container && !container.contains(e.target)) {
@@ -2168,19 +2283,19 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
 
       const previewBox = document.getElementById('settingsFilePreviewBox');
       previewBox.innerHTML = `
-        <div class="flex flex-col items-center gap-2 text-slate-300">
-          <svg class="w-8 h-8 text-blue-400 svg-spinner" viewBox="0 0 50 50" fill="none">
+        <div class="flex flex-col items-center gap-2 text-slate-600">
+          <svg class="w-8 h-8 text-blue-600 svg-spinner" viewBox="0 0 50 50" fill="none">
             <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="4" class="opacity-25"></circle>
             <path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
           </svg>
-          <span class="text-xs">მზადდება წინასწარი ნახვა...</span>
+          <span class="text-xs font-medium">მზადდება წინასწარი ნახვა...</span>
         </div>
       `;
 
       try {
         if (['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP', 'SVG', 'BMP'].includes(ext)) {
-          const dataUrl = await readFileAsDataURLWithProgress(file, () => {});
-          previewBox.innerHTML = `<img src="${dataUrl}" alt="Preview" class="max-h-72 rounded-lg object-contain shadow" />`;
+          const objUrl = URL.createObjectURL(file);
+          previewBox.innerHTML = `<img src="${objUrl}" alt="Preview" class="max-h-72 rounded-lg object-contain shadow" />`;
         } else if (ext === 'PDF' && window.pdfjsLib) {
           const arrayBuf = await file.arrayBuffer();
           const pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
@@ -2190,13 +2305,13 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
           const canvas = document.createElement('canvas');
           canvas.width = viewport.width;
           canvas.height = viewport.height;
-          canvas.className = 'rounded shadow max-h-72 w-auto mx-auto';
+          canvas.className = 'rounded shadow max-h-72 w-auto mx-auto border border-slate-200';
           await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
           previewBox.innerHTML = '';
           previewBox.appendChild(canvas);
         } else if (ext === 'DOCX' && window.docx) {
           const arrayBuf = await file.arrayBuffer();
-          previewBox.innerHTML = `<div id="miniDocxPreview" class="w-full max-h-72 overflow-auto bg-white text-black p-3 rounded text-xs"></div>`;
+          previewBox.innerHTML = `<div id="miniDocxPreview" class="w-full max-h-72 overflow-auto bg-white text-black p-3 rounded border border-slate-200 text-xs"></div>`;
           await window.docx.renderAsync(arrayBuf, document.getElementById('miniDocxPreview'));
           const sections = previewBox.querySelectorAll('section.docx');
           if (sections.length > 0) selectedUploadPreviewPages = sections.length;
@@ -2208,7 +2323,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
           const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }).slice(0, 6);
           previewBox.innerHTML = `
             <div class="w-full overflow-auto">
-              <div class="text-xs text-emerald-400 font-semibold mb-2">ფურცელი: ${escapeHtml(wb.SheetNames[0])} (${wb.SheetNames.length} გვერდი)</div>
+              <div class="text-xs text-emerald-700 font-bold mb-2">ფურცელი: ${escapeHtml(wb.SheetNames[0])} (${wb.SheetNames.length} გვერდი)</div>
               <table class="excel-table text-xs">
                 ${rows.map((r) => `<tr>${(r || []).slice(0, 5).map((c) => `<td>${escapeHtml(c ?? '')}</td>`).join('')}</tr>`).join('')}
               </table>
@@ -2217,11 +2332,11 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         } else {
           previewBox.innerHTML = `
             <div class="flex flex-col items-center text-center gap-2 p-4">
-              <div class="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center">
+              <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
                 ${getFileTypeSvgIcon(ext)}
               </div>
-              <div class="text-sm font-semibold text-white">${escapeHtml(file.name)}</div>
-              <div class="text-xs text-slate-400">${ext} • ${formatFileSize(file.size)}</div>
+              <div class="text-sm font-bold text-slate-800">${escapeHtml(file.name)}</div>
+              <div class="text-xs text-slate-500">${ext} • ${formatFileSize(file.size)}</div>
             </div>
           `;
         }
@@ -2229,19 +2344,57 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         previewBox.innerHTML = `
           <div class="flex flex-col items-center text-center gap-2">
             ${getFileTypeSvgIcon(ext)}
-            <span class="text-xs text-slate-300">${escapeHtml(file.name)}</span>
+            <span class="text-xs text-slate-600">${escapeHtml(file.name)}</span>
           </div>
         `;
       }
     }
 
-    function readFileAsDataURLWithProgress(file, onProgress) {
+    // Upload file binary directly to Supabase Storage Bucket `shogi-unterlagen` with real XHR progress %
+    function uploadFileToSupabaseBucketWithProgress(file, storagePath, onProgress) {
+      return new Promise((resolve, reject) => {
+        const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
+        const endpoint = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${encodedPath}`;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', endpoint, true);
+        xhr.setRequestHeader('Authorization', `Bearer ${SUPABASE_KEY}`);
+        xhr.setRequestHeader('apikey', SUPABASE_KEY);
+        xhr.setRequestHeader('x-upsert', 'true');
+        xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+
+        xhr.upload.onprogress = (evt) => {
+          if (evt.lengthComputable && onProgress) {
+            const pct = Math.round((evt.loaded / evt.total) * 88);
+            onProgress(pct);
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const { data } = supabaseClient.storage.from(SUPABASE_BUCKET).getPublicUrl(storagePath);
+            resolve(data.publicUrl);
+          } else {
+            let errMsg = `Storage status ${xhr.status}`;
+            try {
+              const resp = JSON.parse(xhr.responseText);
+              if (resp && (resp.message || resp.error)) errMsg = resp.message || resp.error;
+            } catch (_) {}
+            reject(new Error(errMsg));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error('Network error uploading to Supabase Storage'));
+        xhr.send(file);
+      });
+    }
+
+    function readFileAsDataUrlFallback(file, onProgress) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onprogress = (evt) => {
           if (evt.lengthComputable && onProgress) {
-            const pct = Math.round((evt.loaded / evt.total) * 70);
-            onProgress(pct);
+            onProgress(Math.round((evt.loaded / evt.total) * 85));
           }
         };
         reader.onload = () => resolve(reader.result);
@@ -2250,7 +2403,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       });
     }
 
-    // 8. Upload File with Real Progress Percentage (0% to 100%)
+    // 8. Upload Document to `shogi-unterlagen` bucket & insert metadata into `unterlagen` table
     async function uploadDocumentHandler() {
       const titleInput = document.getElementById('uploadTitleInput');
       const categoryInput = document.getElementById('uploadCategoryInput');
@@ -2286,45 +2439,53 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       };
 
       try {
-        updateProgress(5);
-        const base64Data = await readFileAsDataURLWithProgress(selectedUploadFile, updateProgress);
-
-        // Smoothly step progress from 70% to 95% while saving to Supabase & IndexedDB
-        for (let p = 72; p <= 92; p += 5) {
-          updateProgress(p);
-          await new Promise((r) => setTimeout(r, 45));
-        }
+        updateProgress(4);
 
         const ext = (selectedUploadFile.name.split('.').pop() || 'FILE').toUpperCase();
-        const newDoc = {
-          id: 'doc_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
-          title,
-          category,
-          file_name: selectedUploadFile.name,
-          file_type: selectedUploadFile.type || 'application/octet-stream',
-          file_ext: ext,
-          file_size: selectedUploadFile.size,
-          file_data_base64: base64Data,
-          page_count: selectedUploadPreviewPages || 1,
-          created_at: new Date().toISOString()
-        };
+        // Safe storage key while preserving original unicode filename in URL hash metadata
+        const safeAsciiName = selectedUploadFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const storagePath = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}_${safeAsciiName}`;
 
-        await idbSaveDocument(newDoc);
-
-        if (supabaseClient) {
-          try {
-            await supabaseClient.from('documents').upsert(newDoc);
-          } catch (_) {}
+        let publicFileUrl = '';
+        try {
+          publicFileUrl = await uploadFileToSupabaseBucketWithProgress(
+            selectedUploadFile,
+            storagePath,
+            updateProgress
+          );
+        } catch (storageErr) {
+          console.warn('Bucket upload fallback to DataURL in URL column:', storageErr);
+          publicFileUrl = await readFileAsDataUrlFallback(selectedUploadFile, updateProgress);
         }
 
+        updateProgress(92);
+
+        // Append metadata hash so original filename (e.g., xxx.png), page count, size & bucket path are stored globally inside URL
+        const hashMeta = `#orig=${encodeURIComponent(selectedUploadFile.name)}&pages=${selectedUploadPreviewPages || 1}&size=${selectedUploadFile.size}&path=${encodeURIComponent(storagePath)}`;
+        const fullUrlWithMeta = `${publicFileUrl}${hashMeta}`;
+
+        const docUuid = generateUuidV4();
+        const createdIso = new Date().toISOString();
+
+        const dbRow = {
+          ID: docUuid,
+          LOCATION: category,
+          NAME: title,
+          TYPE: ext,
+          URL: fullUrlWithMeta,
+          CREATED_AT: createdIso
+        };
+
+        await supabaseInsertUnterlagen(dbRow);
+
         updateProgress(100);
-        await new Promise((r) => setTimeout(r, 250));
+        await new Promise((r) => setTimeout(r, 220));
 
         if (syncChannel) {
           syncChannel.postMessage({ type: 'DOCUMENTS_CHANGED' });
         }
 
-        // Reset upload form
+        // Reset form
         titleInput.value = '';
         categoryInput.value = '';
         document.getElementById('uploadFileInput').value = '';
@@ -2332,8 +2493,8 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         document.getElementById('selectedFileSizeLabel').textContent = 'ნებისმიერი ფორმატის ფაილი';
         document.getElementById('previewBadgeType').classList.add('hidden');
         document.getElementById('settingsFilePreviewBox').innerHTML = `
-          <div class="text-center text-slate-500 text-sm flex flex-col items-center gap-2">
-            <svg class="w-10 h-10 stroke-slate-600" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <div class="text-center text-slate-400 text-sm flex flex-col items-center gap-2">
+            <svg class="w-10 h-10 stroke-slate-400" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             <span>აირჩიეთ ფაილი წინასწარი ნახვისთვის</span>
           </div>
         `;
@@ -2341,9 +2502,10 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
 
         await loadAllDocumentsFromStorage(false);
         closeSettingsPopup();
+        showBottomRightNotification('ფაილი წარმატებით აიტვირთა ბაზაში!', 'success');
       } catch (err) {
         console.error('Upload error:', err);
-        showBottomRightNotification('ფაილის ატვირთვის დროს წარმოიქმნა შეცდომა.', 'error');
+        showBottomRightNotification('ატვირთვის შეცდომა: ' + (err.message || 'შეამოწმეთ Supabase კონფიგურაცია'), 'error');
       } finally {
         progressWrapper.classList.add('hidden');
         updateProgress(0);
@@ -2361,11 +2523,11 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
 
       if (trusted && trusted.device_id) {
         badge.textContent = 'აქტიური';
-        badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium';
-        meta.textContent = `სანდო მოწყობილობა: ${trusted.device_info || trusted.device_id}`;
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold';
+        meta.textContent = `სანდო მოწყობილობა: ${trusted.device_name || trusted.usename || trusted.device_id}`;
       } else {
         badge.textContent = 'არ არის არჩეული';
-        badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 font-medium';
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-300 font-semibold';
         meta.textContent = 'სანდო მოწყობილობა წაშლილია. ნებისმიერ მოწყობილობას შეუძლია ავტორიზაცია.';
       }
     }
@@ -2391,17 +2553,39 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     }
 
     // =========================================================================
-    // 5. ADVANCED FILE VIEWER POPUP (0.5cm INSET, CUSTOM PDF/WORD/EXCEL RENDER)
+    // 5. ADVANCED FILE VIEWER POPUP (0.5cm INSET, FETCHES FROM SUPABASE URL)
     // =========================================================================
-    function base64DataUrlToArrayBuffer(dataUrl) {
-      const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : dataUrl;
-      const binaryString = atob(base64);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
+    async function fetchDocumentArrayBuffer(doc) {
+      const cleanUrl = doc.url;
+      if (cleanUrl.startsWith('data:')) {
+        const base64 = cleanUrl.includes(',') ? cleanUrl.split(',')[1] : cleanUrl;
+        const binaryString = atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
       }
-      return bytes.buffer;
+
+      // If stored in Supabase Storage `shogi-unterlagen`, try public URL fetch or SDK download
+      try {
+        const response = await fetch(cleanUrl);
+        if (response.ok) {
+          return await response.arrayBuffer();
+        }
+      } catch (_) {}
+
+      if (supabaseClient && doc.storage_path) {
+        const { data, error } = await supabaseClient.storage
+          .from(SUPABASE_BUCKET)
+          .download(doc.storage_path);
+        if (!error && data) {
+          return await data.arrayBuffer();
+        }
+      }
+
+      throw new Error('ფაილის ჩამოტვირთვა ვერ მოხერხდა');
     }
 
     async function openFileViewerById(docId) {
@@ -2409,6 +2593,11 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       if (!doc) return;
 
       currentOpenDocument = doc;
+      currentOpenFileArrayBuffer = null;
+      if (currentOpenFileBlobUrl) {
+        URL.revokeObjectURL(currentOpenFileBlobUrl);
+        currentOpenFileBlobUrl = null;
+      }
       currentViewerZoom = 100;
       currentViewerTotalPages = doc.page_count || 1;
       currentExcelWorkbook = null;
@@ -2420,15 +2609,15 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       document.getElementById('inDocSearchInput').value = '';
       document.getElementById('inDocSearchCounter').textContent = '';
 
-      // Set dynamic search placeholder according to file type
+      // Dynamic search placeholder according to file type
       const ext = (doc.file_ext || '').toUpperCase();
       const searchInput = document.getElementById('inDocSearchInput');
       if (ext === 'PDF') {
-        searchInput.placeholder = 'ძებნა PDF-ში...';
+        searchInput.placeholder = 'ძებნა პდფში...';
       } else if (['DOC', 'DOCX', 'RTF', 'ODT'].includes(ext)) {
-        searchInput.placeholder = 'ძებნა Word-ში...';
+        searchInput.placeholder = 'ძებნა ვორდში...';
       } else if (['XLS', 'XLSX', 'CSV', 'ODS'].includes(ext)) {
-        searchInput.placeholder = 'ძებნა Excel-ის ცხრილში...';
+        searchInput.placeholder = 'ძებნა ექსელის ცხრილში...';
       } else {
         searchInput.placeholder = 'ძებნა დოკუმენტში...';
       }
@@ -2446,29 +2635,34 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       showGlobalLoading('იხსნება დოკუმენტი...');
 
       try {
-        if (ext === 'PDF') {
-          await renderPdfInCustomViewer(doc, viewportContent);
-        } else if (ext === 'DOCX') {
-          await renderDocxInCustomViewer(doc, viewportContent);
-        } else if (['XLSX', 'XLS', 'CSV'].includes(ext)) {
-          await renderExcelInCustomViewer(doc, viewportContent);
-        } else if (['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP', 'SVG', 'BMP'].includes(ext)) {
+        if (['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP', 'SVG', 'BMP'].includes(ext)) {
           renderImageInCustomViewer(doc, viewportContent);
         } else {
-          renderGenericOrTextFileInViewer(doc, viewportContent);
+          const arrayBuffer = await fetchDocumentArrayBuffer(doc);
+          currentOpenFileArrayBuffer = arrayBuffer;
+
+          if (ext === 'PDF') {
+            await renderPdfInCustomViewer(arrayBuffer, viewportContent);
+          } else if (ext === 'DOCX') {
+            await renderDocxInCustomViewer(arrayBuffer, viewportContent);
+          } else if (['XLSX', 'XLS', 'CSV'].includes(ext)) {
+            await renderExcelInCustomViewer(arrayBuffer, viewportContent);
+          } else {
+            renderGenericOrTextFileInViewer(doc, arrayBuffer, viewportContent);
+          }
         }
 
         updateViewerBottomMetadata();
       } catch (err) {
         console.error('Viewer render error:', err);
         viewportContent.innerHTML = `
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center max-w-md my-auto">
-            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-slate-800 flex items-center justify-center">
+          <div class="bg-white border border-slate-200 rounded-2xl p-8 text-center max-w-md my-auto shadow-lg">
+            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-slate-100 flex items-center justify-center">
               ${getFileTypeSvgIcon(ext)}
             </div>
-            <h4 class="text-base font-bold text-white mb-1">${escapeHtml(doc.file_name)}</h4>
-            <p class="text-xs text-slate-400 mb-4">ამ ფორმატის ფაილი მზადაა გადმოსაწერად</p>
-            <button onclick="downloadCurrentOpenFile()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold">ფაილის გადმოწერა</button>
+            <h4 class="text-base font-bold text-slate-900 mb-1">${escapeHtml(doc.file_name)}</h4>
+            <p class="text-xs text-slate-500 mb-4">ეს ფორმატი მზადაა პირდაპირ გადმოსაწერად</p>
+            <button onclick="downloadCurrentOpenFile()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold cursor-pointer">ფაილის გადმოწერა</button>
           </div>
         `;
         updateViewerBottomMetadata();
@@ -2492,14 +2686,18 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     function closeFileViewerPopup() {
       document.getElementById('fileViewerPopupOverlay').classList.add('hidden');
       document.getElementById('viewerViewportContent').innerHTML = '';
+      if (currentOpenFileBlobUrl) {
+        URL.revokeObjectURL(currentOpenFileBlobUrl);
+        currentOpenFileBlobUrl = null;
+      }
       currentOpenDocument = null;
+      currentOpenFileArrayBuffer = null;
       currentExcelWorkbook = null;
     }
 
-    // 5.5 PDF RENDERER: Custom Site Style with High-DPI Canvas + Selectable Text Layer (NOT Chrome iframe)
-    async function renderPdfInCustomViewer(doc, container) {
-      const arrayBuffer = base64DataUrlToArrayBuffer(doc.file_data_base64);
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    // 5.5 PDF RENDERER: Custom Site Style with High-DPI Canvas + Selectable Text Layer
+    async function renderPdfInCustomViewer(arrayBuffer, container) {
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
       currentViewerTotalPages = pdf.numPages;
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -2512,22 +2710,22 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         const pageWrap = document.createElement('div');
         pageWrap.className = 'pdf-page-container viewer-page-anchor';
         pageWrap.dataset.pageNumber = String(pageNum);
-        pageWrap.style.width = `${ Math.floor(viewport.width) }px`;
-        pageWrap.style.height = `${ Math.floor(viewport.height) }px`;
+        pageWrap.style.width = `${Math.floor(viewport.width)}px`;
+        pageWrap.style.height = `${Math.floor(viewport.height)}px`;
 
         const canvas = document.createElement('canvas');
         canvas.width = Math.floor(viewport.width * dpr);
         canvas.height = Math.floor(viewport.height * dpr);
-        canvas.style.width = `${ Math.floor(viewport.width) }px`;
-        canvas.style.height = `${ Math.floor(viewport.height) }px`;
+        canvas.style.width = `${Math.floor(viewport.width)}px`;
+        canvas.style.height = `${Math.floor(viewport.height)}px`;
 
         const ctx = canvas.getContext('2d');
         ctx.scale(dpr, dpr);
 
         const textLayerDiv = document.createElement('div');
         textLayerDiv.className = 'textLayer';
-        textLayerDiv.style.width = `${ Math.floor(viewport.width) }px`;
-        textLayerDiv.style.height = `${ Math.floor(viewport.height) }px`;
+        textLayerDiv.style.width = `${Math.floor(viewport.width)}px`;
+        textLayerDiv.style.height = `${Math.floor(viewport.height)}px`;
         textLayerDiv.style.setProperty('--scale-factor', baseScale);
 
         pageWrap.appendChild(canvas);
@@ -2549,13 +2747,12 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     }
 
     // 6. WORD (.DOCX) RENDERER: Preserves exact original page dimensions, margins, corners, and tables
-    async function renderDocxInCustomViewer(doc, container) {
-      const arrayBuffer = base64DataUrlToArrayBuffer(doc.file_data_base64);
+    async function renderDocxInCustomViewer(arrayBuffer, container) {
       const docxHost = document.createElement('div');
       docxHost.className = 'w-full flex flex-col items-center';
       container.appendChild(docxHost);
 
-      await window.docx.renderAsync(arrayBuffer, docxHost, null, {
+      await window.docx.renderAsync(arrayBuffer.slice(0), docxHost, null, {
         className: 'docx',
         inWrapper: true,
         ignoreWidth: false,
@@ -2581,9 +2778,8 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     }
 
     // 7. EXCEL (.XLSX / .XLS / .CSV) RENDERER: Authentic Excel Grid with row numbers (1,2,3...) & column letters (A,B,C...)
-    async function renderExcelInCustomViewer(doc, container) {
-      const arrayBuffer = base64DataUrlToArrayBuffer(doc.file_data_base64);
-      const wb = XLSX.read(arrayBuffer, { type: 'array' });
+    async function renderExcelInCustomViewer(arrayBuffer, container) {
+      const wb = XLSX.read(arrayBuffer.slice(0), { type: 'array' });
       currentExcelWorkbook = wb;
       currentViewerTotalPages = wb.SheetNames.length || 1;
 
@@ -2598,8 +2794,8 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
             id="excelTabBtn_${idx}"
             class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               idx === 0
-                ? 'bg-emerald-600 text-white shadow'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
             }"
           >
             ${escapeHtml(name)}
@@ -2628,8 +2824,8 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         if (btn) {
           btn.className = `px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
             idx === sheetIndex
-              ? 'bg-emerald-600 text-white shadow'
-              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              ? 'bg-emerald-600 text-white shadow-sm'
+              : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
           }`;
         }
       });
@@ -2681,27 +2877,26 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     function renderImageInCustomViewer(doc, container) {
       currentViewerTotalPages = 1;
       container.innerHTML = `
-        <div class="viewer-page-anchor bg-slate-900/60 p-4 rounded-xl border border-slate-800 shadow-2xl" data-page-number="1">
-          <img src="${doc.file_data_base64}" alt="${escapeHtml(doc.title)}" class="max-w-full h-auto rounded shadow-lg mx-auto" />
+        <div class="viewer-page-anchor bg-white p-4 rounded-xl border border-slate-200 shadow-lg" data-page-number="1">
+          <img src="${escapeHtml(doc.url)}" alt="${escapeHtml(doc.title)}" class="max-w-full h-auto rounded mx-auto" />
         </div>
       `;
     }
 
-    // TEXT / OTHER FILE RENDERER
-    function renderGenericOrTextFileInViewer(doc, container) {
+    // TEXT / OTHER FILE RENDERER (Supports all languages via UTF-8)
+    function renderGenericOrTextFileInViewer(doc, arrayBuffer, container) {
       currentViewerTotalPages = 1;
       try {
-        const buf = base64DataUrlToArrayBuffer(doc.file_data_base64);
         const decoder = new TextDecoder('utf-8');
-        const text = decoder.decode(buf);
+        const text = decoder.decode(arrayBuffer);
         container.innerHTML = `
-          <div class="viewer-page-anchor w-full max-w-4xl bg-white text-slate-900 p-8 rounded-lg shadow-2xl font-mono text-xs sm:text-sm whitespace-pre-wrap break-words" data-page-number="1">${escapeHtml(text)}</div>
+          <div class="viewer-page-anchor w-full max-w-4xl bg-white text-slate-900 p-8 rounded-xl border border-slate-200 shadow-lg font-mono text-xs sm:text-sm whitespace-pre-wrap break-words" data-page-number="1">${escapeHtml(text)}</div>
         `;
       } catch (_) {
         container.innerHTML = `
-          <div class="viewer-page-anchor bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center" data-page-number="1">
-            <p class="text-white font-semibold mb-2">${escapeHtml(doc.file_name)}</p>
-            <button onclick="downloadCurrentOpenFile()" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs">გადმოწერა</button>
+          <div class="viewer-page-anchor bg-white border border-slate-200 rounded-2xl p-10 text-center shadow-lg" data-page-number="1">
+            <p class="text-slate-900 font-bold mb-2">${escapeHtml(doc.file_name)}</p>
+            <button onclick="downloadCurrentOpenFile()" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold cursor-pointer">გადმოწერა</button>
           </div>
         `;
       }
@@ -2718,7 +2913,6 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
 
       const ext = (currentOpenDocument.file_ext || '').toUpperCase();
 
-      // Clear previous highlights
       container.querySelectorAll('.search-highlight-pdf').forEach((el) => el.classList.remove('search-highlight-pdf'));
       container.querySelectorAll('.excel-cell-match').forEach((el) => el.classList.remove('excel-cell-match'));
 
@@ -2749,7 +2943,6 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
           }
         });
       } else {
-        // Word (.docx) or Text elements
         const elements = container.querySelectorAll('p, span, td, li, h1, h2, h3, h4, div.viewer-page-anchor');
         elements.forEach((el) => {
           if (el.children.length === 0 && (el.textContent || '').toLowerCase().includes(query)) {
@@ -2780,7 +2973,6 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       const num = Math.min(currentViewerTotalPages, Math.max(1, parseInt(pageNum, 10) || 1));
       document.getElementById('viewerPageNumberInput').value = String(num);
 
-      // If Excel workbook with multiple sheets, switch to that sheet
       if (currentExcelWorkbook && currentExcelWorkbook.SheetNames.length >= num) {
         switchExcelSheetTab(num - 1);
         return;
@@ -2827,18 +3019,33 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       window.print();
     }
 
-    // 2. Download (გადმოწერა) - Directly downloads the file with its original name
-    function downloadCurrentOpenFile() {
+    // 2. Download (გადმოწერა) - Directly downloads the file with its original uploaded filename
+    async function downloadCurrentOpenFile() {
       if (!currentOpenDocument) return;
-      const a = document.createElement('a');
-      a.href = currentOpenDocument.file_data_base64;
-      a.download = currentOpenDocument.file_name || 'document';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      try {
+        let downloadHref = currentOpenDocument.url;
+
+        if (currentOpenFileArrayBuffer) {
+          const blob = new Blob([currentOpenFileArrayBuffer]);
+          downloadHref = URL.createObjectURL(blob);
+        } else if (!downloadHref.startsWith('data:')) {
+          const res = await fetch(downloadHref);
+          const blob = await res.blob();
+          downloadHref = URL.createObjectURL(blob);
+        }
+
+        const a = document.createElement('a');
+        a.href = downloadHref;
+        a.download = currentOpenDocument.file_name || 'document';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (_) {
+        window.open(currentOpenDocument.url, '_blank');
+      }
     }
 
-    // 3. Delete (წაშლა) - Opens confirmation modal, then deletes upon confirmation
+    // 3. Delete (წაშლა) - Opens confirmation modal, then deletes globally from `unterlagen` and `shogi-unterlagen`
     function openDeleteFileConfirmModal() {
       if (!currentOpenDocument) return;
       document.getElementById('deleteFileModalName').textContent = currentOpenDocument.file_name;
@@ -2855,20 +3062,23 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
 
     async function confirmDeleteOpenFile() {
       if (!currentOpenDocument) return;
-      const docId = currentOpenDocument.id;
+      const docToDelete = currentOpenDocument;
       closeDeleteFileConfirmModal();
-      showGlobalLoading('მიმდინარეობს ფაილის წაშლა...');
+      showGlobalLoading('მიმდინარეობს ფაილის წაშლა ბაზიდან...');
 
       try {
-        await idbDeleteDocument(docId);
-        if (supabaseClient) {
+        if (supabaseClient && docToDelete.storage_path) {
           try {
-            await supabaseClient.from('documents').delete().eq('id', docId);
+            await supabaseClient.storage.from(SUPABASE_BUCKET).remove([docToDelete.storage_path]);
           } catch (_) {}
         }
+
+        await supabaseDeleteUnterlagen(docToDelete.id);
+
         if (syncChannel) {
           syncChannel.postMessage({ type: 'DOCUMENTS_CHANGED' });
         }
+
         closeFileViewerPopup();
         await loadAllDocumentsFromStorage(false);
       } catch (err) {
@@ -2878,7 +3088,7 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
       }
     }
 
-    // SQL Helper Modal
+    // SQL / RLS Helper Modal
     function toggleSqlHelperModal() {
       const modal = document.getElementById('sqlHelperModal');
       if (modal.classList.contains('hidden')) {
@@ -2902,23 +3112,23 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
     }
 
     // =========================================================================
-    // INITIALIZE PARTICLES.JS & SESSION RESTORE ON WINDOW LOAD
+    // INITIALIZE DARK PARTICLES ON LIGHT BACKGROUND & RESTORE SESSION
     // =========================================================================
     window.onload = function () {
       if (window.particlesJS) {
         window.particlesJS('particles-js', {
           particles: {
             number: { value: 75, density: { enable: true, value_area: 800 } },
-            color: { value: '#3b82f6' },
+            color: { value: '#0f172a' },
             shape: { type: 'circle' },
             opacity: { value: 0.45, random: false },
             size: { value: 3, random: true },
             line_linked: {
               enable: true,
               distance: 150,
-              color: '#3b82f6',
-              opacity: 0.28,
-              width: 1
+              color: '#1e293b',
+              opacity: 0.32,
+              width: 1.1
             },
             move: {
               enable: true,
@@ -2946,7 +3156,6 @@ ALTER TABLE public.auth_requests DISABLE ROW LEVEL SECURITY;</pre>
         });
       }
 
-      // Restore session if already authenticated in this tab
       if (sessionStorage.getItem('shogi_authenticated') === 'true') {
         enterMainApplication();
       }
