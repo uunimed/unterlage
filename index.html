@@ -66,7 +66,7 @@
       background: radial-gradient(circle at center, #ffffff 0%, #eef2f6 100%);
     }
 
-    /* 1. Authorization Box stretched 15cm from left and right edges */
+    /* 1. Authorization Box stretched 3cm from left and right edges */
     .auth-box-wrapper {
       position: relative;
       z-index: 10;
@@ -78,11 +78,11 @@
     }
 
     .auth-box-stretched {
-      width: 100%;
-      margin-left: 15cm;
-      margin-right: 15cm;
-      min-width: 310px;
-      background: rgba(255, 255, 255, 0.92);
+      width: calc(100% - 6cm);
+      margin-left: 3cm;
+      margin-right: 3cm;
+      min-width: 290px;
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(16px);
       border: 1px solid #cbd5e1;
       border-radius: 16px;
@@ -91,11 +91,12 @@
       transition: all 0.3s ease;
     }
 
-    /* Responsive fallback if screen is narrower than 32cm */
-    @media (max-width: 1350px) {
+    /* Responsive fallback on very small mobile screens */
+    @media (max-width: 480px) {
       .auth-box-stretched {
-        margin-left: max(1rem, calc(50vw - 240px));
-        margin-right: max(1rem, calc(50vw - 240px));
+        width: calc(100% - 2rem);
+        margin-left: 1rem;
+        margin-right: 1rem;
       }
     }
 
@@ -336,6 +337,75 @@
       background-color: #fef08a !important;
       outline: 2px solid #eab308 !important;
       font-weight: 600;
+    }
+
+    /* Main Page Card Miniature Previews */
+    .card-preview-box {
+      position: relative;
+      width: 100%;
+      height: 175px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-docx-scale-wrap {
+      width: 800px;
+      height: 1100px;
+      transform: scale(0.28);
+      transform-origin: top center;
+      pointer-events: none;
+      overflow: hidden;
+      position: absolute;
+      top: 6px;
+    }
+
+    .card-docx-scale-wrap .docx-wrapper {
+      padding: 0 !important;
+      background: transparent !important;
+    }
+
+    .card-docx-scale-wrap .docx-wrapper > section.docx {
+      margin: 0 !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12) !important;
+    }
+
+    .mini-excel-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 10px;
+      background: #ffffff;
+      color: #0f172a;
+      pointer-events: none;
+    }
+
+    .mini-excel-table th,
+    .mini-excel-table td {
+      border: 1px solid #cbd5e1;
+      padding: 2px 5px;
+      white-space: nowrap;
+      max-width: 75px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 19px;
+    }
+
+    .mini-excel-table th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .mini-excel-row-num {
+      background: #f1f5f9;
+      color: #64748b;
+      font-weight: 600;
+      text-align: center;
+      width: 24px;
     }
 
     /* Loading Spinner Animation */
@@ -805,44 +875,8 @@
                 </svg>
                 <span>შეცვლა</span>
               </button>
-
-              <!-- Test / Simulate Incoming Device Authorization Request -->
-              <button
-                type="button"
-                onclick="simulateIncomingAuthRequest()"
-                title="სხვა მოწყობილობიდან შემოსვლის მოთხოვნის ტესტირება"
-                class="inline-flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer"
-              >
-                <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                </svg>
-                <span>მოთხოვნის სიმულაცია</span>
-              </button>
             </div>
           </div>
-        </section>
-
-        <!-- SECTION 3: SUPABASE GLOBAL CONNECTION STATUS -->
-        <section class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <svg class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-            </svg>
-            <div>
-              <span class="text-xs font-semibold text-slate-600">Supabase გლობალური ბაზა: </span>
-              <span id="supabaseStatusText" class="text-xs text-emerald-700 font-bold">Bucket: shogi-unterlagen | Tables: unterlagen, login_requests</span>
-            </div>
-          </div>
-          <button
-            type="button"
-            onclick="toggleSqlHelperModal()"
-            class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline cursor-pointer"
-          >
-            RLS / კონფიგურაციის შემოწმება
-          </button>
         </section>
       </div>
     </div>
@@ -1176,35 +1210,6 @@
     </div>
   </div>
 
-  <!-- SUPABASE SQL / RLS HELPER MODAL -->
-  <div id="sqlHelperModal" class="fixed inset-0 z-[230] bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full p-6 shadow-2xl">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-base font-bold text-slate-900">Supabase გლობალური წვდომის (RLS & Storage) კოდი</h3>
-        <button type="button" onclick="toggleSqlHelperModal()" class="text-slate-400 hover:text-slate-800">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-      </div>
-      <p class="text-xs text-slate-600 mb-3 leading-relaxed">
-        თუ Supabase-ზე ცხრილებზე (`unterlagen`, `login_requests`) ან Bucket-ზე (`shogi-unterlagen`) ჩართულია Row Level Security (RLS), გაუშვით ეს SQL კოდი Supabase SQL Editor-ში, რათა გლობალურად ყველა მოწყობილობიდან შეუფერხებლად ჩაიწეროს და წაიკითხოს ფაილები:
-      </p>
-      <pre id="sqlSchemaCode" class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 text-[11px] font-mono text-blue-200 overflow-x-auto max-h-64 select-all">-- 1. გათიშეთ RLS ცხრილებზე გლობალური წვდომისთვის
-ALTER TABLE public.unterlagen DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.login_requests DISABLE ROW LEVEL SECURITY;
-
--- 2. გახადეთ საცავი 'shogi-unterlagen' საჯარო (Public) და დაუშვით ატვირთვა/წაშლა
-UPDATE storage.buckets SET public = true WHERE id = 'shogi-unterlagen';
-
-CREATE POLICY "Public Access shogi-unterlagen"
-ON storage.objects FOR ALL
-USING ( bucket_id = 'shogi-unterlagen' )
-WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
-      <div class="flex justify-end mt-4">
-        <button type="button" onclick="copySqlSchema()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold cursor-pointer">SQL კოდის კოპირება</button>
-      </div>
-    </div>
-  </div>
-
   <!-- =========================================================================
        APPLICATION JAVASCRIPT
        ========================================================================= -->
@@ -1222,6 +1227,8 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
     const TABLE_LOGIN_REQUESTS = 'login_requests';
     const VALID_AUTH_CODE = '200011';
     const TRUSTED_MASTER_ID = 'GLOBAL_TRUSTED_DEVICE_MASTER';
+    const SYSTEM_AUTH_STATE_PATH = '_system/global_auth_state.json';
+    const SYSTEM_DOCS_INDEX_PATH = '_system/global_docs_index.json';
 
     let supabaseClient = null;
     try {
@@ -1289,11 +1296,11 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
     let trustedPollInterval = null;
     let selectedUploadFile = null;
     let selectedUploadPreviewPages = 1;
+    const fileBufferMemoryCache = new Map();
 
     // =========================================================================
-    // CASE-INSENSITIVE ROW NORMALIZERS FOR SUPABASE TABLES
-    // Handles both uppercase (ID, LOCATION, NAME, TYPE, URL, CREATED_AT)
-    // and lowercase (id, location, name, type, url, created_at) seamlessly
+    // CASE-INSENSITIVE ROW NORMALIZERS & URL HASH METADATA PARSER
+    // Preserves 100% of metadata even if CREATED_AT or another column is absent
     // =========================================================================
     function pickField(row, ...keys) {
       if (!row || typeof row !== 'object') return undefined;
@@ -1311,14 +1318,21 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       return undefined;
     }
 
-    // Parse URL hash metadata `#orig=...&pages=...&size=...&path=...`
-    function parseUrlMetadata(rawUrl = '', fallbackTitle = '', fallbackType = 'FILE') {
+    // Parse URL hash metadata `#orig=...&pages=...&size=...&path=...&ts=...&cat=...&title=...&ext=...`
+    function parseUrlMetadata(rawUrl = '', fallbackTitle = '', fallbackType = 'FILE', fallbackCat = '') {
       const cleanUrl = rawUrl.split('#')[0];
       const hashPart = rawUrl.includes('#') ? rawUrl.split('#').slice(1).join('#') : '';
       const params = new URLSearchParams(hashPart);
 
-      const extLower = (fallbackType || 'file').toLowerCase();
-      const defaultFileName = `${fallbackTitle || 'document'}.${extLower}`;
+      const extFromHash = params.get('ext') ? decodeURIComponent(params.get('ext')) : '';
+      const resolvedExt = (fallbackType || extFromHash || 'FILE').toUpperCase();
+      const titleFromHash = params.get('title') ? decodeURIComponent(params.get('title')) : '';
+      const resolvedTitle = fallbackTitle || titleFromHash || 'უსათაურო';
+      const catFromHash = params.get('cat') ? decodeURIComponent(params.get('cat')) : '';
+      const resolvedCat = fallbackCat || catFromHash || 'სხვა დოკუმენტები';
+      const tsFromHash = params.get('ts') ? decodeURIComponent(params.get('ts')) : '';
+
+      const defaultFileName = `${resolvedTitle}.${resolvedExt.toLowerCase()}`;
 
       return {
         cleanUrl,
@@ -1326,25 +1340,30 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
         origFileName: params.get('orig') ? decodeURIComponent(params.get('orig')) : defaultFileName,
         pageCount: parseInt(params.get('pages') || '1', 10) || 1,
         fileSize: parseInt(params.get('size') || '0', 10) || 0,
-        storagePath: params.get('path') ? decodeURIComponent(params.get('path')) : ''
+        storagePath: params.get('path') ? decodeURIComponent(params.get('path')) : '',
+        createdAt: tsFromHash,
+        category: resolvedCat,
+        title: resolvedTitle,
+        fileExt: resolvedExt
       };
     }
 
     function normalizeUnterlagenRow(row) {
-      const id = String(pickField(row, 'ID', 'id') || generateUuidV4());
-      const category = String(pickField(row, 'LOCATION', 'location') || 'სხვა დოკუმენტები');
-      const title = String(pickField(row, 'NAME', 'name') || 'უსათაურო');
-      const fileExt = String(pickField(row, 'TYPE', 'type') || 'FILE').toUpperCase();
       const rawUrl = String(pickField(row, 'URL', 'url') || '');
-      const createdAt = String(pickField(row, 'CREATED_AT', 'created_at') || new Date().toISOString());
+      const rawTitle = pickField(row, 'NAME', 'name');
+      const rawCat = pickField(row, 'LOCATION', 'location');
+      const rawType = pickField(row, 'TYPE', 'type');
+      const rawCreatedAt = pickField(row, 'CREATED_AT', 'created_at');
 
-      const meta = parseUrlMetadata(rawUrl, title, fileExt);
+      const meta = parseUrlMetadata(rawUrl, rawTitle, rawType, rawCat);
+      const id = String(pickField(row, 'ID', 'id') || meta.storagePath || generateUuidV4());
+      const createdAt = String(rawCreatedAt || meta.createdAt || new Date().toISOString());
 
       return {
         id,
-        title,
-        category,
-        file_ext: fileExt,
+        title: String(rawTitle || meta.title || 'უსათაურო'),
+        category: String(rawCat || meta.category || 'სხვა დოკუმენტები'),
+        file_ext: String(rawType || meta.fileExt || 'FILE').toUpperCase(),
         file_name: meta.origFileName,
         file_size: meta.fileSize,
         page_count: meta.pageCount,
@@ -1359,12 +1378,11 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       if (!row) return null;
       const id = String(pickField(row, 'ID', 'id') || '');
       const device_id = String(pickField(row, 'device_id', 'DEVICE_ID') || '');
-      const usename = String(pickField(row, 'usename', 'USENAME', 'username') || '');
+      const usename = String(pickField(row, 'usename', 'USENAME', 'username', 'USERNAME') || '');
       const ip = String(pickField(row, 'ip', 'IP') || '');
       const timestamp = Number(pickField(row, 'timestamp', 'TIMESTAMP') || Date.now());
       const status = String(pickField(row, 'status', 'STATUS') || 'pending');
 
-      // Parse `usename` (can be "Country, City | Device" or JSON)
       let country = 'უცნობი';
       let city = 'უცნობი';
       let device_name = usename || 'უცნობი მოწყობილობა';
@@ -1391,130 +1409,223 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
     }
 
     // =========================================================================
-    // SUPABASE FLEXIBLE DATABASE HELPERS (Auto-adapts to Uppercase or Lowercase Columns)
+    // SMART SCHEMA-ADAPTIVE SUPABASE TABLE WRITER & BUCKET JSON MIRROR
+    // Fixes "Could not find the 'CREATED_AT' column of 'unterlagen' in the schema cache"
+    // by automatically adapting column case or omitting missing columns!
     // =========================================================================
-    async function supabaseInsertUnterlagen(docRecord) {
+    async function smartAdaptiveTableInsert(tableName, initialRecord) {
       if (!supabaseClient) throw new Error('Supabase client not initialized');
 
-      // Try exact schema from prompt first: ID, LOCATION, NAME, TYPE, URL, CREATED_AT
-      const upperPayload = {
-        ID: docRecord.ID,
-        LOCATION: docRecord.LOCATION,
-        NAME: docRecord.NAME,
-        TYPE: docRecord.TYPE,
-        URL: docRecord.URL,
-        CREATED_AT: docRecord.CREATED_AT
-      };
+      let payload = { ...initialRecord };
+      const triedCaseSwaps = new Set();
 
-      let { data, error } = await supabaseClient.from(TABLE_UNTERLAGEN).insert([upperPayload]).select();
-      if (error) {
-        // Fallback if Postgres normalized columns to lowercase
-        const lowerPayload = {
-          id: docRecord.ID,
-          location: docRecord.LOCATION,
-          name: docRecord.NAME,
-          type: docRecord.TYPE,
-          url: docRecord.URL,
-          created_at: docRecord.CREATED_AT
-        };
-        const retry = await supabaseClient.from(TABLE_UNTERLAGEN).insert([lowerPayload]).select();
-        if (retry.error) throw error;
-        return retry.data;
+      for (let attempt = 0; attempt < 14; attempt++) {
+        const { data, error } = await supabaseClient.from(tableName).insert([payload]).select();
+        if (!error) return data;
+
+        const errMsg = error.message || '';
+        // Match PostgREST missing column error: Could not find the 'XYZ' column of '...' in the schema cache
+        const match =
+          errMsg.match(/Could not find the '([^']+)' column/i) ||
+          errMsg.match(/column "([^"]+)" of relation/i);
+
+        if (match && match[1]) {
+          const badCol = match[1];
+          const val = payload[badCol];
+          delete payload[badCol];
+
+          // Try opposite case first (e.g. CREATED_AT -> created_at or vice versa) before dropping
+          const altCol = badCol === badCol.toUpperCase() ? badCol.toLowerCase() : badCol.toUpperCase();
+          if (!triedCaseSwaps.has(altCol) && !triedCaseSwaps.has(badCol)) {
+            triedCaseSwaps.add(badCol);
+            triedCaseSwaps.add(altCol);
+            payload[altCol] = val;
+          }
+          continue;
+        }
+
+        // If first attempt failed for another reason, try full lowercase keys once
+        if (attempt === 0) {
+          const lowerPayload = {};
+          for (const k of Object.keys(initialRecord)) {
+            lowerPayload[k.toLowerCase()] = initialRecord[k];
+          }
+          payload = lowerPayload;
+          continue;
+        }
+
+        throw error;
       }
-      return data;
+      return null;
+    }
+
+    // Helper to read/write JSON state files in `shogi-unterlagen` bucket for 100% reliable global state
+    async function readBucketJsonFile(storagePath) {
+      try {
+        const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_BUCKET}/${encodedPath}?t=${Date.now()}`;
+        const res = await fetch(publicUrl, { cache: 'no-store' });
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch (_) {}
+      return null;
+    }
+
+    async function writeBucketJsonFile(storagePath, jsonData) {
+      try {
+        const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
+        const endpoint = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${encodedPath}`;
+        const blob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
+        await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'apikey': SUPABASE_KEY,
+            'x-upsert': 'true',
+            'Content-Type': 'application/json'
+          },
+          body: blob
+        });
+      } catch (err) {
+        console.warn('Bucket JSON mirror write warning:', err);
+      }
+    }
+
+    async function supabaseInsertUnterlagen(docRecord) {
+      try {
+        await smartAdaptiveTableInsert(TABLE_UNTERLAGEN, docRecord);
+      } catch (err) {
+        console.warn('Table insert warning, syncing via bucket index:', err);
+      }
+      // Also mirror metadata in bucket index so CREATED_AT / metadata is never lost
+      const normalized = normalizeUnterlagenRow(docRecord);
+      const existingIndex = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
+      const filtered = Array.isArray(existingIndex) ? existingIndex.filter((d) => d.id !== normalized.id) : [];
+      filtered.unshift(normalized);
+      await writeBucketJsonFile(SYSTEM_DOCS_INDEX_PATH, filtered);
     }
 
     async function supabaseDeleteUnterlagen(docId) {
-      if (!supabaseClient) return;
-      let { error } = await supabaseClient.from(TABLE_UNTERLAGEN).delete().eq('ID', docId);
-      if (error) {
-        await supabaseClient.from(TABLE_UNTERLAGEN).delete().eq('id', docId);
+      if (supabaseClient) {
+        try {
+          const del1 = await supabaseClient.from(TABLE_UNTERLAGEN).delete().eq('ID', docId);
+          if (del1.error) {
+            await supabaseClient.from(TABLE_UNTERLAGEN).delete().eq('id', docId);
+          }
+        } catch (_) {}
+      }
+      const existingIndex = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
+      if (Array.isArray(existingIndex)) {
+        const updated = existingIndex.filter((d) => d.id !== docId);
+        await writeBucketJsonFile(SYSTEM_DOCS_INDEX_PATH, updated);
       }
     }
 
     async function supabaseUpsertLoginRequest(reqPayload) {
-      if (!supabaseClient) return null;
-      // Delete existing with same ID first (in case ID is not constrained as PK in user's table)
-      try {
-        const del1 = await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('ID', reqPayload.ID);
-        if (del1.error) {
-          await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('id', reqPayload.ID);
+      if (supabaseClient) {
+        try {
+          const del1 = await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('ID', reqPayload.ID);
+          if (del1.error) {
+            await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('id', reqPayload.ID);
+          }
+        } catch (_) {}
+        try {
+          await smartAdaptiveTableInsert(TABLE_LOGIN_REQUESTS, reqPayload);
+        } catch (err) {
+          console.warn('login_requests table insert warning:', err);
         }
-      } catch (_) {}
-
-      const exactRow = {
-        ID: reqPayload.ID,
-        device_id: reqPayload.device_id,
-        usename: reqPayload.usename,
-        ip: reqPayload.ip,
-        timestamp: reqPayload.timestamp,
-        status: reqPayload.status
-      };
-
-      let { data, error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).insert([exactRow]).select();
-      if (error) {
-        const lowerRow = {
-          id: reqPayload.ID,
-          device_id: reqPayload.device_id,
-          usename: reqPayload.usename,
-          ip: reqPayload.ip,
-          timestamp: reqPayload.timestamp,
-          status: reqPayload.status
-        };
-        const retry = await supabaseClient.from(TABLE_LOGIN_REQUESTS).insert([lowerRow]).select();
-        if (retry.error) throw error;
-        return retry.data;
       }
-      return data;
     }
 
     async function supabaseUpdateLoginRequestStatus(reqId, newStatus) {
-      if (!supabaseClient) return;
-      let { error } = await supabaseClient
-        .from(TABLE_LOGIN_REQUESTS)
-        .update({ status: newStatus })
-        .eq('ID', reqId);
-      if (error) {
-        await supabaseClient
-          .from(TABLE_LOGIN_REQUESTS)
-          .update({ status: newStatus })
-          .eq('id', reqId);
+      // Update in global bucket auth state first
+      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedMaster: null, requests: [] };
+      if (Array.isArray(authState.requests)) {
+        authState.requests = authState.requests.map((r) => (r.id === reqId ? { ...r, status: newStatus } : r));
+        await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
+      }
+
+      if (supabaseClient) {
+        try {
+          let { error } = await supabaseClient
+            .from(TABLE_LOGIN_REQUESTS)
+            .update({ status: newStatus })
+            .eq('ID', reqId);
+          if (error) {
+            await supabaseClient
+              .from(TABLE_LOGIN_REQUESTS)
+              .update({ status: newStatus })
+              .eq('id', reqId);
+          }
+        } catch (_) {}
       }
     }
 
     async function supabaseDeleteLoginRequestById(reqId) {
-      if (!supabaseClient) return;
-      let { error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('ID', reqId);
-      if (error) {
-        await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('id', reqId);
+      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedMaster: null, requests: [] };
+      if (Array.isArray(authState.requests)) {
+        authState.requests = authState.requests.filter((r) => r.id !== reqId);
+        await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
+      }
+
+      if (supabaseClient) {
+        try {
+          let { error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('ID', reqId);
+          if (error) {
+            await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('id', reqId);
+          }
+        } catch (_) {}
       }
     }
 
     // =========================================================================
-    // GLOBAL TRUSTED DEVICE & LOGIN REQUESTS VIA `login_requests` TABLE
+    // 2. GLOBAL TRUSTED DEVICE & LOGIN REQUESTS (FIRST USER IS SOLE TRUSTED DEVICE)
+    // Uses both `login_requests` table AND `shogi-unterlagen/_system/global_auth_state.json`
+    // so the global trusted device state is 100% persistent across all browsers/devices!
     // =========================================================================
     async function getTrustedDeviceRecord() {
+      // 1. Check global bucket auth state file first (immune to column schema issues)
+      const bucketAuth = await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH);
+      if (bucketAuth && Object.prototype.hasOwnProperty.call(bucketAuth, 'trustedMaster')) {
+        if (bucketAuth.trustedMaster && bucketAuth.trustedMaster.device_id) {
+          localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(bucketAuth.trustedMaster));
+          return bucketAuth.trustedMaster;
+        } else if (bucketAuth.explicitlyCleared === true) {
+          localStorage.removeItem('shogi_trusted_device_cache');
+          return null;
+        }
+      }
+
+      // 2. Also check `login_requests` table
       if (supabaseClient) {
         try {
           const { data, error } = await supabaseClient
             .from(TABLE_LOGIN_REQUESTS)
-            .select('*')
-            .eq('status', 'TRUSTED_MASTER');
+            .select('*');
 
           if (!error && Array.isArray(data) && data.length > 0) {
-            // Sort by timestamp desc and pick latest
-            const normalized = data.map(normalizeLoginRequestRow).sort((a, b) => b.timestamp - a.timestamp);
-            const master = normalized[0];
-            localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(master));
-            return master;
-          } else if (!error && Array.isArray(data) && data.length === 0) {
-            localStorage.removeItem('shogi_trusted_device_cache');
-            return null;
+            const masters = data
+              .map(normalizeLoginRequestRow)
+              .filter((r) => r && (r.status === 'TRUSTED_MASTER' || r.id === TRUSTED_MASTER_ID))
+              .sort((a, b) => b.timestamp - a.timestamp);
+
+            if (masters.length > 0 && masters[0].device_id) {
+              const master = masters[0];
+              localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(master));
+              await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, {
+                trustedMaster: master,
+                explicitlyCleared: false,
+                requests: (bucketAuth && bucketAuth.requests) || []
+              });
+              return master;
+            }
           }
         } catch (err) {
-          console.warn('Global trusted device check fallback:', err);
+          console.warn('Global trusted device table check warning:', err);
         }
       }
+
       const cached = localStorage.getItem('shogi_trusted_device_cache');
       if (!cached) return null;
       try {
@@ -1535,20 +1646,41 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
         status: 'TRUSTED_MASTER'
       };
 
-      localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(normalizeLoginRequestRow(record)));
+      const normalized = normalizeLoginRequestRow(record);
+      localStorage.setItem('shogi_trusted_device_cache', JSON.stringify(normalized));
+
+      // Save to global bucket auth state file
+      const currentAuth = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { requests: [] };
+      await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, {
+        trustedMaster: normalized,
+        explicitlyCleared: false,
+        requests: currentAuth.requests || []
+      });
+
+      // Also save to `login_requests` table
       try {
         await supabaseUpsertLoginRequest(record);
       } catch (err) {
-        console.warn('Could not save TRUSTED_MASTER to Supabase:', err);
+        console.warn('Could not save TRUSTED_MASTER to table:', err);
       }
+
       if (syncChannel) {
         syncChannel.postMessage({ type: 'TRUSTED_DEVICE_UPDATED' });
       }
-      return record;
+      return normalized;
     }
 
     async function clearTrustedDeviceRecord() {
       localStorage.removeItem('shogi_trusted_device_cache');
+
+      // Clear in global bucket auth state file
+      await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, {
+        trustedMaster: null,
+        explicitlyCleared: true,
+        requests: []
+      });
+
+      // Clear in `login_requests` table
       if (supabaseClient) {
         try {
           await supabaseClient.from(TABLE_LOGIN_REQUESTS).delete().eq('status', 'TRUSTED_MASTER');
@@ -1629,6 +1761,8 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
 
     // =========================================================================
     // 1, 2, 3. AUTHORIZATION & GLOBAL TRUSTED DEVICE WORKFLOW
+    // Only the VERY FIRST user globally becomes the Trusted Device.
+    // All subsequent users from other devices go straight to the Waiting Approval box!
     // =========================================================================
     async function handleLoginSubmit(event) {
       event.preventDefault();
@@ -1653,14 +1787,16 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
         hideGlobalLoading();
 
         if (!trusted || !trusted.device_id) {
-          // 3. First authorization globally: Show Trusted Device registration box
+          // No trusted device exists globally yet -> This very first user becomes the Trusted Device!
+          // Show the first-time confirmation box (and pre-lock or confirm)
           document.getElementById('loginBoxCard').classList.add('hidden');
           document.getElementById('trustedDevicePromptBox').classList.remove('hidden');
         } else if (trusted.device_id === CURRENT_DEVICE_ID) {
-          // Current device is the registered global trusted device
+          // Current device is already the registered global Trusted Device -> enter directly
           enterMainApplication();
         } else {
-          // Another device is registered as trusted -> Show Waiting/Confirmation Box & insert into `login_requests`
+          // Another device is ALREADY the global Trusted Device ->
+          // NEVER ask to save as trusted! Immediately show Waiting Approval Box
           await initiateWaitingForTrustedApproval();
         }
       } catch (err) {
@@ -1724,8 +1860,19 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
         status: 'pending'
       };
 
-      localStorage.setItem('shogi_pending_auth_request', JSON.stringify(normalizeLoginRequestRow(dbPayload)));
+      const normalizedReq = normalizeLoginRequestRow(dbPayload);
+      localStorage.setItem('shogi_pending_auth_request', JSON.stringify(normalizedReq));
 
+      // Save pending request to global bucket state file
+      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedMaster: null, requests: [] };
+      const existingReqs = Array.isArray(authState.requests)
+        ? authState.requests.filter((r) => r.device_id !== CURRENT_DEVICE_ID)
+        : [];
+      existingReqs.unshift(normalizedReq);
+      authState.requests = existingReqs;
+      await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
+
+      // Also save to `login_requests` table
       try {
         await supabaseUpsertLoginRequest(dbPayload);
       } catch (err) {
@@ -1733,7 +1880,7 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       }
 
       if (syncChannel) {
-        syncChannel.postMessage({ type: 'NEW_AUTH_REQUEST', request: normalizeLoginRequestRow(dbPayload) });
+        syncChannel.postMessage({ type: 'NEW_AUTH_REQUEST', request: normalizedReq });
       }
 
       if (waitingPollInterval) clearInterval(waitingPollInterval);
@@ -1741,6 +1888,17 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
     }
 
     async function checkPendingRequestStatus(reqId) {
+      // 1. Check global bucket auth state
+      const authState = await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH);
+      if (authState && Array.isArray(authState.requests)) {
+        const matchReq = authState.requests.find((r) => r && r.id === reqId);
+        if (matchReq && matchReq.status !== 'pending') {
+          handleRequestDecisionOnWaitingDevice(matchReq.status);
+          return;
+        }
+      }
+
+      // 2. Check `login_requests` table
       if (supabaseClient) {
         try {
           const { data, error } = await supabaseClient
@@ -1793,7 +1951,9 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       if (raw) {
         try {
           const parsed = JSON.parse(raw);
-          if (parsed && parsed.id) await supabaseDeleteLoginRequestById(parsed.id);
+          if (parsed && parsed.id) {
+            await supabaseDeleteLoginRequestById(parsed.id);
+          }
         } catch (_) {}
       }
       localStorage.removeItem('shogi_pending_auth_request');
@@ -1802,13 +1962,26 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       document.getElementById('authCodeInput').value = '';
     }
 
-    // Trusted Device Poller: watches `login_requests` globally for status === 'pending'
+    // Trusted Device Poller: watches both global bucket state and `login_requests` for status === 'pending'
     function startTrustedDeviceRequestWatcher() {
       if (trustedPollInterval) clearInterval(trustedPollInterval);
       trustedPollInterval = setInterval(async () => {
         const trusted = await getTrustedDeviceRecord();
         if (!trusted || trusted.device_id !== CURRENT_DEVICE_ID) return;
 
+        // 1. Check global bucket auth state requests
+        const authState = await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH);
+        if (authState && Array.isArray(authState.requests)) {
+          const pendingFromBucket = authState.requests
+            .filter((r) => r && r.status === 'pending' && r.device_id !== CURRENT_DEVICE_ID)
+            .sort((a, b) => b.timestamp - a.timestamp);
+          if (pendingFromBucket.length > 0) {
+            showIncomingRequestPopup(pendingFromBucket[0]);
+            return;
+          }
+        }
+
+        // 2. Check `login_requests` table
         if (supabaseClient) {
           try {
             const { data, error } = await supabaseClient
@@ -1876,24 +2049,6 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       currentActiveRequest = null;
     }
 
-    // Simulate incoming authorization request in `login_requests` for testing
-    async function simulateIncomingAuthRequest() {
-      const geo = await fetchClientGeoIpInfo();
-      const simId = 'req_sim_' + Date.now();
-      const simPayload = {
-        ID: simId,
-        device_id: 'external_device_sim',
-        usename: `${geo.country}, ${geo.city} | iPhone 16 Pro • Safari (iOS)`,
-        ip: geo.ip,
-        timestamp: Date.now(),
-        status: 'pending'
-      };
-      try {
-        await supabaseUpsertLoginRequest(simPayload);
-      } catch (_) {}
-      showIncomingRequestPopup(normalizeLoginRequestRow(simPayload));
-    }
-
     if (syncChannel) {
       syncChannel.onmessage = (e) => {
         const msg = e.data;
@@ -1954,7 +2109,7 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
     async function loadAllDocumentsFromStorage(showSpinner = true) {
       if (showSpinner) showGlobalLoading('დოკუმენტები იტვირთება ბაზიდან...');
       try {
-        let fetchedDocs = [];
+        let tableDocs = [];
 
         if (supabaseClient) {
           const { data, error } = await supabaseClient
@@ -1962,13 +2117,35 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
             .select('*');
 
           if (!error && Array.isArray(data)) {
-            fetchedDocs = data.map(normalizeUnterlagenRow);
+            tableDocs = data.map(normalizeUnterlagenRow);
           } else if (error) {
             console.warn('Supabase unterlagen fetch warning:', error.message);
           }
         }
 
-        allDocuments = fetchedDocs;
+        // Merge with global bucket index so any column stripped by schema cache (like CREATED_AT) is restored
+        const bucketDocs = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
+        const docMap = new Map();
+
+        if (Array.isArray(bucketDocs)) {
+          for (const bDoc of bucketDocs) {
+            if (bDoc && bDoc.id) docMap.set(bDoc.id, bDoc);
+          }
+        }
+        for (const tDoc of tableDocs) {
+          if (docMap.has(tDoc.id)) {
+            const existing = docMap.get(tDoc.id);
+            docMap.set(tDoc.id, {
+              ...existing,
+              ...tDoc,
+              created_at: tDoc.created_at || existing.created_at
+            });
+          } else {
+            docMap.set(tDoc.id, tDoc);
+          }
+        }
+
+        allDocuments = Array.from(docMap.values());
 
         // 11. Sort files from newest to oldest (უახლესიდან უძველესისკენ)
         allDocuments.sort((a, b) => {
@@ -2124,24 +2301,38 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
             <!-- Divider before files -->
             <div class="w-full h-px bg-slate-200 mb-4"></div>
 
-            <!-- Files Grid sorted newest to oldest -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+            <!-- Files Grid sorted newest to oldest WITH LIVE FILE PREVIEWS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               ${docsInCat.map((doc) => `
                 <div
                   onclick="openFileViewerById('${escapeHtml(doc.id)}')"
-                  class="group bg-slate-50/70 hover:bg-white border border-slate-200 hover:border-blue-500 rounded-xl p-4 flex items-start gap-3.5 cursor-pointer transition shadow-sm hover:shadow-md"
+                  class="group bg-white hover:bg-slate-50/80 border border-slate-200 hover:border-blue-500 rounded-2xl overflow-hidden flex flex-col cursor-pointer transition shadow-sm hover:shadow-lg"
                 >
-                  <div class="w-12 h-12 rounded-xl bg-white border border-slate-200 group-hover:border-blue-300 flex items-center justify-center shrink-0 transition shadow-sm">
-                    ${getFileTypeSvgIcon(doc.file_ext)}
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h3 class="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition truncate">${escapeHtml(doc.title)}</h3>
-                    <p class="text-xs text-slate-500 truncate mt-0.5">${escapeHtml(doc.file_name)}</p>
-                    <div class="flex items-center justify-between gap-2 mt-2.5 text-[11px] text-slate-500">
-                      <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 font-mono font-semibold">${escapeHtml(doc.file_ext || 'FILE')}</span>
-                      <span>${formatFileSize(doc.file_size)}</span>
+                  <!-- 6. Top Visual Preview Box on Main Page Card -->
+                  <div id="cardPreview_${escapeHtml(doc.id)}" class="card-preview-box">
+                    <div class="flex flex-col items-center justify-center gap-2 text-slate-400">
+                      <svg class="w-6 h-6 text-blue-500 svg-spinner" viewBox="0 0 50 50" fill="none">
+                        <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="4" class="opacity-20"></circle>
+                        <path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+                      </svg>
+                      <span class="text-[11px] font-medium">Preview...</span>
                     </div>
-                    <div class="text-[10px] text-slate-400 mt-1">${formatGeorgianDate(doc.created_at)}</div>
+                  </div>
+
+                  <!-- Bottom File Metadata Row -->
+                  <div class="p-3.5 flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 group-hover:border-blue-300 flex items-center justify-center shrink-0 transition shadow-sm">
+                      ${getFileTypeSvgIcon(doc.file_ext)}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <h3 class="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition truncate">${escapeHtml(doc.title)}</h3>
+                      <p class="text-xs text-slate-500 truncate mt-0.5">${escapeHtml(doc.file_name)}</p>
+                      <div class="flex items-center justify-between gap-2 mt-2 text-[11px] text-slate-500">
+                        <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono font-semibold">${escapeHtml(doc.file_ext || 'FILE')}</span>
+                        <span>${formatFileSize(doc.file_size)}</span>
+                      </div>
+                      <div class="text-[10px] text-slate-400 mt-1">${formatGeorgianDate(doc.created_at)}</div>
+                    </div>
                   </div>
                 </div>
               `).join('')}
@@ -2151,6 +2342,137 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       }
 
       container.innerHTML = html;
+
+      // Asynchronously hydrate live previews for all rendered cards
+      hydrateMainPageCardPreviews(filteredDocs);
+    }
+
+    // =========================================================================
+    // 6. HYDRATE LIVE PREVIEWS ON MAIN PAGE CARDS (Images, PDF, Word, Excel, Text)
+    // =========================================================================
+    async function hydrateMainPageCardPreviews(docsList) {
+      for (const doc of docsList) {
+        const previewEl = document.getElementById(`cardPreview_${doc.id}`);
+        if (!previewEl || previewEl.dataset.rendered === 'true') continue;
+        previewEl.dataset.rendered = 'true';
+
+        renderSingleCardPreview(doc, previewEl);
+      }
+    }
+
+    async function renderSingleCardPreview(doc, previewEl) {
+      const ext = (doc.file_ext || '').toUpperCase();
+      try {
+        // 1. Image Preview
+        if (['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP', 'SVG', 'BMP'].includes(ext)) {
+          previewEl.innerHTML = `
+            <img
+              src="${escapeHtml(doc.url)}"
+              alt="${escapeHtml(doc.title)}"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              onerror="this.parentElement.innerHTML='<div class=\\'flex flex-col items-center justify-center\\'></div>'"
+            />
+          `;
+          return;
+        }
+
+        // Fetch binary arrayBuffer (with memory cache so opening the file is instant too)
+        const arrayBuffer = await fetchDocumentArrayBuffer(doc);
+
+        // 2. PDF Page 1 Canvas Preview
+        if (ext === 'PDF' && window.pdfjsLib) {
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+          const page = await pdf.getPage(1);
+          const viewport = page.getViewport({ scale: 0.45 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          canvas.className = 'max-h-[165px] w-auto mx-auto shadow-sm border border-slate-200 rounded bg-white';
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+          previewEl.innerHTML = '';
+          previewEl.appendChild(canvas);
+          return;
+        }
+
+        // 3. Word (.docx) Miniature Page Preview
+        if (ext === 'DOCX' && window.docx) {
+          const scaleWrap = document.createElement('div');
+          scaleWrap.className = 'card-docx-scale-wrap';
+          previewEl.innerHTML = '';
+          previewEl.appendChild(scaleWrap);
+          await window.docx.renderAsync(arrayBuffer.slice(0), scaleWrap, null, {
+            className: 'docx',
+            inWrapper: true,
+            ignoreWidth: false,
+            ignoreHeight: false,
+            breakPages: true
+          });
+          return;
+        }
+
+        // 4. Excel (.xlsx, .xls, .csv, .ods) Miniature Grid Preview (with A, B, C & 1, 2, 3)
+        if (['XLSX', 'XLS', 'CSV', 'ODS'].includes(ext) && window.XLSX) {
+          const wb = XLSX.read(arrayBuffer.slice(0), { type: 'array' });
+          const firstSheetName = wb.SheetNames[0];
+          const firstSheet = wb.Sheets[firstSheetName];
+          const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' }).slice(0, 7);
+          const colCount = Math.max(4, Math.min(5, rows.reduce((m, r) => Math.max(m, r.length), 0)));
+
+          let tableHtml = `
+            <div class="w-full h-full overflow-hidden bg-white p-1.5 flex flex-col">
+              <div class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-2 py-0.5 mb-1 truncate">
+                ${escapeHtml(firstSheetName)}
+              </div>
+              <table class="mini-excel-table">
+                <thead>
+                  <tr>
+                    <th class="mini-excel-row-num"></th>
+                    ${Array.from({ length: colCount }, (_, c) => `<th>${getExcelColumnName(c)}</th>`).join('')}
+                  </tr>
+                </thead>
+                <tbody>
+          `;
+
+          for (let r = 0; r < 6; r++) {
+            const rowData = rows[r] || [];
+            tableHtml += `<tr><td class="mini-excel-row-num">${r + 1}</td>`;
+            for (let c = 0; c < colCount; c++) {
+              tableHtml += `<td>${escapeHtml(rowData[c] ?? '')}</td>`;
+            }
+            tableHtml += `</tr>`;
+          }
+          tableHtml += `</tbody></table></div>`;
+          previewEl.innerHTML = tableHtml;
+          return;
+        }
+
+        // 5. Text / Other File Snippet Preview
+        const decoder = new TextDecoder('utf-8');
+        const text = decoder.decode(arrayBuffer.slice(0, 600));
+        if (text && !text.includes('\uFFFD')) {
+          previewEl.innerHTML = `
+            <div class="w-full h-full bg-white p-3 text-[10px] font-mono text-slate-700 overflow-hidden leading-relaxed whitespace-pre-wrap">${escapeHtml(text.slice(0, 300))}</div>
+          `;
+        } else {
+          previewEl.innerHTML = `
+            <div class="flex flex-col items-center justify-center gap-2">
+              <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                ${getFileTypeSvgIcon(ext)}
+              </div>
+              <span class="text-xs font-bold text-slate-600">${escapeHtml(ext)}</span>
+            </div>
+          `;
+        }
+      } catch (err) {
+        previewEl.innerHTML = `
+          <div class="flex flex-col items-center justify-center gap-2">
+            <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+              ${getFileTypeSvgIcon(ext)}
+            </div>
+            <span class="text-xs font-bold text-slate-600">${escapeHtml(ext)}</span>
+          </div>
+        `;
+      }
     }
 
     function handleGlobalSearch() {
@@ -2351,7 +2673,8 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
     }
 
     // Upload file binary directly to Supabase Storage Bucket `shogi-unterlagen` with real XHR progress %
-    function uploadFileToSupabaseBucketWithProgress(file, storagePath, onProgress) {
+    // Includes automatic fallback to `application/octet-stream` if bucket restricts specific Office MIME types
+    function uploadFileToSupabaseBucketWithProgress(file, storagePath, onProgress, overrideMimeType = null) {
       return new Promise((resolve, reject) => {
         const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
         const endpoint = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${encodedPath}`;
@@ -2361,7 +2684,7 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
         xhr.setRequestHeader('Authorization', `Bearer ${SUPABASE_KEY}`);
         xhr.setRequestHeader('apikey', SUPABASE_KEY);
         xhr.setRequestHeader('x-upsert', 'true');
-        xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+        xhr.setRequestHeader('Content-Type', overrideMimeType || file.type || 'application/octet-stream');
 
         xhr.upload.onprogress = (evt) => {
           if (evt.lengthComputable && onProgress) {
@@ -2370,10 +2693,18 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
           }
         };
 
-        xhr.onload = () => {
+        xhr.onload = async () => {
           if (xhr.status >= 200 && xhr.status < 300) {
             const { data } = supabaseClient.storage.from(SUPABASE_BUCKET).getPublicUrl(storagePath);
             resolve(data.publicUrl);
+          } else if (!overrideMimeType) {
+            // Retry with generic binary stream if bucket rejected Excel/Office MIME type
+            try {
+              const retryUrl = await uploadFileToSupabaseBucketWithProgress(file, storagePath, onProgress, 'application/octet-stream');
+              resolve(retryUrl);
+            } catch (retryErr) {
+              reject(retryErr);
+            }
           } else {
             let errMsg = `Storage status ${xhr.status}`;
             try {
@@ -2460,12 +2791,12 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
 
         updateProgress(92);
 
-        // Append metadata hash so original filename (e.g., xxx.png), page count, size & bucket path are stored globally inside URL
-        const hashMeta = `#orig=${encodeURIComponent(selectedUploadFile.name)}&pages=${selectedUploadPreviewPages || 1}&size=${selectedUploadFile.size}&path=${encodeURIComponent(storagePath)}`;
+        const createdIso = new Date().toISOString();
+        // Append full metadata hash so original filename, page count, size, timestamp, category & title are 100% preserved inside URL
+        const hashMeta = `#orig=${encodeURIComponent(selectedUploadFile.name)}&pages=${selectedUploadPreviewPages || 1}&size=${selectedUploadFile.size}&path=${encodeURIComponent(storagePath)}&ts=${encodeURIComponent(createdIso)}&cat=${encodeURIComponent(category)}&title=${encodeURIComponent(title)}&ext=${encodeURIComponent(ext)}`;
         const fullUrlWithMeta = `${publicFileUrl}${hashMeta}`;
 
         const docUuid = generateUuidV4();
-        const createdIso = new Date().toISOString();
 
         const dbRow = {
           ID: docUuid,
@@ -2556,6 +2887,10 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
     // 5. ADVANCED FILE VIEWER POPUP (0.5cm INSET, FETCHES FROM SUPABASE URL)
     // =========================================================================
     async function fetchDocumentArrayBuffer(doc) {
+      if (doc && doc.id && fileBufferMemoryCache.has(doc.id)) {
+        return fileBufferMemoryCache.get(doc.id);
+      }
+
       const cleanUrl = doc.url;
       if (cleanUrl.startsWith('data:')) {
         const base64 = cleanUrl.includes(',') ? cleanUrl.split(',')[1] : cleanUrl;
@@ -2565,6 +2900,7 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
         for (let i = 0; i < len; i++) {
           bytes[i] = binaryString.charCodeAt(i);
         }
+        fileBufferMemoryCache.set(doc.id, bytes.buffer);
         return bytes.buffer;
       }
 
@@ -2572,7 +2908,9 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       try {
         const response = await fetch(cleanUrl);
         if (response.ok) {
-          return await response.arrayBuffer();
+          const buf = await response.arrayBuffer();
+          fileBufferMemoryCache.set(doc.id, buf);
+          return buf;
         }
       } catch (_) {}
 
@@ -2581,7 +2919,9 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
           .from(SUPABASE_BUCKET)
           .download(doc.storage_path);
         if (!error && data) {
-          return await data.arrayBuffer();
+          const buf = await data.arrayBuffer();
+          fileBufferMemoryCache.set(doc.id, buf);
+          return buf;
         }
       }
 
@@ -3086,29 +3426,6 @@ WITH CHECK ( bucket_id = 'shogi-unterlagen' );</pre>
       } finally {
         hideGlobalLoading();
       }
-    }
-
-    // SQL / RLS Helper Modal
-    function toggleSqlHelperModal() {
-      const modal = document.getElementById('sqlHelperModal');
-      if (modal.classList.contains('hidden')) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-      } else {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }
-    }
-
-    function copySqlSchema() {
-      const text = document.getElementById('sqlSchemaCode').innerText;
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      textarea.remove();
-      showBottomRightNotification('SQL კოდი დაკოპირდა!', 'success');
     }
 
     // =========================================================================
