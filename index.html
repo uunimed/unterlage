@@ -1423,15 +1423,18 @@ async function smartAdaptiveTableInsert(tableName, initialRecord) {
 }
 
 async function supabaseInsertUnterlagen(docRecord) {
-  // პირდაპირ ჩაწერა Supabase-ის unterlagen ცხრილში
-  await smartAdaptiveTableInsert(TABLE_UNTERLAGEN, docRecord);
+  // თუ ცხრილზე RLS ჩართულია, შეცდომას დაიჭერს და ატვირთვას არ გააჩერებს
+  try {
+    await smartAdaptiveTableInsert(TABLE_UNTERLAGEN, docRecord);
+  } catch (err) {
+    console.warn('Table RLS warning, saving to bucket index:', err.message);
+  }
 
-  // უსაფრთხო სინქრონიზაცია JSON ინდექსთან (არსებული allDocuments-ის შენარჩუნებით)
+  // უსაფრთხო სინქრონიზაცია JSON ინდექსთან (არსებული ფაილების შენარჩუნებით)
   const normalized = normalizeUnterlagenRow(docRecord);
   const existingIndex = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
   const combinedMap = new Map();
 
-  // ჯერ ვინახავთ მეხსიერებაში უკვე არსებულ ყველა დოკუმენტს, რომ არაფერი წაიშალოს
   for (const d of allDocuments) {
     if (d && d.id) combinedMap.set(d.id, d);
   }
