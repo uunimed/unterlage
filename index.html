@@ -150,27 +150,31 @@
     ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
     /* ============================================================
-       PDF PAGE CONTAINER — კუთხეები აღარ იჭრება
-       overflow: visible (არა hidden), რომ zoom-ის დროს
-       კუთხეები არ დაიკარგოს
+       PDF PAGE — ფიქსირებული ზომა, zoom ხდება transform-ით
+       კუთხეები არ იკარგება, ტექსტი არ იწვრივება
        ============================================================ */
-    .pdf-page-container {
-      position: relative;
-      margin: 0 auto 24px auto;
-      background: #ffffff;
-      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.12);
-      border: 1px solid #e2e8f0;
-      border-radius: 4px;
-      overflow: visible;
-      max-width: 100%;
-    }
+.pdf-page-container {
+  position: relative;
+  margin: 0 auto 8px auto;
+  background: #ffffff;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.12);
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+/* ბოლო გვერდს ქვედა margin არ ჰქონდეს */
+.pdf-page-container:last-child {
+  margin-bottom: 0;
+}
 
     .pdf-page-container canvas {
       display: block;
-      max-width: 100%;
+      /* ⚠️ max-width: none — რომ zoom-ის დროს არ "შეიკუმშოს" */
+      max-width: none !important;
       height: auto;
       border-radius: 3px;
-      overflow: hidden;
     }
 
     .pdf-page-placeholder {
@@ -255,7 +259,6 @@
       border-radius: 4px;
       overflow: auto;
       box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
-      max-width: 100%;
     }
 
     .excel-table {
@@ -394,31 +397,24 @@
     }
 
     /* ============================================================
-       ZOOM-ის დროს viewer-ის კონტეინერი ისე იქცევა, რომ
-       კუთხეები არ დაიკარგოს. transform-origin: top center
-       და overflow: visible
+       ZOOM — transform-origin: top center, scale მთელ კონტეინერზე
+       კუთხეები არ იკარგება, ტექსტი არ იწვრივება
        ============================================================ */
     #viewerScrollViewport {
       overflow: auto;
     }
 
-    #viewerViewportContent {
-      transform-origin: top center;
-      transition: transform 0.15s ease-out;
-      will-change: transform;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+#viewerViewportContent {
+  transform-origin: top center;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+  width: fit-content;
+  margin: 0 auto;
+}
 
     @media print {
-      body * {
-        visibility: hidden;
-      }
-      #viewerViewportContent,
-      #viewerViewportContent * {
-        visibility: visible;
-      }
+      body * { visibility: hidden; }
+      #viewerViewportContent, #viewerViewportContent * { visibility: visible; }
       #viewerViewportContent {
         position: absolute;
         left: 0;
@@ -889,12 +885,12 @@
 
       <div id="excelSheetTabsBar" class="hidden items-center gap-1.5 px-5 py-2 bg-slate-100 border-b border-slate-200 overflow-x-auto"></div>
 
-      <div
-        id="viewerScrollViewport"
-        onscroll="handleViewerScrollUpdatePage()"
-        class="flex-1 overflow-auto bg-slate-100/90 p-4 sm:p-8 flex flex-col items-center relative"
-      >
-        <div id="viewerViewportContent" class="w-full flex flex-col items-center"></div>
+<div
+  id="viewerScrollViewport"
+  onscroll="handleViewerScrollUpdatePage()"
+  class="flex-1 overflow-auto bg-slate-100/90 p-1 sm:p-2 relative"
+>
+<div id="viewerViewportContent" class="w-full"></div>
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-50 border-t border-slate-200 text-xs sm:text-sm">
@@ -1210,6 +1206,37 @@
       return `${os} • ${browser}`;
     }
 
+    // ============================================================
+    // FIX: MIME type detection for uploads
+    // ============================================================
+    function getMimeTypeForFile(file) {
+      const ext = (file.name.split('.').pop() || '').toLowerCase();
+      const mimeMap = {
+        'pdf': 'application/pdf',
+        'doc': 'application/msword',
+        'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'xls': 'application/vnd.ms-excel',
+        'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'csv': 'text/csv',
+        'png': 'image/png',
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'gif': 'image/gif',
+        'webp': 'image/webp',
+        'svg': 'image/svg+xml',
+        'bmp': 'image/bmp',
+        'txt': 'text/plain',
+        'json': 'application/json',
+        'xml': 'application/xml',
+        'html': 'text/html',
+        'css': 'text/css',
+        'js': 'application/javascript',
+        'md': 'text/markdown',
+        'zip': 'application/zip'
+      };
+      return mimeMap[ext] || file.type || 'application/octet-stream';
+    }
+
     let allDocuments = [];
     let currentOpenDocument = null;
     let currentOpenFileArrayBuffer = null;
@@ -1328,19 +1355,14 @@
       return { id, device_id, usename, ip, timestamp, status, country, city, device_name };
     }
 
-    // =========================================================================
-    // FIX 1: smartAdaptiveTableInsert — CREATED_AT-ის შენარჩუნებით (3 ცდა)
-    // =========================================================================
     async function smartAdaptiveTableInsert(tableName, initialRecord) {
       if (!supabaseClient) throw new Error('Supabase client not initialized');
 
-      // ცდა 1: ორიგინალი payload (მაგ. ID, LOCATION, NAME, TYPE, URL, CREATED_AT)
       const res1 = await supabaseClient.from(tableName).insert([initialRecord]).select();
       if (!res1.error) return res1.data;
 
       console.warn('Insert attempt 1 failed:', res1.error.message);
 
-      // ცდა 2: ყველა key lowercase (CREATED_AT → created_at)
       const lowerPayload = {};
       for (const k of Object.keys(initialRecord)) {
         lowerPayload[k.toLowerCase()] = initialRecord[k];
@@ -1350,7 +1372,6 @@
 
       console.warn('Insert attempt 2 failed:', res2.error.message);
 
-      // ცდა 3: CREATED_AT/created_at მთლიანად წაშლილი
       const noCreatedAt = { ...lowerPayload };
       delete noCreatedAt['created_at'];
       delete noCreatedAt['CREATED_AT'];
@@ -2275,7 +2296,6 @@
       processCardPreviewQueue();
     }
 
-    // FIX 2: processCardPreviewQueue — try/finally + setTimeout(0)
     async function processCardPreviewQueue() {
       if (isProcessingCardPreviewQueue) return;
       if (cardPreviewQueue.length === 0) return;
@@ -2585,7 +2605,8 @@
         xhr.setRequestHeader('Authorization', `Bearer ${SUPABASE_KEY}`);
         xhr.setRequestHeader('apikey', SUPABASE_KEY);
         xhr.setRequestHeader('x-upsert', 'true');
-        xhr.setRequestHeader('Content-Type', overrideMimeType || file.type || 'application/octet-stream');
+        // FIX: Always use detected MIME type for correct Content-Type
+        xhr.setRequestHeader('Content-Type', overrideMimeType || getMimeTypeForFile(file));
 
         xhr.upload.onprogress = (evt) => {
           if (evt.lengthComputable && onProgress) {
@@ -2620,7 +2641,6 @@
       });
     }
 
-    // FIX 3: uploadDocumentHandler — CREATED_AT აღდგენილია + რეალური შემოწმება
     async function uploadDocumentHandler() {
       const titleInput = document.getElementById('uploadTitleInput');
       const categoryInput = document.getElementById('uploadCategoryInput');
@@ -2671,7 +2691,6 @@
 
         const docUuid = generateUuidV4();
 
-        // ✅ CREATED_AT აღდგენილია
         const dbRow = {
           ID: docUuid,
           LOCATION: category,
@@ -2681,10 +2700,8 @@
           CREATED_AT: createdIso
         };
 
-        // ✅ throw-ს აკეთებს, თუ ვერ შეინახა
         await supabaseInsertUnterlagen(dbRow);
 
-        // ✅ რეალური შემოწმება — ნამდვილად ჩანს თუ არა ფაილი
         await loadAllDocumentsFromStorage(false);
         const found = allDocuments.find((d) => d.id === docUuid);
         if (!found) {
@@ -2789,6 +2806,9 @@
       closeDeleteTrustedDeviceConfirm();
     }
 
+    // ============================================================
+    // FIX: fetchDocumentArrayBuffer — always fetch, no Range header
+    // ============================================================
     async function fetchDocumentArrayBuffer(doc, maxAllowedBytes = 0) {
       const cleanUrl = doc.url;
       if (cleanUrl.startsWith('data:')) {
@@ -2801,22 +2821,31 @@
         return bytes.buffer;
       }
 
+      // First attempt: public URL fetch (no Range header — plain fetch works)
       try {
-        const response = await fetch(cleanUrl);
+        const response = await fetch(cleanUrl, { cache: 'no-store' });
         if (response.ok) {
           const contentLen = parseInt(response.headers.get('content-length') || '0', 10);
           if (maxAllowedBytes > 0 && contentLen > maxAllowedBytes) throw new Error('File exceeds preview size cap');
           return await response.arrayBuffer();
         }
+        console.warn('Direct fetch failed with status:', response.status, '— trying SDK fallback');
       } catch (e) {
         if (e && e.message === 'File exceeds preview size cap') throw e;
+        console.warn('Direct fetch error, trying SDK fallback:', e);
       }
 
+      // Second attempt: Supabase SDK download (works even when public URL 400s)
       if (supabaseClient && doc.storage_path) {
-        const { data, error } = await supabaseClient.storage.from(SUPABASE_BUCKET).download(doc.storage_path);
-        if (!error && data) {
-          if (maxAllowedBytes > 0 && data.size > maxAllowedBytes) throw new Error('File exceeds preview size cap');
-          return await data.arrayBuffer();
+        try {
+          const { data, error } = await supabaseClient.storage.from(SUPABASE_BUCKET).download(doc.storage_path);
+          if (!error && data) {
+            if (maxAllowedBytes > 0 && data.size > maxAllowedBytes) throw new Error('File exceeds preview size cap');
+            return await data.arrayBuffer();
+          }
+          if (error) console.warn('SDK download failed:', error.message);
+        } catch (sdkErr) {
+          console.warn('SDK download exception:', sdkErr);
         }
       }
 
@@ -2924,24 +2953,27 @@
       await cleanupViewerResources();
     }
 
+    // ============================================================
+    // FIX: PDF renderer — always use arrayBuffer, not URL
+    // ============================================================
     async function renderPdfInCustomViewer(doc, container) {
-      let loadingTask;
-      if (doc.url && !doc.url.startsWith('data:')) {
-        loadingTask = pdfjsLib.getDocument({ url: doc.url });
-      } else {
-        const buf = await fetchDocumentArrayBuffer(doc);
-        loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(buf) });
-      }
+      // ✅ Always fetch via arrayBuffer (avoids PDF.js Range request 400)
+      const buf = await fetchDocumentArrayBuffer(doc);
+      const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(buf) });
 
-      const pdf = await loadingTask.promise;
-      currentViewerPdfDoc = pdf;
-      currentViewerTotalPages = pdf.numPages;
+const pdf = await loadingTask.promise;
+currentViewerPdfDoc = pdf;
+currentViewerTotalPages = pdf.numPages;
 
-      const firstPage = await pdf.getPage(1);
-      const baseScale = IS_MOBILE_DEVICE ? 1.05 : 1.35;
-      const defaultViewport = firstPage.getViewport({ scale: baseScale });
-      const defaultW = Math.floor(defaultViewport.width);
-      const defaultH = Math.floor(defaultViewport.height);
+const viewportContainer = document.getElementById('viewerScrollViewport');
+const availableWidth = Math.max(320, (viewportContainer?.clientWidth || 900) - 64);
+
+const firstPage = await pdf.getPage(1);
+const naturalViewport = firstPage.getViewport({ scale: 1.0 });
+const baseScale = Math.min(1.0, availableWidth / naturalViewport.width);
+const defaultViewport = firstPage.getViewport({ scale: baseScale });
+const defaultW = Math.floor(defaultViewport.width);
+const defaultH = Math.floor(defaultViewport.height);
 
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const pageWrap = document.createElement('div');
@@ -2989,8 +3021,9 @@
       try {
         const page = await pdf.getPage(pageNum);
         const viewport = page.getViewport({ scale: baseScale });
-        const maxDpr = IS_MOBILE_DEVICE ? 1.35 : 1.75;
-        const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+// DPR ლიმიტი — რომ canvas არ იყოს ზედმეტად დიდი
+const maxDpr = IS_MOBILE_DEVICE ? 1.5 : 2.0;
+const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
 
         const widthPx = Math.floor(viewport.width);
         const heightPx = Math.floor(viewport.height);
@@ -3005,6 +3038,8 @@
         canvas.height = Math.floor(heightPx * dpr);
         canvas.style.width = `${widthPx}px`;
         canvas.style.height = `${heightPx}px`;
+        // ✅ Important: max-width none so canvas isn't shrunk by CSS
+        canvas.style.maxWidth = 'none';
 
         const ctx = canvas.getContext('2d');
         ctx.scale(dpr, dpr);
@@ -3036,6 +3071,7 @@
         const activeQuery = (document.getElementById('inDocSearchInput')?.value || '').trim();
         if (activeQuery) handleInDocumentSearch();
       } catch (err) {
+        console.warn('PDF page render error:', err);
         pageWrap.dataset.rendered = 'false';
       }
     }
@@ -3294,13 +3330,15 @@
       document.getElementById('viewerPageNumberInput').value = String(closestPage);
     }
 
-    // FIX 4: zoom — transform-origin: top center; კუთხეები არ იკარგება
+    // ============================================================
+    // FIX: zoom — scale whole container, preserve aspect ratio
+    // ============================================================
     function adjustViewerZoom(delta) {
-      currentViewerZoom = Math.min(250, Math.max(40, currentViewerZoom + delta));
+      currentViewerZoom = Math.min(300, Math.max(25, currentViewerZoom + delta));
       document.getElementById('viewerZoomPercentLabel').textContent = `${currentViewerZoom}%`;
       const content = document.getElementById('viewerViewportContent');
-      content.style.transform = `scale(${currentViewerZoom / 100})`;
       content.style.transformOrigin = 'top center';
+      content.style.transform = `scale(${currentViewerZoom / 100})`;
     }
 
     function printCurrentOpenFile() {
@@ -3372,7 +3410,7 @@
         await closeFileViewerPopup();
         await loadAllDocumentsFromStorage(false);
       } catch (err) {
-        showBottomRightNotification('ფაილის წაშლისას წარმოიქმნა შეცდომა.', 'error');
+        showBottomRightNotification('ფაილის წაშლისას წარმოიშვა შეცდომა.', 'error');
       } finally {
         hideGlobalLoading();
       }
