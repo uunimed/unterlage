@@ -5,29 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ShogiUnterlagen</title>
 
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts: Noto Sans Georgian & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Particles.js -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-
-  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- PDF.js (v3.11.174) for genuine vector canvas + selectable textLayer rendering -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css" />
-
-  <!-- JSZip & docx-preview for 100% faithful Word (.docx) page rendering -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://unpkg.com/docx-preview@0.1.20/dist/docx-preview.js"></script>
-
-  <!-- SheetJS (xlsx) for authentic Excel grid rendering -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
   <style>
@@ -56,7 +45,6 @@
       min-height: 100vh;
     }
 
-    /* 1 & 2. Light Background with Dark Particles.js */
     #particles-js {
       position: fixed;
       inset: 0;
@@ -66,7 +54,6 @@
       background: radial-gradient(circle at center, #ffffff 0%, #eef2f6 100%);
     }
 
-    /* 1. Authorization Box stretched 3cm from left and right edges */
     .auth-box-wrapper {
       position: relative;
       z-index: 10;
@@ -91,7 +78,6 @@
       transition: all 0.3s ease;
     }
 
-    /* Responsive fallback on very small mobile screens */
     @media (max-width: 480px) {
       .auth-box-stretched {
         width: calc(100% - 2rem);
@@ -100,27 +86,14 @@
       }
     }
 
-    /* 2. Slide-in Right-to-Left Toast Notification in bottom-right corner */
     @keyframes slideInRightToLeft {
-      0% {
-        transform: translateX(120%);
-        opacity: 0;
-      }
-      100% {
-        transform: translateX(0);
-        opacity: 1;
-      }
+      0% { transform: translateX(120%); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
     }
 
     @keyframes slideOutLeftToRight {
-      0% {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translateX(120%);
-        opacity: 0;
-      }
+      0% { transform: translateX(0); opacity: 1; }
+      100% { transform: translateX(120%); opacity: 0; }
     }
 
     .toast-enter {
@@ -131,7 +104,6 @@
       animation: slideOutLeftToRight 0.3s ease-in forwards;
     }
 
-    /* 4.2 Main Page stretched 0.2cm from left and right edges */
     .main-page-container {
       margin-left: 0.2cm;
       margin-right: 0.2cm;
@@ -140,7 +112,6 @@
       flex-direction: column;
     }
 
-    /* 4.3 Settings Popup stretched 1cm from left, right, top, bottom edges */
     .settings-popup-window {
       position: fixed;
       top: 1cm;
@@ -157,7 +128,6 @@
       overflow: hidden;
     }
 
-    /* 5.4 File Viewer Popup stretched 0.5cm from left, right, top, bottom edges */
     .viewer-popup-window {
       position: fixed;
       top: 0.5cm;
@@ -174,37 +144,44 @@
       overflow: hidden;
     }
 
-    /* Light Custom Scrollbars */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-    /* PDF.js Custom Styling & Selectable Text Layer */
+    /* ============================================================
+       PDF PAGE CONTAINER — კუთხეები აღარ იჭრება
+       overflow: visible (არა hidden), რომ zoom-ის დროს
+       კუთხეები არ დაიკარგოს
+       ============================================================ */
     .pdf-page-container {
       position: relative;
       margin: 0 auto 24px auto;
       background: #ffffff;
       box-shadow: 0 6px 24px rgba(15, 23, 42, 0.12);
       border: 1px solid #e2e8f0;
-      border-radius: 2px;
-      overflow: hidden;
+      border-radius: 4px;
+      overflow: visible;
+      max-width: 100%;
     }
 
     .pdf-page-container canvas {
       display: block;
-      width: 100%;
-      height: 100%;
+      max-width: 100%;
+      height: auto;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .pdf-page-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8fafc;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 4px;
     }
 
     .textLayer {
@@ -223,6 +200,7 @@
       forced-color-adjust: none;
       transform-origin: 0 0;
       z-index: 2;
+      border-radius: 3px;
     }
 
     .textLayer span,
@@ -238,7 +216,6 @@
       background: rgba(37, 99, 235, 0.28);
     }
 
-    /* Highlighted search matches inside PDF, Word, Excel, Text */
     .search-highlight-match {
       background-color: rgba(250, 204, 21, 0.65) !important;
       color: #000 !important;
@@ -252,7 +229,6 @@
       box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.9);
     }
 
-    /* Word (.docx) Viewer Fidelity Styling */
     .docx-wrapper {
       background: transparent !important;
       padding: 20px !important;
@@ -266,12 +242,12 @@
       color: #000000 !important;
       box-shadow: 0 8px 28px rgba(15, 23, 42, 0.14) !important;
       border: 1px solid #e2e8f0 !important;
+      border-radius: 4px !important;
       margin-bottom: 24px !important;
       box-sizing: border-box !important;
-      overflow: hidden !important;
+      overflow: visible !important;
     }
 
-    /* Authentic Excel Grid Styling */
     .excel-grid-wrapper {
       background: #ffffff;
       color: #0f172a;
@@ -279,6 +255,7 @@
       border-radius: 4px;
       overflow: auto;
       box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+      max-width: 100%;
     }
 
     .excel-table {
@@ -339,7 +316,6 @@
       font-weight: 600;
     }
 
-    /* Main Page Card Miniature Previews */
     .card-preview-box {
       position: relative;
       width: 100%;
@@ -350,6 +326,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 12px 12px 0 0;
     }
 
     .card-docx-scale-wrap {
@@ -408,7 +385,6 @@
       width: 24px;
     }
 
-    /* Loading Spinner Animation */
     @keyframes spinCircle {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -417,7 +393,24 @@
       animation: spinCircle 0.9s linear infinite;
     }
 
-    /* Print Media Support */
+    /* ============================================================
+       ZOOM-ის დროს viewer-ის კონტეინერი ისე იქცევა, რომ
+       კუთხეები არ დაიკარგოს. transform-origin: top center
+       და overflow: visible
+       ============================================================ */
+    #viewerScrollViewport {
+      overflow: auto;
+    }
+
+    #viewerViewportContent {
+      transform-origin: top center;
+      transition: transform 0.15s ease-out;
+      will-change: transform;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     @media print {
       body * {
         visibility: hidden;
@@ -433,13 +426,18 @@
         width: 100%;
         background: white !important;
         color: black !important;
+        transform: none !important;
+      }
+      .pdf-page-container {
+        box-shadow: none !important;
+        border: none !important;
+        overflow: visible !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- GLOBAL LOADING OVERLAY (9. Loading Circle whenever document or info loads) -->
   <div id="globalLoadingOverlay" class="fixed inset-0 z-[250] bg-white/80 backdrop-blur-sm hidden items-center justify-center flex-col gap-3">
     <svg class="w-14 h-14 text-blue-600 svg-spinner" viewBox="0 0 50 50" fill="none">
       <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="4" class="opacity-20"></circle>
@@ -448,17 +446,13 @@
     <span id="globalLoadingText" class="text-sm font-semibold text-slate-800 tracking-wide">იტვირთება...</span>
   </div>
 
-  <!-- BOTTOM-RIGHT TOAST CONTAINER (2. Right-to-left error notifications) -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-[300] flex flex-col gap-2 max-w-md pointer-events-none"></div>
 
-  <!-- =========================================================================
-       1 & 2 & 3. AUTHORIZATION PAGE (Light Theme + Dark particles.js)
-       ========================================================================= -->
+  <!-- AUTH PAGE -->
   <div id="authPageSection" class="relative min-h-screen w-full">
     <div id="particles-js"></div>
 
     <div class="auth-box-wrapper">
-      <!-- 1. Login Box -->
       <div id="loginBoxCard" class="auth-box-stretched">
         <div class="flex flex-col items-center justify-center mb-6">
           <div class="w-16 h-16 rounded-2xl bg-slate-900/5 border border-slate-300 flex items-center justify-center mb-4 shadow-sm">
@@ -500,7 +494,6 @@
         </form>
       </div>
 
-      <!-- 3. First-time Authorization: Trusted Device Registration Box -->
       <div id="trustedDevicePromptBox" class="auth-box-stretched hidden">
         <div class="flex flex-col items-center text-center">
           <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-3">
@@ -534,7 +527,6 @@
         </div>
       </div>
 
-      <!-- 3. Waiting / Confirmation Box when logging in from another non-trusted device -->
       <div id="waitingApprovalBox" class="auth-box-stretched hidden">
         <div class="flex flex-col items-center text-center">
           <div class="w-16 h-16 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center mb-4">
@@ -572,11 +564,8 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       4. MAIN PAGE (Stretched 0.2cm from left and right edges, Light Theme)
-       ========================================================================= -->
+  <!-- MAIN PAGE -->
   <div id="mainPageSection" class="main-page-container hidden">
-    <!-- HEADER -->
     <header class="sticky top-2 z-40 mt-2 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
       <div class="flex items-center gap-3">
         <button
@@ -598,9 +587,7 @@
         </button>
       </div>
 
-      <!-- 4.3 Right Corner: 1) Search -> 2) Settings -> 3) Logout -->
       <div class="flex items-center gap-2.5 sm:gap-3 flex-1 sm:flex-initial justify-end">
-        <!-- 1. Automatic Search Function -->
         <div class="relative w-full max-w-xs sm:w-72">
           <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -628,7 +615,6 @@
           </button>
         </div>
 
-        <!-- 2. Settings Button -->
         <button
           type="button"
           onclick="openSettingsPopup()"
@@ -641,7 +627,6 @@
           </svg>
         </button>
 
-        <!-- 3. Logout Button -->
         <button
           type="button"
           onclick="logoutImmediately()"
@@ -657,11 +642,9 @@
       </div>
     </header>
 
-    <!-- MAIN CONTENT: Categories & Files -->
     <main class="flex-1 py-5">
       <div id="categoriesListContainer" class="space-y-8"></div>
 
-      <!-- Empty Search / No Files State -->
       <div id="noFilesFoundState" class="hidden flex-col items-center justify-center py-24 text-center">
         <div class="w-20 h-20 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mb-4">
           <svg class="w-10 h-10 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -676,12 +659,9 @@
     </main>
   </div>
 
-  <!-- =========================================================================
-       4.3 SETTINGS POPUP (Stretched 1cm from left, right, top, bottom edges)
-       ========================================================================= -->
+  <!-- SETTINGS POPUP -->
   <div id="settingsPopupOverlay" class="fixed inset-0 z-[95] bg-slate-900/40 backdrop-blur-sm hidden">
     <div class="settings-popup-window">
-      <!-- Settings Header -->
       <div class="flex items-center justify-between px-6 py-4 bg-slate-50 border-b border-slate-200">
         <div class="flex items-center gap-3">
           <svg class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -703,9 +683,7 @@
         </button>
       </div>
 
-      <!-- Settings Body -->
       <div class="flex-1 overflow-y-auto p-6 space-y-8 bg-white">
-        <!-- SECTION 1: FILE ADDITION FUNCTION -->
         <section class="bg-slate-50/70 border border-slate-200 rounded-2xl p-6">
           <div class="flex items-center gap-2.5 mb-5">
             <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -717,9 +695,7 @@
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Left Form Inputs -->
             <div class="space-y-4">
-              <!-- Title Input -->
               <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">სათაური</label>
                 <input
@@ -730,7 +706,6 @@
                 />
               </div>
 
-              <!-- Category Input with Custom Dropdown -->
               <div class="relative" id="categoryDropdownContainer">
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">კატეგორია</label>
                 <div class="relative">
@@ -759,7 +734,6 @@
                 ></div>
               </div>
 
-              <!-- File Picker Input -->
               <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">ფაილის არჩევა</label>
                 <label
@@ -778,7 +752,6 @@
                 </label>
               </div>
 
-              <!-- 8. Upload Progress Bar with Percentage -->
               <div id="uploadProgressWrapper" class="hidden space-y-1.5 bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-slate-700 font-semibold flex items-center gap-2">
@@ -795,7 +768,6 @@
                 </div>
               </div>
 
-              <!-- Submit Upload Button -->
               <div class="pt-1">
                 <button
                   id="submitUploadBtn"
@@ -813,7 +785,6 @@
               </div>
             </div>
 
-            <!-- Right Live Preview Box -->
             <div class="flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden min-h-[280px] shadow-sm">
               <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-600">Preview</span>
@@ -833,7 +804,6 @@
           </div>
         </section>
 
-        <!-- SECTION 2: TRUSTED DEVICE FUNCTION -->
         <section class="bg-slate-50/70 border border-slate-200 rounded-2xl p-6">
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
@@ -874,20 +844,15 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       5. ADVANCED FILE VIEWER POPUP (Stretched 0.5cm from left, right, top, bottom)
-       ========================================================================= -->
+  <!-- FILE VIEWER POPUP -->
   <div id="fileViewerPopupOverlay" class="fixed inset-0 z-[115] bg-slate-900/50 backdrop-blur-sm hidden">
     <div class="viewer-popup-window">
-      <!-- 5.5 TOP BAR OF POPUP -->
       <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-50 border-b border-slate-200">
-        <!-- Left: Document Title -->
         <div class="flex items-center gap-2.5 min-w-0 max-w-xs sm:max-w-md">
           <div id="viewerTopFileIcon" class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0"></div>
           <h3 id="viewerTopTitleText" class="text-base font-bold text-slate-900 truncate"></h3>
         </div>
 
-        <!-- Center: Automatic In-Document Search -->
         <div class="flex items-center gap-2 flex-1 max-w-md mx-auto">
           <div class="relative w-full">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -907,7 +872,6 @@
           </div>
         </div>
 
-        <!-- Right: Close Button -->
         <div class="flex items-center justify-end">
           <button
             type="button"
@@ -923,21 +887,17 @@
         </div>
       </div>
 
-      <!-- Excel Sheet Tabs Bar -->
       <div id="excelSheetTabsBar" class="hidden items-center gap-1.5 px-5 py-2 bg-slate-100 border-b border-slate-200 overflow-x-auto"></div>
 
-      <!-- MIDDLE DOCUMENT VIEWPORT -->
       <div
         id="viewerScrollViewport"
         onscroll="handleViewerScrollUpdatePage()"
         class="flex-1 overflow-auto bg-slate-100/90 p-4 sm:p-8 flex flex-col items-center relative"
       >
-        <div id="viewerViewportContent" class="w-full flex flex-col items-center transition-transform duration-150 origin-top"></div>
+        <div id="viewerViewportContent" class="w-full flex flex-col items-center"></div>
       </div>
 
-      <!-- 5.5 BOTTOM BAR OF POPUP -->
       <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-slate-50 border-t border-slate-200 text-xs sm:text-sm">
-        <!-- Bottom Left Corner -->
         <div class="flex items-center gap-2 text-slate-700 font-semibold min-w-0 max-w-xs sm:max-w-sm truncate">
           <svg class="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -946,7 +906,6 @@
           <span id="viewerBottomMetaText" class="truncate"></span>
         </div>
 
-        <!-- Bottom Center: 1. Page Navigation & 2. Zoom Controls -->
         <div class="flex items-center gap-4 mx-auto">
           <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-2.5 py-1 shadow-sm">
             <button
@@ -1007,7 +966,6 @@
           </div>
         </div>
 
-        <!-- Bottom Right Corner: 1. Print | 2. Download | 3. Delete -->
         <div class="flex items-center gap-2">
           <button
             type="button"
@@ -1050,9 +1008,7 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       CONFIRMATION POPUP 1: DELETE TRUSTED DEVICE
-       ========================================================================= -->
+  <!-- MODALS -->
   <div id="deleteTrustedDeviceModal" class="fixed inset-0 z-[180] bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center gap-3 mb-4">
@@ -1090,9 +1046,6 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       CONFIRMATION POPUP 2: DELETE FILE
-       ========================================================================= -->
   <div id="deleteFileConfirmModal" class="fixed inset-0 z-[190] bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center gap-3 mb-4">
@@ -1130,9 +1083,6 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       POPUP 3: INCOMING AUTHORIZATION REQUEST ON TRUSTED DEVICE
-       ========================================================================= -->
   <div id="incomingAuthRequestModal" class="fixed inset-0 z-[220] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white border-2 border-blue-500 rounded-2xl max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center gap-3 mb-4">
@@ -1189,16 +1139,11 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       APPLICATION JAVASCRIPT (MEMORY-SAFE & MOBILE-OPTIMIZED)
-       ========================================================================= -->
   <script>
-    // Configure PDF.js worker
     if (window.pdfjsLib) {
       window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
 
-    // SUPABASE GLOBAL CONFIGURATION
     const SUPABASE_URL = 'https://tvdvxjikmwohrnjzyefb.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2ZHZ4amlrbXdvaHJuanp5ZWZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMjQyMDAsImV4cCI6MjEwODcwMDIwMH0.UzFWzUVOPWPxofZ1_JkPD0weQVzP1n5aFms2Z5b_oB0';
     const SUPABASE_BUCKET = 'shogi-unterlagen';
@@ -1209,7 +1154,6 @@
     const SYSTEM_AUTH_STATE_PATH = '_system/global_auth_state.json';
     const SYSTEM_DOCS_INDEX_PATH = '_system/global_docs_index.json';
 
-    // Memory safety thresholds to prevent mobile & desktop RAM crashes
     const IS_MOBILE_DEVICE = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '') || window.innerWidth < 768;
     const MAX_CARD_PREVIEW_DOC_BYTES = IS_MOBILE_DEVICE ? 3.5 * 1024 * 1024 : 8 * 1024 * 1024;
     const MAX_CARD_PREVIEW_DOCX_BYTES = IS_MOBILE_DEVICE ? 1.5 * 1024 * 1024 : 4 * 1024 * 1024;
@@ -1266,7 +1210,6 @@
       return `${os} • ${browser}`;
     }
 
-    // Application State
     let allDocuments = [];
     let currentOpenDocument = null;
     let currentOpenFileArrayBuffer = null;
@@ -1286,14 +1229,10 @@
     let selectedUploadPreviewPages = 1;
     let targetTrustedDeviceIdToDelete = null;
 
-    // Lazy Card Preview Observer & Sequential Queue (prevents parallel RAM spikes)
     let cardPreviewObserver = null;
     let cardPreviewQueue = [];
     let isProcessingCardPreviewQueue = false;
 
-    // =========================================================================
-    // CASE-INSENSITIVE ROW NORMALIZERS & URL HASH METADATA PARSER
-    // =========================================================================
     function pickField(row, ...keys) {
       if (!row || typeof row !== 'object') return undefined;
       for (const k of keys) {
@@ -1386,67 +1325,96 @@
         device_name = (parts.slice(1).join('|') || 'Device').trim();
       }
 
-      return {
-        id,
-        device_id,
-        usename,
-        ip,
-        timestamp,
-        status,
-        country,
-        city,
-        device_name
-      };
+      return { id, device_id, usename, ip, timestamp, status, country, city, device_name };
     }
 
     // =========================================================================
-    // SMART SCHEMA-ADAPTIVE SUPABASE TABLE WRITER & LIGHTWEIGHT BUCKET INDEX
+    // FIX 1: smartAdaptiveTableInsert — CREATED_AT-ის შენარჩუნებით (3 ცდა)
     // =========================================================================
-async function smartAdaptiveTableInsert(tableName, initialRecord) {
-  if (!supabaseClient) throw new Error('Supabase client not initialized');
+    async function smartAdaptiveTableInsert(tableName, initialRecord) {
+      if (!supabaseClient) throw new Error('Supabase client not initialized');
 
-  // 1-ლი ცდა: ორიგინალი (დიდი ასოების) სვეტებით
-  const res1 = await supabaseClient.from(tableName).insert([initialRecord]).select();
-  if (!res1.error) return res1.data;
+      // ცდა 1: ორიგინალი payload (მაგ. ID, LOCATION, NAME, TYPE, URL, CREATED_AT)
+      const res1 = await supabaseClient.from(tableName).insert([initialRecord]).select();
+      if (!res1.error) return res1.data;
 
-  // მე-2 ცდა: პატარა ასოების სვეტებით
-  const lowerPayload = {};
-  for (const k of Object.keys(initialRecord)) {
-    if (k.toUpperCase() !== 'CREATED_AT') {
-      lowerPayload[k.toLowerCase()] = initialRecord[k];
+      console.warn('Insert attempt 1 failed:', res1.error.message);
+
+      // ცდა 2: ყველა key lowercase (CREATED_AT → created_at)
+      const lowerPayload = {};
+      for (const k of Object.keys(initialRecord)) {
+        lowerPayload[k.toLowerCase()] = initialRecord[k];
+      }
+      const res2 = await supabaseClient.from(tableName).insert([lowerPayload]).select();
+      if (!res2.error) return res2.data;
+
+      console.warn('Insert attempt 2 failed:', res2.error.message);
+
+      // ცდა 3: CREATED_AT/created_at მთლიანად წაშლილი
+      const noCreatedAt = { ...lowerPayload };
+      delete noCreatedAt['created_at'];
+      delete noCreatedAt['CREATED_AT'];
+      const res3 = await supabaseClient.from(tableName).insert([noCreatedAt]).select();
+      if (!res3.error) return res3.data;
+
+      console.error('Insert attempt 3 failed:', res3.error.message);
+      throw new Error(`Table insert failed: ${res1.error.message} | ${res2.error.message} | ${res3.error.message}`);
     }
-  }
-  const res2 = await supabaseClient.from(tableName).insert([lowerPayload]).select();
-  if (!res2.error) return res2.data;
 
-  throw res2.error;
-}
+    async function supabaseInsertUnterlagen(docRecord) {
+      let tableSuccess = false;
+      let tableError = null;
 
-async function supabaseInsertUnterlagen(docRecord) {
       try {
         await smartAdaptiveTableInsert(TABLE_UNTERLAGEN, docRecord);
+        tableSuccess = true;
       } catch (err) {
-        console.warn('Table RLS warning, saving to bucket index:', err.message);
+        tableError = err;
+        console.warn('Table insert failed:', err.message);
       }
 
       const normalized = normalizeUnterlagenRow(docRecord);
-      const existingIndex = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
-      const combinedMap = new Map();
 
-      // ვინახავთ მიმდინარე זיკრონის და ძველი ინდექსის ყველა ჩანაწერს
-      for (const d of allDocuments) {
-        if (d && d.id) combinedMap.set(d.id, d);
-      }
-      if (Array.isArray(existingIndex)) {
-        for (const d of existingIndex) {
+      let bucketSuccess = false;
+      let bucketError = null;
+
+      try {
+        const existingIndex = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
+        const combinedMap = new Map();
+
+        for (const d of allDocuments) {
           if (d && d.id) combinedMap.set(d.id, d);
         }
-      }
-      // ვამატებთ ახალს
-      combinedMap.set(normalized.id, normalized);
+        if (Array.isArray(existingIndex)) {
+          for (const d of existingIndex) {
+            if (d && d.id) combinedMap.set(d.id, d);
+          }
+        }
+        combinedMap.set(normalized.id, normalized);
 
-      const finalArray = Array.from(combinedMap.values());
-      await writeBucketJsonFile(SYSTEM_DOCS_INDEX_PATH, finalArray);
+        const finalArray = Array.from(combinedMap.values());
+        await writeBucketJsonFileStrict(SYSTEM_DOCS_INDEX_PATH, finalArray);
+        bucketSuccess = true;
+      } catch (bucketErr) {
+        bucketError = bucketErr;
+        console.error('Bucket index write failed:', bucketErr);
+      }
+
+      if (!tableSuccess && !bucketSuccess) {
+        throw new Error(
+          `ფაილის მეტამონაცემების შენახვა ვერ მოხერხდა. ` +
+          `ცხრილი: ${tableError?.message || 'უცნობი'} | ` +
+          `Bucket: ${bucketError?.message || 'უცნობი'}. ` +
+          `შეამოწმეთ Supabase RLS პოლიტიკა.`
+        );
+      }
+
+      if (!tableSuccess && bucketSuccess) {
+        console.warn('Saved to bucket index only (table insert failed).');
+      }
+      if (tableSuccess && !bucketSuccess) {
+        console.warn('Saved to table only (bucket index write failed).');
+      }
     }
 
     async function readBucketJsonFile(storagePath) {
@@ -1454,33 +1422,42 @@ async function supabaseInsertUnterlagen(docRecord) {
         const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
         const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_BUCKET}/${encodedPath}?t=${Date.now()}`;
         const res = await fetch(publicUrl, { cache: 'no-store' });
-        if (res.ok) {
-          return await res.json();
-        }
+        if (res.ok) return await res.json();
       } catch (_) {}
       return null;
     }
 
-    async function writeBucketJsonFile(storagePath, jsonData) {
-      try {
-        const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
-        const endpoint = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${encodedPath}`;
-        const blob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
-        await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'apikey': SUPABASE_KEY,
-            'x-upsert': 'true',
-            'Content-Type': 'application/json'
-          },
-          body: blob
-        });
-      } catch (err) {
-        console.warn('Bucket JSON mirror write warning:', err);
+    async function writeBucketJsonFileStrict(storagePath, jsonData) {
+      const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
+      const endpoint = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${encodedPath}`;
+      const blob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'apikey': SUPABASE_KEY,
+          'x-upsert': 'true',
+          'Content-Type': 'application/json'
+        },
+        body: blob
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Bucket write failed (${res.status}): ${errText}`);
       }
+      return true;
     }
 
+    async function writeBucketJsonFile(storagePath, jsonData) {
+      try {
+        return await writeBucketJsonFileStrict(storagePath, jsonData);
+      } catch (err) {
+        console.warn('Bucket JSON mirror write warning:', err);
+        return false;
+      }
+    }
 
     async function supabaseDeleteUnterlagen(docId) {
       if (supabaseClient) {
@@ -1523,15 +1500,9 @@ async function supabaseInsertUnterlagen(docRecord) {
 
       if (supabaseClient) {
         try {
-          let { error } = await supabaseClient
-            .from(TABLE_LOGIN_REQUESTS)
-            .update({ status: newStatus })
-            .eq('ID', reqId);
+          let { error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).update({ status: newStatus }).eq('ID', reqId);
           if (error) {
-            await supabaseClient
-              .from(TABLE_LOGIN_REQUESTS)
-              .update({ status: newStatus })
-              .eq('id', reqId);
+            await supabaseClient.from(TABLE_LOGIN_REQUESTS).update({ status: newStatus }).eq('id', reqId);
           }
         } catch (_) {}
       }
@@ -1554,9 +1525,6 @@ async function supabaseInsertUnterlagen(docRecord) {
       }
     }
 
-    // =========================================================================
-    // 2. GLOBAL TRUSTED DEVICES & LOGIN REQUESTS MANAGEMENT
-    // =========================================================================
     async function getTrustedDevicesList() {
       const mapByDeviceId = new Map();
 
@@ -1579,24 +1547,13 @@ async function supabaseInsertUnterlagen(docRecord) {
 
       if (supabaseClient) {
         try {
-          const { data, error } = await supabaseClient
-            .from(TABLE_LOGIN_REQUESTS)
-            .select('*');
-
+          const { data, error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).select('*');
           if (!error && Array.isArray(data) && data.length > 0) {
             const trustedRows = data
               .map(normalizeLoginRequestRow)
-              .filter(
-                (r) =>
-                  r &&
-                  r.device_id &&
-                  (r.status === 'TRUSTED_MASTER' || r.status === 'TRUSTED_DEVICE' || r.id.startsWith('TRUSTED_'))
-              );
-
+              .filter((r) => r && r.device_id && (r.status === 'TRUSTED_MASTER' || r.status === 'TRUSTED_DEVICE' || r.id.startsWith('TRUSTED_')));
             for (const row of trustedRows) {
-              if (!mapByDeviceId.has(row.device_id)) {
-                mapByDeviceId.set(row.device_id, row);
-              }
+              if (!mapByDeviceId.has(row.device_id)) mapByDeviceId.set(row.device_id, row);
             }
           }
         } catch (err) {
@@ -1605,7 +1562,6 @@ async function supabaseInsertUnterlagen(docRecord) {
       }
 
       let list = Array.from(mapByDeviceId.values());
-
       if (list.length > 0) {
         localStorage.setItem('shogi_trusted_devices_cache', JSON.stringify(list));
         return list;
@@ -1659,9 +1615,7 @@ async function supabaseInsertUnterlagen(docRecord) {
         console.warn('Could not save trusted device to table:', err);
       }
 
-      if (syncChannel) {
-        syncChannel.postMessage({ type: 'TRUSTED_DEVICE_UPDATED' });
-      }
+      if (syncChannel) syncChannel.postMessage({ type: 'TRUSTED_DEVICE_UPDATED' });
       return normalized;
     }
 
@@ -1713,14 +1667,9 @@ async function supabaseInsertUnterlagen(docRecord) {
         }
       }
 
-      if (syncChannel) {
-        syncChannel.postMessage({ type: 'TRUSTED_DEVICE_CLEARED' });
-      }
+      if (syncChannel) syncChannel.postMessage({ type: 'TRUSTED_DEVICE_CLEARED' });
     }
 
-    // =========================================================================
-    // LOADING CIRCLE & RIGHT-TO-LEFT ERROR TOASTS
-    // =========================================================================
     function showGlobalLoading(text = 'იტვირთება...') {
       const overlay = document.getElementById('globalLoadingOverlay');
       const label = document.getElementById('globalLoadingText');
@@ -1733,6 +1682,16 @@ async function supabaseInsertUnterlagen(docRecord) {
       const overlay = document.getElementById('globalLoadingOverlay');
       overlay.classList.add('hidden');
       overlay.classList.remove('flex');
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
     function showBottomRightNotification(message, type = 'error') {
@@ -1748,17 +1707,9 @@ async function supabaseInsertUnterlagen(docRecord) {
 
       toast.innerHTML = `
         <div class="w-8 h-8 rounded-lg ${isError ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600'} flex items-center justify-center shrink-0">
-          ${
-            isError
-              ? `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                   <circle cx="12" cy="12" r="10"></circle>
-                   <line x1="12" y1="8" x2="12" y2="12"></line>
-                   <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                 </svg>`
-              : `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                   <polyline points="20 6 9 17 4 12"></polyline>
-                 </svg>`
-          }
+          ${isError
+            ? `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+            : `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`}
         </div>
         <div class="text-xs sm:text-sm font-semibold pr-2">${escapeHtml(message)}</div>
       `;
@@ -1769,22 +1720,9 @@ async function supabaseInsertUnterlagen(docRecord) {
         toast.classList.remove('toast-enter');
         toast.classList.add('toast-exit');
         setTimeout(() => toast.remove(), 320);
-      }, 4200);
+      }, 4500);
     }
 
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    // =========================================================================
-    // 1, 2, 3. AUTHORIZATION & GLOBAL TRUSTED DEVICE WORKFLOW
-    // =========================================================================
     async function handleLoginSubmit(event) {
       event.preventDefault();
       const input = document.getElementById('authCodeInput');
@@ -1842,14 +1780,11 @@ async function supabaseInsertUnterlagen(docRecord) {
         if (tz.includes('/')) {
           const parts = tz.split('/');
           city = parts[parts.length - 1].replace(/_/g, ' ');
-          if (tz.startsWith('Europe/Berlin') || tz.startsWith('Europe/Vienna')) {
-            country = 'Germany';
-          } else if (tz.startsWith('Europe/Tbilisi') || tz.startsWith('Asia/Tbilisi')) {
+          if (tz.startsWith('Europe/Berlin') || tz.startsWith('Europe/Vienna')) country = 'Germany';
+          else if (tz.startsWith('Europe/Tbilisi') || tz.startsWith('Asia/Tbilisi')) {
             country = 'საქართველო';
             city = 'თბილისი';
-          } else {
-            country = parts[0];
-          }
+          } else country = parts[0];
         }
         let hash = 0;
         for (let i = 0; i < CURRENT_DEVICE_ID.length; i++) {
@@ -1858,17 +1793,9 @@ async function supabaseInsertUnterlagen(docRecord) {
         }
         const octet3 = (Math.abs(hash) % 250) + 1;
         const octet4 = (Math.abs(hash >> 8) % 250) + 2;
-        return {
-          ip: `192.168.${octet3}.${octet4}`,
-          country,
-          city
-        };
+        return { ip: `192.168.${octet3}.${octet4}`, country, city };
       } catch (_) {
-        return {
-          ip: '192.168.1.104',
-          country: 'საქართველო',
-          city: 'თბილისი'
-        };
+        return { ip: '192.168.1.104', country: 'საქართველო', city: 'თბილისი' };
       }
     }
 
@@ -1897,9 +1824,7 @@ async function supabaseInsertUnterlagen(docRecord) {
       localStorage.setItem('shogi_pending_auth_request', JSON.stringify(normalizedReq));
 
       const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedDevices: [], requests: [] };
-      const existingReqs = Array.isArray(authState.requests)
-        ? authState.requests.filter((r) => r.device_id !== CURRENT_DEVICE_ID)
-        : [];
+      const existingReqs = Array.isArray(authState.requests) ? authState.requests.filter((r) => r.device_id !== CURRENT_DEVICE_ID) : [];
       existingReqs.unshift(normalizedReq);
       authState.requests = existingReqs;
       await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
@@ -1910,9 +1835,7 @@ async function supabaseInsertUnterlagen(docRecord) {
         console.warn('Supabase login_requests insert error:', err);
       }
 
-      if (syncChannel) {
-        syncChannel.postMessage({ type: 'NEW_AUTH_REQUEST', request: normalizedReq });
-      }
+      if (syncChannel) syncChannel.postMessage({ type: 'NEW_AUTH_REQUEST', request: normalizedReq });
 
       if (waitingPollInterval) clearInterval(waitingPollInterval);
       waitingPollInterval = setInterval(() => checkPendingRequestStatus(reqId), 2000);
@@ -1936,10 +1859,7 @@ async function supabaseInsertUnterlagen(docRecord) {
 
       if (supabaseClient) {
         try {
-          const { data, error } = await supabaseClient
-            .from(TABLE_LOGIN_REQUESTS)
-            .select('*');
-
+          const { data, error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).select('*');
           if (!error && Array.isArray(data)) {
             const rows = data.map(normalizeLoginRequestRow);
             const match = rows.find((r) => r && r.id === reqId);
@@ -1947,16 +1867,6 @@ async function supabaseInsertUnterlagen(docRecord) {
               handleRequestDecisionOnWaitingDevice(match.status);
               return;
             }
-          }
-        } catch (_) {}
-      }
-
-      const raw = localStorage.getItem('shogi_pending_auth_request');
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          if (parsed && parsed.id === reqId && parsed.status !== 'pending') {
-            handleRequestDecisionOnWaitingDevice(parsed.status);
           }
         } catch (_) {}
       }
@@ -1988,9 +1898,7 @@ async function supabaseInsertUnterlagen(docRecord) {
       if (raw) {
         try {
           const parsed = JSON.parse(raw);
-          if (parsed && parsed.id) {
-            await supabaseDeleteLoginRequestById(parsed.id);
-          }
+          if (parsed && parsed.id) await supabaseDeleteLoginRequestById(parsed.id);
         } catch (_) {}
       }
       localStorage.removeItem('shogi_pending_auth_request');
@@ -2018,31 +1926,16 @@ async function supabaseInsertUnterlagen(docRecord) {
 
         if (supabaseClient) {
           try {
-            const { data, error } = await supabaseClient
-              .from(TABLE_LOGIN_REQUESTS)
-              .select('*')
-              .eq('status', 'pending');
-
+            const { data, error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).select('*').eq('status', 'pending');
             if (!error && Array.isArray(data) && data.length > 0) {
               const pendingList = data
                 .map(normalizeLoginRequestRow)
                 .filter((r) => r && r.device_id !== CURRENT_DEVICE_ID)
                 .sort((a, b) => b.timestamp - a.timestamp);
-
               if (pendingList.length > 0) {
                 showIncomingRequestPopup(pendingList[0]);
                 return;
               }
-            }
-          } catch (_) {}
-        }
-
-        const raw = localStorage.getItem('shogi_pending_auth_request');
-        if (raw) {
-          try {
-            const req = JSON.parse(raw);
-            if (req && req.status === 'pending' && req.device_id !== CURRENT_DEVICE_ID) {
-              showIncomingRequestPopup(req);
             }
           } catch (_) {}
         }
@@ -2067,29 +1960,17 @@ async function supabaseInsertUnterlagen(docRecord) {
       const reqId = reqObj.id;
       reqObj.status = decisionStatus;
 
-      localStorage.setItem('shogi_pending_auth_request', JSON.stringify(reqObj));
-
       if (decisionStatus === 'approved') {
         await addTrustedDeviceRecord(
           reqObj.device_id,
           reqObj.device_name || reqObj.usename || 'Approved Device',
-          {
-            country: reqObj.country || 'საქართველო',
-            city: reqObj.city || 'თბილისი',
-            ip: reqObj.ip || '0.0.0.0'
-          }
+          { country: reqObj.country || 'საქართველო', city: reqObj.city || 'თბილისი', ip: reqObj.ip || '0.0.0.0' }
         );
       }
 
       await supabaseUpdateLoginRequestStatus(reqId, decisionStatus);
 
-      if (syncChannel) {
-        syncChannel.postMessage({
-          type: 'AUTH_REQUEST_DECISION',
-          reqId,
-          status: decisionStatus
-        });
-      }
+      if (syncChannel) syncChannel.postMessage({ type: 'AUTH_REQUEST_DECISION', reqId, status: decisionStatus });
 
       const modal = document.getElementById('incomingAuthRequestModal');
       modal.classList.add('hidden');
@@ -2102,21 +1983,13 @@ async function supabaseInsertUnterlagen(docRecord) {
       syncChannel.onmessage = (e) => {
         const msg = e.data;
         if (!msg) return;
-        if (msg.type === 'NEW_AUTH_REQUEST') {
-          showIncomingRequestPopup(msg.request);
-        } else if (msg.type === 'AUTH_REQUEST_DECISION') {
-          handleRequestDecisionOnWaitingDevice(msg.status);
-        } else if (msg.type === 'DOCUMENTS_CHANGED') {
-          loadAllDocumentsFromStorage(false);
-        } else if (msg.type === 'TRUSTED_DEVICE_UPDATED' || msg.type === 'TRUSTED_DEVICE_CLEARED') {
-          updateTrustedDeviceSettingsUI();
-        }
+        if (msg.type === 'NEW_AUTH_REQUEST') showIncomingRequestPopup(msg.request);
+        else if (msg.type === 'AUTH_REQUEST_DECISION') handleRequestDecisionOnWaitingDevice(msg.status);
+        else if (msg.type === 'DOCUMENTS_CHANGED') loadAllDocumentsFromStorage(false);
+        else if (msg.type === 'TRUSTED_DEVICE_UPDATED' || msg.type === 'TRUSTED_DEVICE_CLEARED') updateTrustedDeviceSettingsUI();
       };
     }
 
-    // =========================================================================
-    // ENTER MAIN PAGE & LOGOUT
-    // =========================================================================
     async function enterMainApplication() {
       sessionStorage.setItem('shogi_authenticated', 'true');
       document.getElementById('authPageSection').classList.add('hidden');
@@ -2144,9 +2017,6 @@ async function supabaseInsertUnterlagen(docRecord) {
       document.getElementById('authCodeInput').value = '';
     }
 
-    // =========================================================================
-    // 4.2 GLOBAL LOADING OF DOCUMENTS FROM SUPABASE `unterlagen` TABLE
-    // =========================================================================
     async function refreshDocumentsData() {
       const icon = document.getElementById('headerBrandSvg');
       if (icon) {
@@ -2156,16 +2026,13 @@ async function supabaseInsertUnterlagen(docRecord) {
       await loadAllDocumentsFromStorage(true);
     }
 
-async function loadAllDocumentsFromStorage(showSpinner = true) {
+    async function loadAllDocumentsFromStorage(showSpinner = true) {
       if (showSpinner) showGlobalLoading('იტვირთება...');
       try {
         let tableDocs = [];
 
         if (supabaseClient) {
-          const { data, error } = await supabaseClient
-            .from(TABLE_UNTERLAGEN)
-            .select('*');
-
+          const { data, error } = await supabaseClient.from(TABLE_UNTERLAGEN).select('*');
           if (!error && Array.isArray(data)) {
             tableDocs = data.map(normalizeUnterlagenRow);
           } else if (error) {
@@ -2176,29 +2043,21 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
         const bucketDocs = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
         const docMap = new Map();
 
-        // ჯერ ბაკეტის ინდექსიდან ვტვირთვათ (რომ ახალი ატვირთული არ დაიკარგოს)
         if (Array.isArray(bucketDocs)) {
           for (const bDoc of bucketDocs) {
             if (bDoc && bDoc.id) docMap.set(bDoc.id, bDoc);
           }
         }
-        // შემდეგ ვამატებთ/ვაახლებთ ცხრილის დოკუმენტებით
         for (const tDoc of tableDocs) {
           if (docMap.has(tDoc.id)) {
             const existing = docMap.get(tDoc.id);
-            docMap.set(tDoc.id, {
-              ...existing,
-              ...tDoc,
-              created_at: tDoc.created_at || existing.created_at
-            });
+            docMap.set(tDoc.id, { ...existing, ...tDoc, created_at: tDoc.created_at || existing.created_at });
           } else {
             docMap.set(tDoc.id, tDoc);
           }
         }
 
         allDocuments = Array.from(docMap.values());
-
-        // Sort files from newest to oldest
         allDocuments.sort((a, b) => {
           const tA = new Date(a.created_at).getTime() || 0;
           const tB = new Date(b.created_at).getTime() || 0;
@@ -2215,53 +2074,21 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
       }
     }
 
-    // =========================================================================
-    // FILE TYPE SVG GENERATOR
-    // =========================================================================
     function getFileTypeSvgIcon(ext = '') {
       const cleanExt = (ext || '').toUpperCase();
       if (cleanExt === 'PDF') {
-        return `
-          <svg class="w-6 h-6 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <path d="M9 15h6"></path>
-            <path d="M9 11h6"></path>
-          </svg>`;
+        return `<svg class="w-6 h-6 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15h6"></path><path d="M9 11h6"></path></svg>`;
       }
       if (['DOC', 'DOCX', 'ODT', 'RTF'].includes(cleanExt)) {
-        return `
-          <svg class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="8" y1="13" x2="16" y2="13"></line>
-            <line x1="8" y1="17" x2="14" y2="17"></line>
-            <line x1="8" y1="9" x2="10" y2="9"></line>
-          </svg>`;
+        return `<svg class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="14" y2="17"></line><line x1="8" y1="9" x2="10" y2="9"></line></svg>`;
       }
       if (['XLS', 'XLSX', 'CSV', 'ODS'].includes(cleanExt)) {
-        return `
-          <svg class="w-6 h-6 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="3" y1="9" x2="21" y2="9"></line>
-            <line x1="3" y1="15" x2="21" y2="15"></line>
-            <line x1="9" y1="3" x2="9" y2="21"></line>
-            <line x1="15" y1="3" x2="15" y2="21"></line>
-          </svg>`;
+        return `<svg class="w-6 h-6 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>`;
       }
       if (['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP', 'SVG', 'BMP'].includes(cleanExt)) {
-        return `
-          <svg class="w-6 h-6 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-            <polyline points="21 15 16 10 5 21"></polyline>
-          </svg>`;
+        return `<svg class="w-6 h-6 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
       }
-      return `
-        <svg class="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-          <polyline points="13 2 13 9 20 9"></polyline>
-        </svg>`;
+      return `<svg class="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`;
     }
 
     function formatFileSize(bytes) {
@@ -2277,9 +2104,7 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
         if (isNaN(d.getTime())) return isoString || '';
         const pad = (n) => String(n).padStart(2, '0');
         return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-      } catch (_) {
-        return '';
-      }
+      } catch (_) { return ''; }
     }
 
     function renderFallbackCardBadge(ext, sizeBytes = 0) {
@@ -2295,14 +2120,8 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
       `;
     }
 
-    // =========================================================================
-    // 5.1 MAIN PAGE RENDERING & DOM-PRESERVING INSTANT SEARCH
-    // =========================================================================
     function renderMainCategoriesAndFiles() {
-      // Reset lazy observer & queue when rebuilding list
-      if (cardPreviewObserver) {
-        cardPreviewObserver.disconnect();
-      }
+      if (cardPreviewObserver) cardPreviewObserver.disconnect();
       cardPreviewQueue = [];
 
       const container = document.getElementById('categoriesListContainer');
@@ -2315,13 +2134,10 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
         return;
       }
 
-      // Group by Category preserving newest-first order
       const categoriesMap = new Map();
       for (const doc of allDocuments) {
         const catName = doc.category || 'სხვა დოკუმენტები';
-        if (!categoriesMap.has(catName)) {
-          categoriesMap.set(catName, []);
-        }
+        if (!categoriesMap.has(catName)) categoriesMap.set(catName, []);
         categoriesMap.get(catName).push(doc);
       }
 
@@ -2331,17 +2147,13 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
 
         html += `
           <section class="category-section-block bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm" data-category-name="${escapeHtml(catName)}">
-            <!-- Category Header -->
             <div class="w-full flex items-center justify-between gap-4 pb-3.5">
               <div class="flex items-center gap-2.5 min-w-0">
                 <div class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0">
-                  <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                  </svg>
+                  <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                 </div>
                 <h2 class="text-base sm:text-lg font-bold text-slate-900 truncate">${escapeHtml(catName)}</h2>
               </div>
-
               <div class="shrink-0 flex items-center gap-1.5 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full text-xs font-bold text-blue-700">
                 <span class="category-visible-count">${docsInCat.length}</span>
                 <span>ფაილი</span>
@@ -2350,54 +2162,46 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
 
             <div class="w-full h-px bg-slate-200 mb-4"></div>
 
-<!-- Files Grid (1 ხაზზე 7 ფაილი) -->
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-2.5">
-  ${docsInCat.map((doc) => {
-    const searchHaystack = `${doc.title || ''} ${doc.file_name || ''} ${doc.category || ''} ${doc.file_ext || ''}`.toLowerCase();
-    return `
-    <div
-      onclick="openFileViewerById('${escapeHtml(doc.id)}')"
-      data-doc-id="${escapeHtml(doc.id)}"
-      data-search-text="${escapeHtml(searchHaystack)}"
-      class="file-card-item group bg-white hover:bg-slate-50/80 border border-slate-200 hover:border-blue-500 rounded-xl overflow-hidden flex flex-col cursor-pointer transition shadow-sm hover:shadow-md"
-    >
-      <!-- Top Visual Preview Box -->
-      <div id="cardPreview_${escapeHtml(doc.id)}" data-doc-id="${escapeHtml(doc.id)}" class="card-preview-box">
-        ${renderFallbackCardBadge(doc.file_ext, doc.file_size)}
-      </div>
-
-      <!-- Bottom Compact Metadata Row -->
-      <div class="p-2.5 flex items-start gap-2">
-        <div class="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 group-hover:border-blue-300 flex items-center justify-center shrink-0 transition">
-          ${getFileTypeSvgIcon(doc.file_ext)}
-        </div>
-        <div class="min-w-0 flex-1">
-          <h3 class="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition truncate">${escapeHtml(doc.title)}</h3>
-          <p class="text-[11px] text-slate-500 truncate mt-0.5">${escapeHtml(doc.file_name)}</p>
-          <div class="flex items-center justify-between gap-1 mt-1.5 text-[10px] text-slate-500">
-            <span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono font-semibold">${escapeHtml(doc.file_ext || 'FILE')}</span>
-            <span class="truncate">${formatFileSize(doc.file_size)}</span>
-          </div>
-          <div class="text-[9px] text-slate-400 mt-1 truncate">${formatGeorgianDate(doc.created_at)}</div>
-        </div>
-      </div>
-    </div>
-  `}).join('')}
-</div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-2.5">
+              ${docsInCat.map((doc) => {
+                const searchHaystack = `${doc.title || ''} ${doc.file_name || ''} ${doc.category || ''} ${doc.file_ext || ''}`.toLowerCase();
+                return `
+                  <div
+                    onclick="openFileViewerById('${escapeHtml(doc.id)}')"
+                    data-doc-id="${escapeHtml(doc.id)}"
+                    data-search-text="${escapeHtml(searchHaystack)}"
+                    class="file-card-item group bg-white hover:bg-slate-50/80 border border-slate-200 hover:border-blue-500 rounded-xl overflow-hidden flex flex-col cursor-pointer transition shadow-sm hover:shadow-md"
+                  >
+                    <div id="cardPreview_${escapeHtml(doc.id)}" data-doc-id="${escapeHtml(doc.id)}" class="card-preview-box">
+                      ${renderFallbackCardBadge(doc.file_ext, doc.file_size)}
+                    </div>
+                    <div class="p-2.5 flex items-start gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 group-hover:border-blue-300 flex items-center justify-center shrink-0 transition">
+                        ${getFileTypeSvgIcon(doc.file_ext)}
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <h3 class="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition truncate">${escapeHtml(doc.title)}</h3>
+                        <p class="text-[11px] text-slate-500 truncate mt-0.5">${escapeHtml(doc.file_name)}</p>
+                        <div class="flex items-center justify-between gap-1 mt-1.5 text-[10px] text-slate-500">
+                          <span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono font-semibold">${escapeHtml(doc.file_ext || 'FILE')}</span>
+                          <span class="truncate">${formatFileSize(doc.file_size)}</span>
+                        </div>
+                        <div class="text-[9px] text-slate-400 mt-1 truncate">${formatGeorgianDate(doc.created_at)}</div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
           </section>
         `;
       }
 
       container.innerHTML = html;
-
-      // Apply current search filter without re-rendering DOM
       applySearchFilterToDom();
-
-      // Set up IntersectionObserver so only visible cards load previews one by one
       setupLazyCardPreviewObserver();
     }
 
-    // Instant DOM-based search (no re-fetching or re-rendering previews on keystrokes)
     function applySearchFilterToDom() {
       const query = (document.getElementById('globalSearchInput')?.value || '').trim().toLowerCase();
       const clearBtn = document.getElementById('clearGlobalSearchBtn');
@@ -2414,17 +2218,12 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
       sections.forEach((sec) => {
         const cards = sec.querySelectorAll('.file-card-item');
         let visibleInCat = 0;
-
         cards.forEach((card) => {
           const text = card.dataset.searchText || '';
           const isMatch = !query || text.includes(query);
           card.classList.toggle('hidden', !isMatch);
-          if (isMatch) {
-            visibleInCat++;
-            totalVisibleFiles++;
-          }
+          if (isMatch) { visibleInCat++; totalVisibleFiles++; }
         });
-
         const countSpan = sec.querySelector('.category-visible-count');
         if (countSpan) countSpan.textContent = String(visibleInCat);
         sec.classList.toggle('hidden', visibleInCat === 0);
@@ -2439,9 +2238,7 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
       }
     }
 
-    function handleGlobalSearch() {
-      applySearchFilterToDom();
-    }
+    function handleGlobalSearch() { applySearchFilterToDom(); }
 
     function clearGlobalSearch() {
       const input = document.getElementById('globalSearchInput');
@@ -2449,9 +2246,6 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
       applySearchFilterToDom();
     }
 
-    // =========================================================================
-    // 6. MEMORY-SAFE LAZY CARD PREVIEWS (IntersectionObserver + Sequential Queue)
-    // =========================================================================
     function setupLazyCardPreviewObserver() {
       const previewBoxes = document.querySelectorAll('.card-preview-box');
       if (!('IntersectionObserver' in window)) {
@@ -2481,68 +2275,49 @@ async function loadAllDocumentsFromStorage(showSpinner = true) {
       processCardPreviewQueue();
     }
 
-async function processCardPreviewQueue() {
-  if (isProcessingCardPreviewQueue) return;
-  if (cardPreviewQueue.length === 0) return;
+    // FIX 2: processCardPreviewQueue — try/finally + setTimeout(0)
+    async function processCardPreviewQueue() {
+      if (isProcessingCardPreviewQueue) return;
+      if (cardPreviewQueue.length === 0) return;
 
-  isProcessingCardPreviewQueue = true;
-  const previewEl = cardPreviewQueue.shift();
+      isProcessingCardPreviewQueue = true;
 
-  if (previewEl && document.body.contains(previewEl)) {
-    const docId = previewEl.dataset.docId;
-    const doc = allDocuments.find((d) => d.id === docId);
-    if (doc) {
-      await renderSingleCardPreview(doc, previewEl);
+      try {
+        const previewEl = cardPreviewQueue.shift();
+        if (previewEl && document.body.contains(previewEl)) {
+          const docId = previewEl.dataset.docId;
+          const doc = allDocuments.find((d) => d.id === docId);
+          if (doc) {
+            await renderSingleCardPreview(doc, previewEl);
+          }
+        }
+      } catch (err) {
+        console.warn('Card preview error:', err);
+      } finally {
+        isProcessingCardPreviewQueue = false;
+        if (cardPreviewQueue.length > 0) {
+          setTimeout(processCardPreviewQueue, 0);
+        }
+      }
     }
-  }
-
-  isProcessingCardPreviewQueue = false;
-  if (cardPreviewQueue.length > 0) {
-    setTimeout(processCardPreviewQueue, 45);
-  }
-}
-
 
     async function renderSingleCardPreview(doc, previewEl) {
       const ext = (doc.file_ext || '').toUpperCase();
       const fileSize = doc.file_size || 0;
 
       try {
-        // 1. Image Preview (uses native lazy & async decoding; skip huge >18MB raw images on mobile cards)
         if (['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP', 'SVG', 'BMP'].includes(ext)) {
-          if (IS_MOBILE_DEVICE && fileSize > 12 * 1024 * 1024) {
-            return; // Keep lightweight SVG badge for massive raw photos on mobile
-          }
-          previewEl.innerHTML = `
-            <img
-              src="${escapeHtml(doc.url)}"
-              alt="${escapeHtml(doc.title)}"
-              loading="lazy"
-              decoding="async"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-          `;
+          if (IS_MOBILE_DEVICE && fileSize > 12 * 1024 * 1024) return;
+          previewEl.innerHTML = `<img src="${escapeHtml(doc.url)}" alt="${escapeHtml(doc.title)}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />`;
           const img = previewEl.querySelector('img');
-          if (img) {
-            img.onerror = () => {
-              previewEl.innerHTML = renderFallbackCardBadge(ext, fileSize);
-            };
-          }
+          if (img) img.onerror = () => { previewEl.innerHTML = renderFallbackCardBadge(ext, fileSize); };
           return;
         }
 
-        // Skip downloading heavy documents just for the 175px card thumbnail
-        if (fileSize > MAX_CARD_PREVIEW_DOC_BYTES) {
-          return;
-        }
-        if (ext === 'DOCX' && fileSize > MAX_CARD_PREVIEW_DOCX_BYTES) {
-          return;
-        }
-        if (doc.url && doc.url.startsWith('data:') && doc.url.length > MAX_CARD_PREVIEW_DOC_BYTES * 1.35) {
-          return;
-        }
+        if (fileSize > MAX_CARD_PREVIEW_DOC_BYTES) return;
+        if (ext === 'DOCX' && fileSize > MAX_CARD_PREVIEW_DOCX_BYTES) return;
+        if (doc.url && doc.url.startsWith('data:') && doc.url.length > MAX_CARD_PREVIEW_DOC_BYTES * 1.35) return;
 
-        // 2. PDF Page 1 Canvas Preview (destroys PDF worker memory immediately after painting)
         if (ext === 'PDF' && window.pdfjsLib) {
           const arrayBuffer = await fetchDocumentArrayBuffer(doc, MAX_CARD_PREVIEW_DOC_BYTES);
           const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
@@ -2564,7 +2339,6 @@ async function processCardPreviewQueue() {
           return;
         }
 
-        // 3. Word (.docx) Miniature Page Preview (only for small/medium files)
         if (ext === 'DOCX' && window.docx) {
           const arrayBuffer = await fetchDocumentArrayBuffer(doc, MAX_CARD_PREVIEW_DOCX_BYTES);
           const scaleWrap = document.createElement('div');
@@ -2578,15 +2352,11 @@ async function processCardPreviewQueue() {
             ignoreHeight: false,
             breakPages: true
           });
-          // Keep only the first rendered page in the miniature card DOM to save memory
           const sections = scaleWrap.querySelectorAll('section.docx');
-          for (let i = 1; i < sections.length; i++) {
-            sections[i].remove();
-          }
+          for (let i = 1; i < sections.length; i++) sections[i].remove();
           return;
         }
 
-        // 4. Excel Miniature Grid Preview
         if (['XLSX', 'XLS', 'CSV', 'ODS'].includes(ext) && window.XLSX) {
           const arrayBuffer = await fetchDocumentArrayBuffer(doc, MAX_CARD_PREVIEW_DOC_BYTES);
           const wb = XLSX.read(arrayBuffer, { type: 'array', sheetRows: 8 });
@@ -2597,25 +2367,15 @@ async function processCardPreviewQueue() {
 
           let tableHtml = `
             <div class="w-full h-full overflow-hidden bg-white p-1.5 flex flex-col">
-              <div class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-2 py-0.5 mb-1 truncate">
-                ${escapeHtml(firstSheetName)}
-              </div>
+              <div class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-2 py-0.5 mb-1 truncate">${escapeHtml(firstSheetName)}</div>
               <table class="mini-excel-table">
-                <thead>
-                  <tr>
-                    <th class="mini-excel-row-num"></th>
-                    ${Array.from({ length: colCount }, (_, c) => `<th>${getExcelColumnName(c)}</th>`).join('')}
-                  </tr>
-                </thead>
+                <thead><tr><th class="mini-excel-row-num"></th>${Array.from({ length: colCount }, (_, c) => `<th>${getExcelColumnName(c)}</th>`).join('')}</tr></thead>
                 <tbody>
           `;
-
           for (let r = 0; r < 6; r++) {
             const rowData = rows[r] || [];
             tableHtml += `<tr><td class="mini-excel-row-num">${r + 1}</td>`;
-            for (let c = 0; c < colCount; c++) {
-              tableHtml += `<td>${escapeHtml(rowData[c] ?? '')}</td>`;
-            }
+            for (let c = 0; c < colCount; c++) tableHtml += `<td>${escapeHtml(rowData[c] ?? '')}</td>`;
             tableHtml += `</tr>`;
           }
           tableHtml += `</tbody></table></div>`;
@@ -2623,15 +2383,12 @@ async function processCardPreviewQueue() {
           return;
         }
 
-        // 5. Text Snippet Preview (only for small text files)
         if (['TXT', 'JSON', 'MD', 'LOG', 'XML', 'HTML', 'CSS', 'JS'].includes(ext)) {
           const arrayBuffer = await fetchDocumentArrayBuffer(doc, 256 * 1024);
           const decoder = new TextDecoder('utf-8');
           const text = decoder.decode(arrayBuffer.slice(0, 500));
           if (text && !text.includes('\uFFFD')) {
-            previewEl.innerHTML = `
-              <div class="w-full h-full bg-white p-3 text-[10px] font-mono text-slate-700 overflow-hidden leading-relaxed whitespace-pre-wrap">${escapeHtml(text.slice(0, 280))}</div>
-            `;
+            previewEl.innerHTML = `<div class="w-full h-full bg-white p-3 text-[10px] font-mono text-slate-700 overflow-hidden leading-relaxed whitespace-pre-wrap">${escapeHtml(text.slice(0, 280))}</div>`;
           }
         }
       } catch (_) {
@@ -2639,9 +2396,6 @@ async function processCardPreviewQueue() {
       }
     }
 
-    // =========================================================================
-    // 4.3 SETTINGS POPUP: CATEGORY DROPDOWN, MEMORY-SAFE PREVIEW & UPLOAD
-    // =========================================================================
     function openSettingsPopup() {
       updateTrustedDeviceSettingsUI();
       populateCategoryDropdownMenu();
@@ -2677,51 +2431,33 @@ async function processCardPreviewQueue() {
         return;
       }
 
-      menu.innerHTML = matching
-        .map(
-          (cat) => `
-          <button
-            type="button"
-            onclick="selectCategoryFromDropdown('${escapeHtml(cat)}')"
-            class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 transition cursor-pointer"
-          >
-            <svg class="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
-            <span class="truncate font-medium">${escapeHtml(cat)}</span>
-          </button>
-        `
-        )
-        .join('');
+      menu.innerHTML = matching.map((cat) => `
+        <button type="button" onclick="selectCategoryFromDropdown('${escapeHtml(cat)}')" class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 transition cursor-pointer">
+          <svg class="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          <span class="truncate font-medium">${escapeHtml(cat)}</span>
+        </button>
+      `).join('');
     }
 
     function showCategoryDropdown() {
       const val = document.getElementById('uploadCategoryInput').value;
       populateCategoryDropdownMenu(val);
       const menu = document.getElementById('existingCategoriesMenu');
-      if (menu.children.length > 0) {
-        menu.classList.remove('hidden');
-      }
+      if (menu.children.length > 0) menu.classList.remove('hidden');
     }
 
     function filterCategoryDropdown() {
       const val = document.getElementById('uploadCategoryInput').value;
       populateCategoryDropdownMenu(val);
       const menu = document.getElementById('existingCategoriesMenu');
-      if (menu.children.length > 0) {
-        menu.classList.remove('hidden');
-      } else {
-        menu.classList.add('hidden');
-      }
+      if (menu.children.length > 0) menu.classList.remove('hidden');
+      else menu.classList.add('hidden');
     }
 
     function toggleCategoryDropdown() {
       const menu = document.getElementById('existingCategoriesMenu');
-      if (menu.classList.contains('hidden')) {
-        showCategoryDropdown();
-      } else {
-        hideCategoryDropdown();
-      }
+      if (menu.classList.contains('hidden')) showCategoryDropdown();
+      else hideCategoryDropdown();
     }
 
     function hideCategoryDropdown() {
@@ -2736,12 +2472,9 @@ async function processCardPreviewQueue() {
 
     document.addEventListener('click', (e) => {
       const container = document.getElementById('categoryDropdownContainer');
-      if (container && !container.contains(e.target)) {
-        hideCategoryDropdown();
-      }
+      if (container && !container.contains(e.target)) hideCategoryDropdown();
     });
 
-    // Memory-safe Live File Preview inside Settings before upload
     async function handleFileSelectionForPreview(event) {
       const file = event.target.files && event.target.files[0];
       if (!file) return;
@@ -2758,9 +2491,7 @@ async function processCardPreviewQueue() {
       document.getElementById('selectedFileSizeLabel').textContent = `${ext} • ${formatFileSize(file.size)}`;
 
       const titleInput = document.getElementById('uploadTitleInput');
-      if (!titleInput.value.trim()) {
-        titleInput.value = file.name.replace(/\.[^/.]+$/, '');
-      }
+      if (!titleInput.value.trim()) titleInput.value = file.name.replace(/\.[^/.]+$/, '');
 
       const badge = document.getElementById('previewBadgeType');
       badge.textContent = ext;
@@ -2768,18 +2499,13 @@ async function processCardPreviewQueue() {
 
       const previewBox = document.getElementById('settingsFilePreviewBox');
 
-      // If file exceeds safe preview memory limit, show fast summary card instead of parsing entire file into RAM
       if (file.size > MAX_SETTINGS_PREVIEW_BYTES) {
         previewBox.innerHTML = `
           <div class="flex flex-col items-center text-center gap-2 p-4">
-            <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
-              ${getFileTypeSvgIcon(ext)}
-            </div>
+            <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">${getFileTypeSvgIcon(ext)}</div>
             <div class="text-sm font-bold text-slate-800 break-all">${escapeHtml(file.name)}</div>
             <div class="text-xs text-slate-500">${ext} • ${formatFileSize(file.size)}</div>
-            <span class="text-[11px] text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg font-medium mt-1">
-              მზადაა ასატვირთად
-            </span>
+            <span class="text-[11px] text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg font-medium mt-1">მზადაა ასატვირთად</span>
           </div>
         `;
         return;
@@ -2787,10 +2513,7 @@ async function processCardPreviewQueue() {
 
       previewBox.innerHTML = `
         <div class="flex flex-col items-center gap-2 text-slate-600">
-          <svg class="w-8 h-8 text-blue-600 svg-spinner" viewBox="0 0 50 50" fill="none">
-            <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="4" class="opacity-25"></circle>
-            <path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
-          </svg>
+          <svg class="w-8 h-8 text-blue-600 svg-spinner" viewBox="0 0 50 50" fill="none"><circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="4" class="opacity-25"></circle><path d="M25 5 A20 20 0 0 1 45 25" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path></svg>
           <span class="text-xs font-medium">იტვირთება...</span>
         </div>
       `;
@@ -2841,25 +2564,17 @@ async function processCardPreviewQueue() {
         } else {
           previewBox.innerHTML = `
             <div class="flex flex-col items-center text-center gap-2 p-4">
-              <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
-                ${getFileTypeSvgIcon(ext)}
-              </div>
+              <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">${getFileTypeSvgIcon(ext)}</div>
               <div class="text-sm font-bold text-slate-800">${escapeHtml(file.name)}</div>
               <div class="text-xs text-slate-500">${ext} • ${formatFileSize(file.size)}</div>
             </div>
           `;
         }
       } catch (_) {
-        previewBox.innerHTML = `
-          <div class="flex flex-col items-center text-center gap-2">
-            ${getFileTypeSvgIcon(ext)}
-            <span class="text-xs text-slate-600">${escapeHtml(file.name)}</span>
-          </div>
-        `;
+        previewBox.innerHTML = `<div class="flex flex-col items-center text-center gap-2">${getFileTypeSvgIcon(ext)}<span class="text-xs text-slate-600">${escapeHtml(file.name)}</span></div>`;
       }
     }
 
-    // Upload file binary directly to Supabase Storage Bucket `shogi-unterlagen` with real XHR progress %
     function uploadFileToSupabaseBucketWithProgress(file, storagePath, onProgress, overrideMimeType = null) {
       return new Promise((resolve, reject) => {
         const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
@@ -2905,7 +2620,7 @@ async function processCardPreviewQueue() {
       });
     }
 
-    // 8. Upload Document to `shogi-unterlagen` bucket & insert metadata into `unterlagen` table
+    // FIX 3: uploadDocumentHandler — CREATED_AT აღდგენილია + რეალური შემოწმება
     async function uploadDocumentHandler() {
       const titleInput = document.getElementById('uploadTitleInput');
       const categoryInput = document.getElementById('uploadCategoryInput');
@@ -2947,13 +2662,7 @@ async function processCardPreviewQueue() {
         const safeAsciiName = selectedUploadFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
         const storagePath = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}_${safeAsciiName}`;
 
-        // Upload directly to Supabase Storage Bucket (no massive Base64 fallback that crashes browsers)
-        const publicFileUrl = await uploadFileToSupabaseBucketWithProgress(
-          selectedUploadFile,
-          storagePath,
-          updateProgress
-        );
-
+        const publicFileUrl = await uploadFileToSupabaseBucketWithProgress(selectedUploadFile, storagePath, updateProgress);
         updateProgress(92);
 
         const createdIso = new Date().toISOString();
@@ -2962,24 +2671,31 @@ async function processCardPreviewQueue() {
 
         const docUuid = generateUuidV4();
 
+        // ✅ CREATED_AT აღდგენილია
         const dbRow = {
           ID: docUuid,
           LOCATION: category,
           NAME: title,
           TYPE: ext,
           URL: fullUrlWithMeta,
+          CREATED_AT: createdIso
         };
 
+        // ✅ throw-ს აკეთებს, თუ ვერ შეინახა
         await supabaseInsertUnterlagen(dbRow);
+
+        // ✅ რეალური შემოწმება — ნამდვილად ჩანს თუ არა ფაილი
+        await loadAllDocumentsFromStorage(false);
+        const found = allDocuments.find((d) => d.id === docUuid);
+        if (!found) {
+          throw new Error('ფაილი აიტვირთა Storage-ში, მაგრამ მეტამონაცემები ვერ შეინახა. ფაილი სიაში არ ჩანს.');
+        }
 
         updateProgress(100);
         await new Promise((r) => setTimeout(r, 200));
 
-        if (syncChannel) {
-          syncChannel.postMessage({ type: 'DOCUMENTS_CHANGED' });
-        }
+        if (syncChannel) syncChannel.postMessage({ type: 'DOCUMENTS_CHANGED' });
 
-        // Reset form & release preview memory
         if (currentSettingsPreviewBlobUrl) {
           URL.revokeObjectURL(currentSettingsPreviewBlobUrl);
           currentSettingsPreviewBlobUrl = null;
@@ -2998,12 +2714,11 @@ async function processCardPreviewQueue() {
         `;
         selectedUploadFile = null;
 
-        await loadAllDocumentsFromStorage(false);
         closeSettingsPopup();
         showBottomRightNotification('ფაილი აიტვირთა!', 'success');
       } catch (err) {
         console.error('Upload error:', err);
-        showBottomRightNotification('ატვირთვის შეცდომა: ' + (err.message || 'შეამოწმეთ ფაილის ზომა ან კავშირი'), 'error');
+        showBottomRightNotification('ატვირთვის შეცდომა: ' + (err.message || 'უცნობი შეცდომა'), 'error');
       } finally {
         progressWrapper.classList.add('hidden');
         updateProgress(0);
@@ -3011,9 +2726,6 @@ async function processCardPreviewQueue() {
       }
     }
 
-    // =========================================================================
-    // TRUSTED DEVICE MANAGEMENT IN SETTINGS
-    // =========================================================================
     async function updateTrustedDeviceSettingsUI() {
       const trustedList = await getTrustedDevicesList();
       const badge = document.getElementById('trustedDeviceBadge');
@@ -3024,41 +2736,28 @@ async function processCardPreviewQueue() {
         const isCurrentTrusted = trustedList.some((d) => d && d.device_id === CURRENT_DEVICE_ID);
         badge.textContent = `აქტიური (${trustedList.length})`;
         badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold';
-        meta.textContent = isCurrentTrusted
-          ? 'ეს მოწყობილობა რეგისტრირებულია როგორც სანდო (შესვლა დადასტურების გარეშე)'
-          : 'სისტემაში რეგისტრირებულია სანდო მოწყობილობა';
+        meta.textContent = isCurrentTrusted ? 'ეს მოწყობილობა რეგისტრირებულია როგორც სანდო (შესვლა დადასტურების გარეშე)' : 'სისტემაში რეგისტრირებულია სანდო მოწყობილობა';
 
         if (listContainer) {
-          listContainer.innerHTML = trustedList
-            .map((dev) => {
-              const isMine = dev.device_id === CURRENT_DEVICE_ID;
-              return `
-                <div class="flex flex-wrap items-center justify-between gap-2 bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
-                  <div class="flex items-center gap-2.5 min-w-0">
-                    <svg class="w-4 h-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <div class="truncate">
-                      <span class="font-bold text-slate-800">${escapeHtml(dev.device_name || dev.usename || dev.device_id)}</span>
-                      ${isMine ? '<span class="ml-2 px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold">ეს მოწყობილობა</span>' : ''}
-                      <span class="text-slate-400 ml-2 font-mono">${escapeHtml(dev.ip || '')}</span>
-                    </div>
+          listContainer.innerHTML = trustedList.map((dev) => {
+            const isMine = dev.device_id === CURRENT_DEVICE_ID;
+            return `
+              <div class="flex flex-wrap items-center justify-between gap-2 bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <svg class="w-4 h-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <div class="truncate">
+                    <span class="font-bold text-slate-800">${escapeHtml(dev.device_name || dev.usename || dev.device_id)}</span>
+                    ${isMine ? '<span class="ml-2 px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold">ეს მოწყობილობა</span>' : ''}
+                    <span class="text-slate-400 ml-2 font-mono">${escapeHtml(dev.ip || '')}</span>
                   </div>
-                  <button
-                    type="button"
-                    onclick="openDeleteTrustedDeviceConfirm('${escapeHtml(dev.device_id)}')"
-                    class="inline-flex items-center gap-1 text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1 rounded-lg font-semibold transition cursor-pointer"
-                  >
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                    </svg>
-                    <span>წაშლა</span>
-                  </button>
                 </div>
-              `;
-            })
-            .join('');
+                <button type="button" onclick="openDeleteTrustedDeviceConfirm('${escapeHtml(dev.device_id)}')" class="inline-flex items-center gap-1 text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1 rounded-lg font-semibold transition cursor-pointer">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path></svg>
+                  <span>წაშლა</span>
+                </button>
+              </div>
+            `;
+          }).join('');
         }
       } else {
         badge.textContent = 'არ არის არჩეული';
@@ -3090,22 +2789,15 @@ async function processCardPreviewQueue() {
       closeDeleteTrustedDeviceConfirm();
     }
 
-    // =========================================================================
-    // 5. ADVANCED FILE VIEWER POPUP (MEMORY-SAFE & LAZY PAGE RENDERING)
-    // =========================================================================
     async function fetchDocumentArrayBuffer(doc, maxAllowedBytes = 0) {
       const cleanUrl = doc.url;
       if (cleanUrl.startsWith('data:')) {
         const base64 = cleanUrl.includes(',') ? cleanUrl.split(',')[1] : cleanUrl;
-        if (maxAllowedBytes > 0 && base64.length * 0.75 > maxAllowedBytes) {
-          throw new Error('File exceeds preview size cap');
-        }
+        if (maxAllowedBytes > 0 && base64.length * 0.75 > maxAllowedBytes) throw new Error('File exceeds preview size cap');
         const binaryString = atob(base64);
         const len = binaryString.length;
         const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
+        for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
         return bytes.buffer;
       }
 
@@ -3113,9 +2805,7 @@ async function processCardPreviewQueue() {
         const response = await fetch(cleanUrl);
         if (response.ok) {
           const contentLen = parseInt(response.headers.get('content-length') || '0', 10);
-          if (maxAllowedBytes > 0 && contentLen > maxAllowedBytes) {
-            throw new Error('File exceeds preview size cap');
-          }
+          if (maxAllowedBytes > 0 && contentLen > maxAllowedBytes) throw new Error('File exceeds preview size cap');
           return await response.arrayBuffer();
         }
       } catch (e) {
@@ -3123,13 +2813,9 @@ async function processCardPreviewQueue() {
       }
 
       if (supabaseClient && doc.storage_path) {
-        const { data, error } = await supabaseClient.storage
-          .from(SUPABASE_BUCKET)
-          .download(doc.storage_path);
+        const { data, error } = await supabaseClient.storage.from(SUPABASE_BUCKET).download(doc.storage_path);
         if (!error && data) {
-          if (maxAllowedBytes > 0 && data.size > maxAllowedBytes) {
-            throw new Error('File exceeds preview size cap');
-          }
+          if (maxAllowedBytes > 0 && data.size > maxAllowedBytes) throw new Error('File exceeds preview size cap');
           return await data.arrayBuffer();
         }
       }
@@ -3143,9 +2829,7 @@ async function processCardPreviewQueue() {
         currentViewerPdfObserver = null;
       }
       if (currentViewerPdfDoc) {
-        try {
-          await currentViewerPdfDoc.destroy();
-        } catch (_) {}
+        try { await currentViewerPdfDoc.destroy(); } catch (_) {}
         currentViewerPdfDoc = null;
       }
       if (currentOpenFileBlobUrl) {
@@ -3174,11 +2858,7 @@ async function processCardPreviewQueue() {
 
       const ext = (doc.file_ext || '').toUpperCase();
       const searchInput = document.getElementById('inDocSearchInput');
-      if (['XLS', 'XLSX', 'CSV', 'ODS'].includes(ext)) {
-        searchInput.placeholder = 'ძებნა ცხრილში...';
-      } else {
-        searchInput.placeholder = 'ძებნა...';
-      }
+      searchInput.placeholder = ['XLS', 'XLSX', 'CSV', 'ODS'].includes(ext) ? 'ძებნა ცხრილში...' : 'ძებნა...';
 
       const sheetTabsBar = document.getElementById('excelSheetTabsBar');
       sheetTabsBar.classList.add('hidden');
@@ -3215,9 +2895,7 @@ async function processCardPreviewQueue() {
         console.error('Viewer render error:', err);
         viewportContent.innerHTML = `
           <div class="bg-white border border-slate-200 rounded-2xl p-8 text-center max-w-md my-auto shadow-lg">
-            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-slate-100 flex items-center justify-center">
-              ${getFileTypeSvgIcon(ext)}
-            </div>
+            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-slate-100 flex items-center justify-center">${getFileTypeSvgIcon(ext)}</div>
             <h4 class="text-base font-bold text-slate-900 mb-1">${escapeHtml(doc.file_name)}</h4>
             <p class="text-xs text-slate-500 mb-4">ეს ფორმატი მზადაა პირდაპირ გადმოსაწერად</p>
             <button onclick="downloadCurrentOpenFile()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold cursor-pointer">ფაილის გადმოწერა</button>
@@ -3233,8 +2911,7 @@ async function processCardPreviewQueue() {
       if (!currentOpenDocument) return;
       const ext = (currentOpenDocument.file_ext || 'FILE').toUpperCase();
       const pages = currentViewerTotalPages || 1;
-      document.getElementById('viewerBottomMetaText').textContent =
-        `${currentOpenDocument.file_name}, ${ext}, ${pages} გვერდი`;
+      document.getElementById('viewerBottomMetaText').textContent = `${currentOpenDocument.file_name}, ${ext}, ${pages} გვერდი`;
       document.getElementById('viewerTotalPagesLabel').textContent = String(pages);
       document.getElementById('viewerPageNumberInput').max = String(pages);
       document.getElementById('viewerPageNumberInput').value = '1';
@@ -3247,13 +2924,9 @@ async function processCardPreviewQueue() {
       await cleanupViewerResources();
     }
 
-    // =========================================================================
-    // 5.5 LAZY-RENDERED PDF VIEWER (Prevents Canvas/GPU OOM on Mobile & Desktop)
-    // =========================================================================
     async function renderPdfInCustomViewer(doc, container) {
       let loadingTask;
       if (doc.url && !doc.url.startsWith('data:')) {
-        // Stream/fetch directly via URL so we don't duplicate ArrayBuffers in JS heap
         loadingTask = pdfjsLib.getDocument({ url: doc.url });
       } else {
         const buf = await fetchDocumentArrayBuffer(doc);
@@ -3264,7 +2937,6 @@ async function processCardPreviewQueue() {
       currentViewerPdfDoc = pdf;
       currentViewerTotalPages = pdf.numPages;
 
-      // Get Page 1 dimensions as default placeholder size so all page shells appear immediately
       const firstPage = await pdf.getPage(1);
       const baseScale = IS_MOBILE_DEVICE ? 1.05 : 1.35;
       const defaultViewport = firstPage.getViewport({ scale: baseScale });
@@ -3273,7 +2945,7 @@ async function processCardPreviewQueue() {
 
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const pageWrap = document.createElement('div');
-        pageWrap.className = 'pdf-page-container viewer-page-anchor flex items-center justify-center';
+        pageWrap.className = 'pdf-page-container viewer-page-anchor pdf-page-placeholder flex items-center justify-center';
         pageWrap.dataset.pageNumber = String(pageNum);
         pageWrap.dataset.rendered = 'false';
         pageWrap.style.width = `${defaultW}px`;
@@ -3299,17 +2971,11 @@ async function processCardPreviewQueue() {
               }
             });
           },
-          {
-            root: scrollViewport,
-            rootMargin: '500px 0px'
-          }
+          { root: scrollViewport, rootMargin: '500px 0px' }
         );
 
-        container.querySelectorAll('.pdf-page-container').forEach((el) => {
-          currentViewerPdfObserver.observe(el);
-        });
+        container.querySelectorAll('.pdf-page-container').forEach((el) => currentViewerPdfObserver.observe(el));
       } else {
-        // Fallback: render first 3 pages immediately
         const pagesToRender = Math.min(pdf.numPages, 3);
         for (let p = 1; p <= pagesToRender; p++) {
           const wrap = container.querySelector(`.pdf-page-container[data-page-number="${p}"]`);
@@ -3323,7 +2989,6 @@ async function processCardPreviewQueue() {
       try {
         const page = await pdf.getPage(pageNum);
         const viewport = page.getViewport({ scale: baseScale });
-        // Cap DPR on mobile so 3x Retina displays don't allocate 9x canvas memory
         const maxDpr = IS_MOBILE_DEVICE ? 1.35 : 1.75;
         const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
 
@@ -3332,6 +2997,7 @@ async function processCardPreviewQueue() {
 
         pageWrap.style.width = `${widthPx}px`;
         pageWrap.style.height = `${heightPx}px`;
+        pageWrap.classList.remove('pdf-page-placeholder');
         pageWrap.innerHTML = '';
 
         const canvas = document.createElement('canvas');
@@ -3367,7 +3033,6 @@ async function processCardPreviewQueue() {
         pageWrap.dataset.rendered = 'true';
         page.cleanup();
 
-        // Re-apply active search highlight if user already typed in search box
         const activeQuery = (document.getElementById('inDocSearchInput')?.value || '').trim();
         if (activeQuery) handleInDocumentSearch();
       } catch (err) {
@@ -3375,7 +3040,6 @@ async function processCardPreviewQueue() {
       }
     }
 
-    // 6. WORD (.DOCX) RENDERER
     async function renderDocxInCustomViewer(arrayBuffer, container) {
       const docxHost = document.createElement('div');
       docxHost.className = 'w-full flex flex-col items-center';
@@ -3406,7 +3070,6 @@ async function processCardPreviewQueue() {
       }
     }
 
-    // 7. EXCEL (.XLSX / .XLS / .CSV) RENDERER (with row chunking to prevent DOM freezes)
     async function renderExcelInCustomViewer(arrayBuffer, container) {
       const wb = XLSX.read(arrayBuffer, { type: 'array' });
       currentExcelWorkbook = wb;
@@ -3419,16 +3082,7 @@ async function processCardPreviewQueue() {
         sheetTabsBar.classList.remove('hidden');
         sheetTabsBar.classList.add('flex');
         sheetTabsBar.innerHTML = wb.SheetNames.map((name, idx) => `
-          <button
-            type="button"
-            onclick="switchExcelSheetTab(${idx})"
-            id="excelTabBtn_${idx}"
-            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
-              idx === 0
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
-            }"
-          >
+          <button type="button" onclick="switchExcelSheetTab(${idx})" id="excelTabBtn_${idx}" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${idx === 0 ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'}">
             ${escapeHtml(name)}
           </button>
         `).join('');
@@ -3456,11 +3110,7 @@ async function processCardPreviewQueue() {
       currentExcelWorkbook.SheetNames.forEach((_, idx) => {
         const btn = document.getElementById(`excelTabBtn_${idx}`);
         if (btn) {
-          btn.className = `px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
-            idx === sheetIndex
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
-          }`;
+          btn.className = `px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${idx === sheetIndex ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'}`;
         }
       });
 
@@ -3486,21 +3136,13 @@ async function processCardPreviewQueue() {
       const visibleRowsCount = Math.min(rows.length, currentExcelRowLimit);
       const slicedRows = rows.slice(0, visibleRowsCount);
 
-      const maxCols = Math.max(
-        10,
-        Math.min(50, slicedRows.reduce((max, r) => Math.max(max, r.length), 0))
-      );
+      const maxCols = Math.max(10, Math.min(50, slicedRows.reduce((max, r) => Math.max(max, r.length), 0)));
       const totalRowsToRender = Math.max(28, visibleRowsCount);
 
       let tableHtml = `
         <div class="excel-grid-wrapper w-full viewer-page-anchor" data-page-number="${sheetIndex + 1}">
           <table class="excel-table">
-            <thead>
-              <tr>
-                <th class="excel-corner-header"></th>
-                ${Array.from({ length: maxCols }, (_, c) => `<th class="excel-col-header">${getExcelColumnName(c)}</th>`).join('')}
-              </tr>
-            </thead>
+            <thead><tr><th class="excel-corner-header"></th>${Array.from({ length: maxCols }, (_, c) => `<th class="excel-col-header">${getExcelColumnName(c)}</th>`).join('')}</tr></thead>
             <tbody>
       `;
 
@@ -3519,11 +3161,7 @@ async function processCardPreviewQueue() {
       if (rows.length > visibleRowsCount) {
         tableHtml += `
           <div class="mt-4">
-            <button
-              type="button"
-              onclick="loadMoreExcelRows()"
-              class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow cursor-pointer transition"
-            >
+            <button type="button" onclick="loadMoreExcelRows()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow cursor-pointer transition">
               მეტი სტრიქონის ჩვენება (${visibleRowsCount} / ${rows.length})
             </button>
           </div>
@@ -3533,7 +3171,6 @@ async function processCardPreviewQueue() {
       container.innerHTML = tableHtml;
     }
 
-    // IMAGE RENDERER
     function renderImageInCustomViewer(doc, container) {
       currentViewerTotalPages = 1;
       container.innerHTML = `
@@ -3543,18 +3180,14 @@ async function processCardPreviewQueue() {
       `;
     }
 
-    // TEXT / OTHER FILE RENDERER
     function renderGenericOrTextFileInViewer(doc, arrayBuffer, container) {
       currentViewerTotalPages = 1;
       try {
-        // Limit decoded text preview to first 500KB so multi-megabyte logs/binaries don't freeze DOM
         const maxSlice = arrayBuffer.byteLength > 500 * 1024 ? arrayBuffer.slice(0, 500 * 1024) : arrayBuffer;
         const decoder = new TextDecoder('utf-8');
         const text = decoder.decode(maxSlice);
         if (text && !text.slice(0, 200).includes('\uFFFD')) {
-          container.innerHTML = `
-            <div class="viewer-page-anchor w-full max-w-4xl bg-white text-slate-900 p-8 rounded-xl border border-slate-200 shadow-lg font-mono text-xs sm:text-sm whitespace-pre-wrap break-words" data-page-number="1">${escapeHtml(text)}</div>
-          `;
+          container.innerHTML = `<div class="viewer-page-anchor w-full max-w-4xl bg-white text-slate-900 p-8 rounded-xl border border-slate-200 shadow-lg font-mono text-xs sm:text-sm whitespace-pre-wrap break-words" data-page-number="1">${escapeHtml(text)}</div>`;
           return;
         }
       } catch (_) {}
@@ -3567,9 +3200,6 @@ async function processCardPreviewQueue() {
       `;
     }
 
-    // =========================================================================
-    // 5.5 IN-DOCUMENT AUTOMATIC SEARCH
-    // =========================================================================
     function handleInDocumentSearch() {
       const query = (document.getElementById('inDocSearchInput').value || '').trim().toLowerCase();
       const counter = document.getElementById('inDocSearchCounter');
@@ -3619,14 +3249,9 @@ async function processCardPreviewQueue() {
       }
 
       counter.textContent = matchCount > 0 ? `${matchCount} ნაპოვნია` : '0';
-      if (firstMatchElement) {
-        firstMatchElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      if (firstMatchElement) firstMatchElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // =========================================================================
-    // 5.5 BOTTOM BAR CONTROLS: PAGE NAVIGATION, ZOOM, PRINT, DOWNLOAD, DELETE
-    // =========================================================================
     function stepViewerPage(delta) {
       const input = document.getElementById('viewerPageNumberInput');
       const current = parseInt(input.value || '1', 10);
@@ -3645,9 +3270,7 @@ async function processCardPreviewQueue() {
 
       const container = document.getElementById('viewerViewportContent');
       const targetEl = container.querySelector(`.viewer-page-anchor[data-page-number="${num}"]`);
-      if (targetEl) {
-        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function handleViewerScrollUpdatePage() {
@@ -3671,11 +3294,13 @@ async function processCardPreviewQueue() {
       document.getElementById('viewerPageNumberInput').value = String(closestPage);
     }
 
+    // FIX 4: zoom — transform-origin: top center; კუთხეები არ იკარგება
     function adjustViewerZoom(delta) {
       currentViewerZoom = Math.min(250, Math.max(40, currentViewerZoom + delta));
       document.getElementById('viewerZoomPercentLabel').textContent = `${currentViewerZoom}%`;
       const content = document.getElementById('viewerViewportContent');
       content.style.transform = `scale(${currentViewerZoom / 100})`;
+      content.style.transformOrigin = 'top center';
     }
 
     function printCurrentOpenFile() {
@@ -3707,9 +3332,7 @@ async function processCardPreviewQueue() {
         a.click();
         a.remove();
 
-        if (tempObjectUrl) {
-          setTimeout(() => URL.revokeObjectURL(tempObjectUrl), 3000);
-        }
+        if (tempObjectUrl) setTimeout(() => URL.revokeObjectURL(tempObjectUrl), 3000);
       } catch (_) {
         window.open(currentOpenDocument.url, '_blank');
       }
@@ -3744,9 +3367,7 @@ async function processCardPreviewQueue() {
 
         await supabaseDeleteUnterlagen(docToDelete.id);
 
-        if (syncChannel) {
-          syncChannel.postMessage({ type: 'DOCUMENTS_CHANGED' });
-        }
+        if (syncChannel) syncChannel.postMessage({ type: 'DOCUMENTS_CHANGED' });
 
         await closeFileViewerPopup();
         await loadAllDocumentsFromStorage(false);
@@ -3757,9 +3378,6 @@ async function processCardPreviewQueue() {
       }
     }
 
-    // =========================================================================
-    // INITIALIZE DARK PARTICLES ON LIGHT BACKGROUND & RESTORE SESSION
-    // =========================================================================
     window.onload = function () {
       if (window.particlesJS) {
         window.particlesJS('particles-js', {
@@ -3769,22 +3387,8 @@ async function processCardPreviewQueue() {
             shape: { type: 'circle' },
             opacity: { value: 0.45, random: false },
             size: { value: 3, random: true },
-            line_linked: {
-              enable: true,
-              distance: 150,
-              color: '#1e293b',
-              opacity: 0.32,
-              width: 1.1
-            },
-            move: {
-              enable: true,
-              speed: 1.8,
-              direction: 'none',
-              random: false,
-              straight: false,
-              out_mode: 'out',
-              bounce: false
-            }
+            line_linked: { enable: true, distance: 150, color: '#1e293b', opacity: 0.32, width: 1.1 },
+            move: { enable: true, speed: 1.8, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
           },
           interactivity: {
             detect_on: 'canvas',
