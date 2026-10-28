@@ -1423,30 +1423,31 @@ async function smartAdaptiveTableInsert(tableName, initialRecord) {
 }
 
 async function supabaseInsertUnterlagen(docRecord) {
-  // თუ ცხრილზე RLS ჩართულია, შეცდომას დაიჭერს და ატვირთვას არ გააჩერებს
-  try {
-    await smartAdaptiveTableInsert(TABLE_UNTERLAGEN, docRecord);
-  } catch (err) {
-    console.warn('Table RLS warning, saving to bucket index:', err.message);
-  }
+      try {
+        await smartAdaptiveTableInsert(TABLE_UNTERLAGEN, docRecord);
+      } catch (err) {
+        console.warn('Table RLS warning, saving to bucket index:', err.message);
+      }
 
-  // უსაფრთხო სინქრონიზაცია JSON ინდექსთან (არსებული ფაილების შენარჩუნებით)
-  const normalized = normalizeUnterlagenRow(docRecord);
-  const existingIndex = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
-  const combinedMap = new Map();
+      const normalized = normalizeUnterlagenRow(docRecord);
+      const existingIndex = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
+      const combinedMap = new Map();
 
-  for (const d of allDocuments) {
-    if (d && d.id) combinedMap.set(d.id, d);
-  }
-  if (Array.isArray(existingIndex)) {
-    for (const d of existingIndex) {
-      if (d && d.id) combinedMap.set(d.id, d);
+      // ვინახავთ მიმდინარე זיკრონის და ძველი ინდექსის ყველა ჩანაწერს
+      for (const d of allDocuments) {
+        if (d && d.id) combinedMap.set(d.id, d);
+      }
+      if (Array.isArray(existingIndex)) {
+        for (const d of existingIndex) {
+          if (d && d.id) combinedMap.set(d.id, d);
+        }
+      }
+      // ვამატებთ ახალს
+      combinedMap.set(normalized.id, normalized);
+
+      const finalArray = Array.from(combinedMap.values());
+      await writeBucketJsonFile(SYSTEM_DOCS_INDEX_PATH, finalArray);
     }
-  }
-  combinedMap.set(normalized.id, normalized);
-
-  await writeBucketJsonFile(SYSTEM_DOCS_INDEX_PATH, Array.from(combinedMap.values()));
-}
 
     async function readBucketJsonFile(storagePath) {
       try {
@@ -2155,7 +2156,7 @@ async function supabaseInsertUnterlagen(docRecord) {
       await loadAllDocumentsFromStorage(true);
     }
 
-    async function loadAllDocumentsFromStorage(showSpinner = true) {
+async function loadAllDocumentsFromStorage(showSpinner = true) {
       if (showSpinner) showGlobalLoading('იტვირთება...');
       try {
         let tableDocs = [];
@@ -2175,11 +2176,13 @@ async function supabaseInsertUnterlagen(docRecord) {
         const bucketDocs = (await readBucketJsonFile(SYSTEM_DOCS_INDEX_PATH)) || [];
         const docMap = new Map();
 
+        // ჯერ ბაკეტის ინდექსიდან ვტვირთვათ (რომ ახალი ატვირთული არ დაიკარგოს)
         if (Array.isArray(bucketDocs)) {
           for (const bDoc of bucketDocs) {
             if (bDoc && bDoc.id) docMap.set(bDoc.id, bDoc);
           }
         }
+        // შემდეგ ვამატებთ/ვაახლებთ ცხრილის დოკუმენტებით
         for (const tDoc of tableDocs) {
           if (docMap.has(tDoc.id)) {
             const existing = docMap.get(tDoc.id);
