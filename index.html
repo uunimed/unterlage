@@ -1130,6 +1130,210 @@
         </div>
       </div>
 
+<!-- DOCUMENT SCANNER MODAL -->
+  <div id="documentScannerModal" class="fixed inset-0 z-[240] bg-slate-950/95 hidden flex-col select-none">
+    <!-- Top Controls Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-slate-900 border-b border-slate-800 text-white">
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          onclick="closeDocumentScannerModal()"
+          class="p-2 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-200 hover:text-white transition cursor-pointer"
+          title="დახურვა"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <span class="text-sm font-bold tracking-wide">დოკუმენტის სკანერი</span>
+      </div>
+
+      <!-- Mode & Camera Controls -->
+      <div id="scannerCameraTopControls" class="flex items-center gap-2">
+        <!-- Auto / Manual Toggle -->
+        <button
+          id="scannerAutoModeBtn"
+          type="button"
+          onclick="toggleScannerAutoMode()"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white transition cursor-pointer"
+        >
+          <span id="scannerModeDot" class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+          <span id="scannerAutoModeLabel">ავტომატური</span>
+        </button>
+
+        <!-- Torch / Flash -->
+        <button
+          id="scannerTorchBtn"
+          type="button"
+          onclick="toggleScannerTorch()"
+          class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition cursor-pointer"
+          title="განათება (ფანარი)"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </button>
+
+        <!-- Switch Camera -->
+        <button
+          type="button"
+          onclick="switchScannerCamera()"
+          class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition cursor-pointer"
+          title="კამერის შეტრიალება"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 11A8.1 8.1 0 0 0 4.5 9M4 5v4h4"></path>
+            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Viewport (Camera OR Page Crop Editor) -->
+    <div class="relative flex-1 flex items-center justify-center overflow-hidden bg-black">
+      <!-- LIVE CAMERA VIEW -->
+      <div id="scannerLiveCameraWrap" class="relative w-full h-full flex items-center justify-center">
+        <video
+          id="scannerVideoEl"
+          autoplay
+          playsinline
+          muted
+          class="max-w-full max-h-full object-contain"
+        ></video>
+        <canvas
+          id="scannerOverlayCanvas"
+          class="absolute pointer-events-none"
+        ></canvas>
+
+        <!-- Status Pill -->
+        <div
+          id="scannerStatusHint"
+          class="absolute top-4 left-1/2 -translate-x-1/2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-700 text-xs font-semibold text-slate-100 pointer-events-none"
+        >
+          მოათავსეთ დოკუმენტი კადრში
+        </div>
+
+        <!-- Zoom Slider -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2.5 bg-slate-900/85 border border-slate-700 px-4 py-1.5 rounded-full text-white text-xs">
+          <span>1x</span>
+          <input
+            id="scannerZoomRange"
+            type="range"
+            min="1"
+            max="3"
+            step="0.1"
+            value="1"
+            oninput="handleScannerZoomChange(this.value)"
+            class="w-28 accent-blue-500 cursor-pointer"
+          />
+          <span id="scannerZoomValueLabel" class="font-mono font-bold text-blue-400 min-w-[32px]">1.0x</span>
+        </div>
+      </div>
+
+      <!-- CROP & EDIT PAGE VIEW -->
+      <div id="scannerCropEditorWrap" class="hidden relative w-full h-full flex-col items-center justify-center p-3 bg-slate-950">
+        <div id="scannerCropStage" class="relative inline-block max-w-full max-h-[72vh]">
+          <canvas id="scannerEditSourceCanvas" class="block max-w-full max-h-[72vh] rounded border border-slate-700"></canvas>
+          <svg id="scannerCropPolygonSvg" class="absolute inset-0 w-full h-full pointer-events-none">
+            <polygon id="scannerCropPolygon" fill="rgba(37, 99, 235, 0.22)" stroke="#3b82f6" stroke-width="2.5"></polygon>
+          </svg>
+          <!-- 4 Draggable Corner Handles -->
+          <div id="cropHandle0" data-corner="0" class="scanner-corner-handle"></div>
+          <div id="cropHandle1" data-corner="1" class="scanner-corner-handle"></div>
+          <div id="cropHandle2" data-corner="2" class="scanner-corner-handle"></div>
+          <div id="cropHandle3" data-corner="3" class="scanner-corner-handle"></div>
+        </div>
+
+        <!-- Editor Toolbar -->
+        <div class="flex flex-wrap items-center justify-center gap-2 mt-3">
+          <button
+            type="button"
+            onclick="setScannerEditFilter('original')"
+            id="filterBtn_original"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 cursor-pointer"
+          >
+            ორიგინალი
+          </button>
+          <button
+            type="button"
+            onclick="setScannerEditFilter('magic')"
+            id="filterBtn_magic"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white cursor-pointer"
+          >
+            სკანი (მკვეთრი)
+          </button>
+          <button
+            type="button"
+            onclick="setScannerEditFilter('bw')"
+            id="filterBtn_bw"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 cursor-pointer"
+          >
+            შავ-თეთრი
+          </button>
+          <button
+            type="button"
+            onclick="rotateScannerEditingPage()"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 cursor-pointer inline-flex items-center gap-1"
+          >
+            ↻ შემოტრიალება
+          </button>
+          <button
+            type="button"
+            onclick="deleteCurrentEditingPage()"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 cursor-pointer"
+          >
+            გვერდის წაშლა
+          </button>
+          <button
+            type="button"
+            onclick="applyCropAndReturnToCamera()"
+            class="px-4 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow cursor-pointer"
+          >
+            ✓ გვერდის შენახვა
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Bar: Page Thumbnails, Capture Button, Finish Button -->
+    <div class="px-4 py-3 bg-slate-900 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      <!-- Scanned Pages Thumbnails Strip -->
+      <div class="flex items-center gap-2 overflow-x-auto max-w-[42%] sm:max-w-[38%] py-1" id="scannerThumbnailsStrip">
+        <span class="text-xs text-slate-400">გვერდები: 0</span>
+      </div>
+
+      <!-- Manual Shutter Button -->
+      <div class="flex items-center justify-center">
+        <button
+          id="scannerShutterBtn"
+          type="button"
+          onclick="captureScannerFrameManual()"
+          class="w-16 h-16 rounded-full bg-white border-4 border-blue-500 hover:scale-105 active:scale-95 transition flex items-center justify-center shadow-lg cursor-pointer"
+          title="გადაღება"
+        >
+          <span class="w-12 h-12 rounded-full bg-slate-900/10 border border-slate-300"></span>
+        </button>
+      </div>
+
+      <!-- Finish Scanning Button -->
+      <div class="flex items-center justify-end min-w-[140px]">
+        <button
+          id="finishScanningBtn"
+          type="button"
+          onclick="finishScanningAndCreatePdf()"
+          disabled
+          class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition cursor-pointer shadow-lg"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>დასკანერების დასრულება (<span id="scannerPagesCountBadge">0</span>)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2.5 text-sm mb-6">
         <div class="flex items-center justify-between gap-2">
           <span class="text-slate-500 text-xs">ქვეყანა, ქალაქი:</span>
@@ -3515,6 +3719,660 @@ const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
       }
     }
 
+// ============================================================
+    // GOOGLE DRIVE-STYLE DOCUMENT SCANNER LOGIC
+    // ============================================================
+    let scannerStream = null;
+    let scannerFacingMode = 'environment';
+    let scannerTorchEnabled = false;
+    let scannerZoomLevel = 1.0;
+    let scannerAutoMode = true;
+    let scannerDetectionRaf = null;
+    let scannerStabilityCounter = 0;
+    let lastDetectedQuad = null;
+    let isScannerCapturing = false;
+
+    // თითოეული გვერდის ობიექტი: { origCanvas, croppedDataUrl, corners: [{x,y}x4], filter: 'magic'|'original'|'bw' }
+    let scannedPagesList = [];
+    let currentEditingPageIndex = -1;
+    let activeDragCornerIdx = -1;
+
+    async function openDocumentScannerModal() {
+      scannedPagesList = [];
+      currentEditingPageIndex = -1;
+      scannerZoomLevel = 1.0;
+      scannerTorchEnabled = false;
+      updateScannerThumbnailsUI();
+
+      const modal = document.getElementById('documentScannerModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      showScannerLiveCameraView();
+      await startScannerCameraStream();
+      initCropCornerDragListeners();
+    }
+
+    function closeDocumentScannerModal() {
+      stopScannerCameraStream();
+      const modal = document.getElementById('documentScannerModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function startScannerCameraStream() {
+      stopScannerCameraStream();
+      try {
+        const constraints = {
+          audio: false,
+          video: {
+            facingMode: { ideal: scannerFacingMode },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          }
+        };
+        scannerStream = await navigator.mediaDevices.getUserMedia(constraints);
+        const video = document.getElementById('scannerVideoEl');
+        video.srcObject = scannerStream;
+        await video.play();
+
+        const track = scannerStream.getVideoTracks()[0];
+        if (track && track.getCapabilities) {
+          const caps = track.getCapabilities();
+          const zoomSlider = document.getElementById('scannerZoomRange');
+          if (caps.zoom) {
+            zoomSlider.min = caps.zoom.min || 1;
+            zoomSlider.max = Math.min(caps.zoom.max || 3, 5);
+            zoomSlider.step = caps.zoom.step || 0.1;
+            zoomSlider.value = caps.zoom.min || 1;
+          } else {
+            zoomSlider.min = 1;
+            zoomSlider.max = 3;
+            zoomSlider.step = 0.1;
+            zoomSlider.value = 1;
+          }
+        }
+
+        scannerStabilityCounter = 0;
+        startLiveEdgeDetectionLoop();
+      } catch (err) {
+        console.error('Camera access error:', err);
+        showBottomRightNotification('კამერასთან წვდომა ვერ მოხერხდა. შეამოწმეთ ბრაუზერის ნებართვა.', 'error');
+      }
+    }
+
+    function stopScannerCameraStream() {
+      if (scannerDetectionRaf) {
+        cancelAnimationFrame(scannerDetectionRaf);
+        scannerDetectionRaf = null;
+      }
+      if (scannerStream) {
+        scannerStream.getTracks().forEach((t) => t.stop());
+        scannerStream = null;
+      }
+    }
+
+    async function switchScannerCamera() {
+      scannerFacingMode = scannerFacingMode === 'environment' ? 'user' : 'environment';
+      await startScannerCameraStream();
+    }
+
+    async function toggleScannerTorch() {
+      if (!scannerStream) return;
+      const track = scannerStream.getVideoTracks()[0];
+      if (!track || !track.getCapabilities) {
+        showBottomRightNotification('ამ მოწყობილობის კამერას ფანრის მხარდაჭერა არ აქვს.', 'error');
+        return;
+      }
+      const caps = track.getCapabilities();
+      if (!caps.torch) {
+        showBottomRightNotification('ფანარი ხელმისაწვდომი არ არის ამ კამერაზე.', 'error');
+        return;
+      }
+      try {
+        scannerTorchEnabled = !scannerTorchEnabled;
+        await track.applyConstraints({ advanced: [{ torch: scannerTorchEnabled }] });
+        const btn = document.getElementById('scannerTorchBtn');
+        btn.className = scannerTorchEnabled
+          ? 'p-2 rounded-xl bg-amber-500 text-slate-950 transition cursor-pointer'
+          : 'p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition cursor-pointer';
+      } catch (_) {
+        showBottomRightNotification('ფანრის ჩართვა ვერ მოხერხდა.', 'error');
+      }
+    }
+
+    async function handleScannerZoomChange(val) {
+      scannerZoomLevel = parseFloat(val) || 1.0;
+      document.getElementById('scannerZoomValueLabel').textContent = scannerZoomLevel.toFixed(1) + 'x';
+      const video = document.getElementById('scannerVideoEl');
+
+      if (scannerStream) {
+        const track = scannerStream.getVideoTracks()[0];
+        if (track && track.getCapabilities && track.getCapabilities().zoom) {
+          try {
+            await track.applyConstraints({ advanced: [{ zoom: scannerZoomLevel }] });
+            video.style.transform = 'scale(1)';
+            return;
+          } catch (_) {}
+        }
+      }
+      // Fallback CSS/digital zoom
+      video.style.transform = `scale(${scannerZoomLevel})`;
+    }
+
+    function toggleScannerAutoMode() {
+      scannerAutoMode = !scannerAutoMode;
+      scannerStabilityCounter = 0;
+      const btn = document.getElementById('scannerAutoModeBtn');
+      const label = document.getElementById('scannerAutoModeLabel');
+      const dot = document.getElementById('scannerModeDot');
+      if (scannerAutoMode) {
+        btn.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white transition cursor-pointer';
+        label.textContent = 'ავტომატური';
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-300 animate-pulse';
+      } else {
+        btn.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 transition cursor-pointer';
+        label.textContent = 'მანუალური';
+        dot.className = 'w-2 h-2 rounded-full bg-slate-400';
+      }
+    }
+
+    // ------------------------------------------------------------
+    // ფურცლის კიდეების ავტომატური ამოცნობა (Real-Time Contour Detection)
+    // ------------------------------------------------------------
+    function detectDocumentQuadInCanvas(sourceCanvas) {
+      const w = 160;
+      const h = Math.max(90, Math.round((sourceCanvas.height / sourceCanvas.width) * w));
+      const temp = document.createElement('canvas');
+      temp.width = w;
+      temp.height = h;
+      const ctx = temp.getContext('2d');
+      ctx.drawImage(sourceCanvas, 0, 0, w, h);
+      const imgData = ctx.getImageData(0, 0, w, h).data;
+
+      // გამოვთვალოთ სიკაშკაშე და კონტრასტული ზღურბლი (Otsu-ს მსგავსი ადაპტური ზღურბლი)
+      const lum = new Uint8Array(w * h);
+      let sum = 0;
+      let maxLum = 0;
+      for (let i = 0; i < w * h; i++) {
+        const r = imgData[i * 4];
+        const g = imgData[i * 4 + 1];
+        const b = imgData[i * 4 + 2];
+        const l = (r * 77 + g * 150 + b * 29) >> 8;
+        lum[i] = l;
+        sum += l;
+        if (l > maxLum) maxLum = l;
+      }
+      const avg = sum / (w * h);
+      const threshold = avg + (maxLum - avg) * 0.32;
+
+      // ვეძებთ ნათელ (ფურცლის) პიქსელებს 4 კუთხის მიმართულებით
+      let tl = null, tr = null, br = null, bl = null;
+      let minTL = Infinity, minTR = Infinity, minBR = Infinity, minBL = Infinity;
+      let brightCount = 0;
+
+      const marginX = Math.floor(w * 0.04);
+      const marginY = Math.floor(h * 0.04);
+
+      for (let y = marginY; y < h - marginY; y++) {
+        for (let x = marginX; x < w - marginX; x++) {
+          if (lum[y * w + x] >= threshold) {
+            brightCount++;
+            const dTL = x + y;
+            const dTR = (w - x) + y;
+            const dBR = (w - x) + (h - y);
+            const dBL = x + (h - y);
+
+            if (dTL < minTL) { minTL = dTL; tl = { x: x / w, y: y / h }; }
+            if (dTR < minTR) { minTR = dTR; tr = { x: x / w, y: y / h }; }
+            if (dBR < minBR) { minBR = dBR; br = { x: x / w, y: y / h }; }
+            if (dBL < minBL) { minBL = dBL; bl = { x: x / w, y: y / h }; }
+          }
+        }
+      }
+
+      const areaRatio = brightCount / (w * h);
+      const isValidPaper = tl && tr && br && bl && areaRatio > 0.12 && areaRatio < 0.90 && (tr.x - tl.x) > 0.25 && (bl.y - tl.y) > 0.25;
+
+      if (isValidPaper) {
+        return { found: true, corners: [tl, tr, br, bl] };
+      }
+      return {
+        found: false,
+        corners: [
+          { x: 0.1, y: 0.1 },
+          { x: 0.9, y: 0.1 },
+          { x: 0.9, y: 0.9 },
+          { x: 0.1, y: 0.9 }
+        ]
+      };
+    }
+
+    function startLiveEdgeDetectionLoop() {
+      const video = document.getElementById('scannerVideoEl');
+      const overlay = document.getElementById('scannerOverlayCanvas');
+      const hint = document.getElementById('scannerStatusHint');
+
+      const loop = () => {
+        if (!scannerStream || ! document.getElementById('scannerCropEditorWrap').classList.contains('hidden')) {
+          scannerDetectionRaf = requestAnimationFrame(loop);
+          return;
+        }
+
+        if (video.readyState >= 2 && video.videoWidth > 0) {
+          const rect = video.getBoundingClientRect();
+          overlay.width = rect.width;
+          overlay.height = rect.height;
+          overlay.style.width = rect.width + 'px';
+          overlay.style.height = rect.height + 'px';
+
+          const frameCanvas = grabCurrentVideoFrameCanvas();
+          const detection = detectDocumentQuadInCanvas(frameCanvas);
+          const ctx = overlay.getContext('2d');
+          ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+          if (detection.found) {
+            const c = detection.corners;
+            ctx.beginPath();
+            ctx.moveTo(c[0].x * overlay.width, c[0].y * overlay.height);
+            ctx.lineTo(c[1].x * overlay.width, c[1].y * overlay.height);
+            ctx.lineTo(c[2].x * overlay.width, c[2].y * overlay.height);
+            ctx.lineTo(c[3].x * overlay.width, c[3].y * overlay.height);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(37, 99, 235, 0.22)';
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#3b82f6';
+            ctx.stroke();
+
+            if (scannerAutoMode && !isScannerCapturing) {
+              if (lastDetectedQuad && isQuadStable(lastDetectedQuad, c)) {
+                scannerStabilityCounter++;
+              } else {
+                scannerStabilityCounter = 1;
+              }
+              lastDetectedQuad = c;
+
+              if (scannerStabilityCounter > 15) {
+                hint.textContent = `გააჩერეთ კამერა... ${Math.min(100, Math.round((scannerStabilityCounter / 38) * 100))}%`;
+              }
+              if (scannerStabilityCounter >= 38) {
+                scannerStabilityCounter = 0;
+                triggerAutoCapture(frameCanvas, c);
+              }
+            } else {
+              hint.textContent = 'დოკუმენტი აღქმულია — დააჭირეთ გადაღებას';
+            }
+          } else {
+            scannerStabilityCounter = 0;
+            hint.textContent = scannerAutoMode
+              ? 'მოათავსეთ ფურცელი კონტრასტულ ფონზე (ავტო-სკანი)'
+              : 'მანუალური რეჟიმი — დააჭირეთ გადაღების ღილაკს';
+          }
+        }
+        scannerDetectionRaf = requestAnimationFrame(loop);
+      };
+      scannerDetectionRaf = requestAnimationFrame(loop);
+    }
+
+    function isQuadStable(q1, q2) {
+      let totalDiff = 0;
+      for (let i = 0; i < 4; i++) {
+        totalDiff += Math.hypot(q1[i].x - q2[i].x, q1[i].y - q2[i].y);
+      }
+      return totalDiff < 0.08;
+    }
+
+    function grabCurrentVideoFrameCanvas() {
+      const video = document.getElementById('scannerVideoEl');
+      const vw = video.videoWidth || 1280;
+      const vh = video.videoHeight || 720;
+      const canvas = document.createElement('canvas');
+      canvas.width = vw;
+      canvas.height = vh;
+      const ctx = canvas.getContext('2d');
+
+      if (scannerZoomLevel > 1) {
+        const sw = vw / scannerZoomLevel;
+        const sh = vh / scannerZoomLevel;
+        const sx = (vw - sw) / 2;
+        const sy = (vh - sh) / 2;
+        ctx.drawImage(video, sx, sy, sw, sh, 0, 0, vw, vh);
+      } else {
+        ctx.drawImage(video, 0, 0, vw, vh);
+      }
+      return canvas;
+    }
+
+    function triggerAutoCapture(frameCanvas, corners) {
+      isScannerCapturing = true;
+      const croppedDataUrl = warpAndFilterDocument(frameCanvas, corners, 'magic');
+      scannedPagesList.push({
+        origCanvas: frameCanvas,
+        corners: corners.map((pt) => ({ ...pt })),
+        filter: 'magic',
+        croppedDataUrl
+      });
+      updateScannerThumbnailsUI();
+      showBottomRightNotification(`გვერდი ${scannedPagesList.length} ავტომატურად დასკანერდა!`, 'success');
+      setTimeout(() => { isScannerCapturing = false; }, 1200);
+    }
+
+    function captureScannerFrameManual() {
+      const video = document.getElementById('scannerVideoEl');
+      if (!video || video.readyState < 2) return;
+      const frameCanvas = grabCurrentVideoFrameCanvas();
+      const detection = detectDocumentQuadInCanvas(frameCanvas);
+
+      const newPage = {
+        origCanvas: frameCanvas,
+        corners: detection.corners.map((pt) => ({ ...pt })),
+        filter: 'magic',
+        croppedDataUrl: ''
+      };
+      newPage.croppedDataUrl = warpAndFilterDocument(newPage.origCanvas, newPage.corners, newPage.filter);
+      scannedPagesList.push(newPage);
+      updateScannerThumbnailsUI();
+
+      // მანუალურის დროს პირდაპირ ვხსნით ზომების შესაცვლელ რედაქტორს
+      openPageCropEditor(scannedPagesList.length - 1);
+    }
+
+    // ------------------------------------------------------------
+    // პერსპექტივის გასწორება (Bilinear Homography Warp) და ფილტრი
+    // ------------------------------------------------------------
+    function warpAndFilterDocument(srcCanvas, normCorners, filterType = 'magic') {
+      const sw = srcCanvas.width;
+      const sh = srcCanvas.height;
+      const pts = normCorners.map((c) => ({ x: c.x * sw, y: c.y * sh }));
+
+      const topW = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+      const botW = Math.hypot(pts[2].x - pts[3].x, pts[2].y - pts[3].y);
+      const leftH = Math.hypot(pts[3].x - pts[0].x, pts[3].y - pts[0].y);
+      const rightH = Math.hypot(pts[2].x - pts[1].x, pts[2].y - pts[1].y);
+
+      const outW = Math.min(1600, Math.max(400, Math.round(Math.max(topW, botW))));
+      const outH = Math.min(2200, Math.max(400, Math.round(Math.max(leftH, rightH))));
+
+      const dstCanvas = document.createElement('canvas');
+      dstCanvas.width = outW;
+      dstCanvas.height = outH;
+      const dstCtx = dstCanvas.getContext('2d');
+
+      const srcData = srcCanvas.getContext('2d').getImageData(0, 0, sw, sh).data;
+      const outImage = dstCtx.createImageData(outW, outH);
+      const dstData = outImage.data;
+
+      for (let y = 0; y < outH; y++) {
+        const v = y / (outH - 1);
+        for (let x = 0; x < outW; x++) {
+          const u = x / (outW - 1);
+          const sx = Math.min(sw - 1, Math.max(0, Math.round(
+            (1 - u) * (1 - v) * pts[0].x +
+            u * (1 - v) * pts[1].x +
+            u * v * pts[2].x +
+            (1 - u) * v * pts[3].x
+          )));
+          const sy = Math.min(sh - 1, Math.max(0, Math.round(
+            (1 - u) * (1 - v) * pts[0].y +
+            u * (1 - v) * pts[1].y +
+            u * v * pts[2].y +
+            (1 - u) * v * pts[3].y
+          )));
+
+          const sIdx = (sy * sw + sx) * 4;
+          const dIdx = (y * outW + x) * 4;
+          let r = srcData[sIdx];
+          let g = srcData[sIdx + 1];
+          let b = srcData[sIdx + 2];
+
+          if (filterType === 'magic') {
+            // კონტრასტის გაძლიერება და ფონის გათეთრება (Google Drive Color Scan)
+            r = Math.min(255, Math.max(0, (r - 128) * 1.35 + 142));
+            g = Math.min(255, Math.max(0, (g - 128) * 1.35 + 142));
+            b = Math.min(255, Math.max(0, (b - 128) * 1.35 + 142));
+          } else if (filterType === 'bw') {
+            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            const bwVal = gray > 138 ? 255 : Math.max(0, (gray - 50) * 1.5);
+            r = g = b = bwVal;
+          }
+
+          dstData[dIdx] = r;
+          dstData[dIdx + 1] = g;
+          dstData[dIdx + 2] = b;
+          dstData[dIdx + 3] = 255;
+        }
+      }
+
+      dstCtx.putImageData(outImage, 0, 0);
+      return dstCanvas.toDataURL('image/jpeg', 0.88);
+    }
+
+    // ------------------------------------------------------------
+    // გვერდის რედაქტირება (4 კუთხის გადაადგილება, შემოტრიალება, წაშლა)
+    // ------------------------------------------------------------
+    function openPageCropEditor(pageIndex) {
+      if (pageIndex < 0 || pageIndex >= scannedPagesList.length) return;
+      currentEditingPageIndex = pageIndex;
+      const pageObj = scannedPagesList[pageIndex];
+
+      document.getElementById('scannerLiveCameraWrap').classList.add('hidden');
+      document.getElementById('scannerCameraTopControls').classList.add('hidden');
+      document.getElementById('scannerShutterBtn').classList.add('invisible');
+
+      const editorWrap = document.getElementById('scannerCropEditorWrap');
+      editorWrap.classList.remove('hidden');
+      editorWrap.classList.add('flex');
+
+      const editCanvas = document.getElementById('scannerEditSourceCanvas');
+      editCanvas.width = pageObj.origCanvas.width;
+      editCanvas.height = pageObj.origCanvas.height;
+      editCanvas.getContext('2d').drawImage(pageObj.origCanvas, 0, 0);
+
+      updateFilterButtonsUI(pageObj.filter);
+      setTimeout(() => renderCropHandlesAndPolygon(), 30);
+    }
+
+    function showScannerLiveCameraView() {
+      currentEditingPageIndex = -1;
+      document.getElementById('scannerCropEditorWrap').classList.add('hidden');
+      document.getElementById('scannerCropEditorWrap').classList.remove('flex');
+      document.getElementById('scannerLiveCameraWrap').classList.remove('hidden');
+      document.getElementById('scannerCameraTopControls').classList.remove('hidden');
+      document.getElementById('scannerShutterBtn').classList.remove('invisible');
+    }
+
+    function renderCropHandlesAndPolygon() {
+      if (currentEditingPageIndex < 0) return;
+      const pageObj = scannedPagesList[currentEditingPageIndex];
+      const editCanvas = document.getElementById('scannerEditSourceCanvas');
+      const w = editCanvas.clientWidth;
+      const h = editCanvas.clientHeight;
+      if (!w || !h) return;
+
+      const svg = document.getElementById('scannerCropPolygonSvg');
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+      const ptsAttr = pageObj.corners
+        .map((c) => `${(c.x * w).toFixed(1)},${(c.y * h).toFixed(1)}`)
+        .join(' ');
+      document.getElementById('scannerCropPolygon').setAttribute('points', ptsAttr);
+
+      pageObj.corners.forEach((c, idx) => {
+        const handle = document.getElementById(`cropHandle${idx}`);
+        handle.style.left = `${c.x * w}px`;
+        handle.style.top = `${c.y * h}px`;
+      });
+    }
+
+    function initCropCornerDragListeners() {
+      const stage = document.getElementById('scannerCropStage');
+      if (!stage || stage.dataset.bound === 'true') return;
+      stage.dataset.bound = 'true';
+
+      const onPointerDown = (e) => {
+        const handle = e.target.closest('.scanner-corner-handle');
+        if (!handle) return;
+        e.preventDefault();
+        activeDragCornerIdx = parseInt(handle.dataset.corner, 10);
+      };
+
+      const onPointerMove = (e) => {
+        if (activeDragCornerIdx < 0 || currentEditingPageIndex < 0) return;
+        e.preventDefault();
+        const editCanvas = document.getElementById('scannerEditSourceCanvas');
+        const rect = editCanvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        const nx = Math.min(0.98, Math.max(0.02, (clientX - rect.left) / rect.width));
+        const ny = Math.min(0.98, Math.max(0.02, (clientY - rect.top) / rect.height));
+
+        scannedPagesList[currentEditingPageIndex].corners[activeDragCornerIdx] = { x: nx, y: ny };
+        renderCropHandlesAndPolygon();
+      };
+
+      const onPointerUp = () => {
+        activeDragCornerIdx = -1;
+      };
+
+      stage.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+
+      stage.addEventListener('touchstart', onPointerDown, { passive: false });
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+      window.addEventListener('touchend', onPointerUp);
+    }
+
+    function setScannerEditFilter(filterName) {
+      if (currentEditingPageIndex < 0) return;
+      scannedPagesList[currentEditingPageIndex].filter = filterName;
+      updateFilterButtonsUI(filterName);
+    }
+
+    function updateFilterButtonsUI(activeFilter) {
+      ['original', 'magic', 'bw'].forEach((f) => {
+        const btn = document.getElementById(`filterBtn_${f}`);
+        if (!btn) return;
+        btn.className = f === activeFilter
+          ? 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white cursor-pointer'
+          : 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 cursor-pointer';
+      });
+    }
+
+    function rotateScannerEditingPage() {
+      if (currentEditingPageIndex < 0) return;
+      const pageObj = scannedPagesList[currentEditingPageIndex];
+      const src = pageObj.origCanvas;
+      const rotated = document.createElement('canvas');
+      rotated.width = src.height;
+      rotated.height = src.width;
+      const ctx = rotated.getContext('2d');
+      ctx.translate(rotated.width / 2, rotated.height / 2);
+      ctx.rotate(Math.PI / 2);
+      ctx.drawImage(src, -src.width / 2, -src.height / 2);
+      pageObj.origCanvas = rotated;
+
+      const editCanvas = document.getElementById('scannerEditSourceCanvas');
+      editCanvas.width = rotated.width;
+      editCanvas.height = rotated.height;
+      editCanvas.getContext('2d').drawImage(rotated, 0, 0);
+      setTimeout(() => renderCropHandlesAndPolygon(), 20);
+    }
+
+    function deleteCurrentEditingPage() {
+      if (currentEditingPageIndex < 0) return;
+      scannedPagesList.splice(currentEditingPageIndex, 1);
+      updateScannerThumbnailsUI();
+      showScannerLiveCameraView();
+    }
+
+    function applyCropAndReturnToCamera() {
+      if (currentEditingPageIndex < 0) return;
+      const pageObj = scannedPagesList[currentEditingPageIndex];
+      pageObj.croppedDataUrl = warpAndFilterDocument(pageObj.origCanvas, pageObj.corners, pageObj.filter);
+      updateScannerThumbnailsUI();
+      showScannerLiveCameraView();
+    }
+
+    function updateScannerThumbnailsUI() {
+      const strip = document.getElementById('scannerThumbnailsStrip');
+      const countBadge = document.getElementById('scannerPagesCountBadge');
+      const finishBtn = document.getElementById('finishScanningBtn');
+
+      countBadge.textContent = String(scannedPagesList.length);
+      finishBtn.disabled = scannedPagesList.length === 0;
+
+      if (scannedPagesList.length === 0) {
+        strip.innerHTML = `<span class="text-xs text-slate-400">გვერდები: 0</span>`;
+        return;
+      }
+
+      strip.innerHTML = scannedPagesList.map((p, idx) => `
+        <div
+          onclick="openPageCropEditor(${idx})"
+          title="დააჭირეთ გვერდი ${idx + 1}-ის დასარედაქტირებლად"
+          class="relative w-12 h-16 rounded-lg overflow-hidden border-2 border-blue-400 hover:border-emerald-400 shrink-0 cursor-pointer group bg-slate-800"
+        >
+          <img src="${p.croppedDataUrl}" class="w-full h-full object-cover" />
+          <span class="absolute bottom-0 right-0 bg-slate-900/85 text-white text-[10px] font-bold px-1.5 rounded-tl">${idx + 1}</span>
+        </div>
+      `).join('');
+    }
+
+    // ------------------------------------------------------------
+    // დასკანერების დასრულება -> მრავალგვერდიანი PDF-ის შექმნა
+    // ------------------------------------------------------------
+    async function finishScanningAndCreatePdf() {
+      if (scannedPagesList.length === 0) return;
+
+      // თუ მომხმარებელი რედაქტირების რეჟიმშია და პირდაპირ დაასრულა, ვინახავთ მიმდინარე ცვლილებასაც
+      if (currentEditingPageIndex >= 0 && scannedPagesList[currentEditingPageIndex]) {
+        const p = scannedPagesList[currentEditingPageIndex];
+        p.croppedDataUrl = warpAndFilterDocument(p.origCanvas, p.corners, p.filter);
+      }
+
+      showGlobalLoading('იქმნება PDF დოკუმენტი...');
+      try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+        for (let i = 0; i < scannedPagesList.length; i++) {
+          if (i > 0) pdf.addPage();
+          const imgData = scannedPagesList[i].croppedDataUrl;
+
+          const imgProps = pdf.getImageProperties(imgData);
+          const pageW = pdf.internal.pageSize.getWidth();
+          const pageH = pdf.internal.pageSize.getHeight();
+          const ratio = Math.min(pageW / imgProps.width, pageH / imgProps.height);
+          const renderW = imgProps.width * ratio;
+          const renderH = imgProps.height * ratio;
+          const marginX = (pageW - renderW) / 2;
+          const marginY = (pageH - renderH) / 2;
+
+          pdf.addImage(imgData, 'JPEG', marginX, marginY, renderW, renderH, undefined, 'FAST');
+        }
+
+        const pdfBlob = pdf.output('blob');
+        const currentTitle = (document.getElementById('uploadTitleInput').value || '').trim();
+        const fileName = (currentTitle ? currentTitle : `Scan_${Date.now()}`) + '.pdf';
+        const scannedFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+
+        closeDocumentScannerModal();
+
+        // გადავცემთ არსებულ Preview და Upload სისტემას
+        await handleFileSelectionForPreview({ target: { files: [scannedFile] } });
+        selectedUploadPreviewPages = scannedPagesList.length;
+        showBottomRightNotification(`დასკანერდა ${scannedPagesList.length} გვერდი (PDF მზადაა ასატვირთად)`, 'success');
+      } catch (err) {
+        console.error('PDF build error:', err);
+        showBottomRightNotification('PDF-ის შექმნისას დაფიქსირდა შეცდომა.', 'error');
+      } finally {
+        hideGlobalLoading();
+      }
+    }
+    
     window.onload = function () {
       if (window.particlesJS) {
         window.particlesJS('particles-js', {
