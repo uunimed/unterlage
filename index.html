@@ -1115,7 +1115,8 @@
     </div>
   </div>
 
-<div id="incomingAuthRequestModal" class="fixed inset-0 z-[220] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+<!-- INCOMING AUTH REQUEST MODAL -->
+  <div id="incomingAuthRequestModal" class="fixed inset-0 z-[220] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white border-2 border-blue-500 rounded-2xl max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center gap-3 mb-4">
         <div class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0">
@@ -1144,6 +1145,32 @@
           <span id="incomingReqDevice" class="font-semibold text-slate-800 text-right truncate max-w-[210px]"></span>
         </div>
       </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onclick="respondToAuthRequest('rejected')"
+          class="inline-flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-600 border border-rose-200 text-rose-700 hover:text-white font-semibold py-2.5 px-4 rounded-xl transition cursor-pointer"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          <span>უარყოფა</span>
+        </button>
+        <button
+          type="button"
+          onclick="respondToAuthRequest('approved')"
+          class="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition cursor-pointer"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>დადასტურება</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- DOCUMENT SCANNER MODAL -->
   <div id="documentScannerModal" class="fixed inset-0 z-[240] bg-slate-950/95 hidden flex-col select-none">
@@ -1332,21 +1359,6 @@
       </div>
     </div>
   </div>
-
-      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2.5 text-sm mb-6">
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-slate-500 text-xs">ქვეყანა, ქალაქი:</span>
-          <span id="incomingReqLocation" class="font-bold text-slate-900 text-right"></span>
-        </div>
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-slate-500 text-xs">IP:</span>
-          <span id="incomingReqIp" class="font-mono text-blue-600 font-bold"></span>
-        </div>
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-slate-500 text-xs">მოწყობილობა:</span>
-          <span id="incomingReqDevice" class="font-semibold text-slate-800 text-right truncate max-w-[210px]"></span>
-        </div>
-      </div>
 
   <script>
     if (window.pdfjsLib) {
