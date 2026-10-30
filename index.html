@@ -1115,7 +1115,7 @@
     </div>
   </div>
 
-  <div id="incomingAuthRequestModal" class="fixed inset-0 z-[220] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+<div id="incomingAuthRequestModal" class="fixed inset-0 z-[220] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white border-2 border-blue-500 rounded-2xl max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center gap-3 mb-4">
         <div class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0">
@@ -1130,9 +1130,23 @@
         </div>
       </div>
 
-<!-- DOCUMENT SCANNER MODAL -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2.5 text-sm mb-6">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-slate-500 text-xs">ქვეყანა, ქალაქი:</span>
+          <span id="incomingReqLocation" class="font-bold text-slate-900 text-right"></span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-slate-500 text-xs">IP:</span>
+          <span id="incomingReqIp" class="font-mono text-blue-600 font-bold"></span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-slate-500 text-xs">მოწყობილობა:</span>
+          <span id="incomingReqDevice" class="font-semibold text-slate-800 text-right truncate max-w-[210px]"></span>
+        </div>
+      </div>
+
+  <!-- DOCUMENT SCANNER MODAL -->
   <div id="documentScannerModal" class="fixed inset-0 z-[240] bg-slate-950/95 hidden flex-col select-none">
-    <!-- Top Controls Bar -->
     <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-slate-900 border-b border-slate-800 text-white">
       <div class="flex items-center gap-2">
         <button
@@ -1149,9 +1163,7 @@
         <span class="text-sm font-bold tracking-wide">დოკუმენტის სკანერი</span>
       </div>
 
-      <!-- Mode & Camera Controls -->
       <div id="scannerCameraTopControls" class="flex items-center gap-2">
-        <!-- Auto / Manual Toggle -->
         <button
           id="scannerAutoModeBtn"
           type="button"
@@ -1162,7 +1174,6 @@
           <span id="scannerAutoModeLabel">ავტომატური</span>
         </button>
 
-        <!-- Torch / Flash -->
         <button
           id="scannerTorchBtn"
           type="button"
@@ -1175,7 +1186,6 @@
           </svg>
         </button>
 
-        <!-- Switch Camera -->
         <button
           type="button"
           onclick="switchScannerCamera()"
@@ -1190,9 +1200,7 @@
       </div>
     </div>
 
-    <!-- Main Viewport (Camera OR Page Crop Editor) -->
     <div class="relative flex-1 flex items-center justify-center overflow-hidden bg-black">
-      <!-- LIVE CAMERA VIEW -->
       <div id="scannerLiveCameraWrap" class="relative w-full h-full flex items-center justify-center">
         <video
           id="scannerVideoEl"
@@ -1206,7 +1214,6 @@
           class="absolute pointer-events-none"
         ></canvas>
 
-        <!-- Status Pill -->
         <div
           id="scannerStatusHint"
           class="absolute top-4 left-1/2 -translate-x-1/2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-700 text-xs font-semibold text-slate-100 pointer-events-none"
@@ -1214,7 +1221,6 @@
           მოათავსეთ დოკუმენტი კადრში
         </div>
 
-        <!-- Zoom Slider -->
         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2.5 bg-slate-900/85 border border-slate-700 px-4 py-1.5 rounded-full text-white text-xs">
           <span>1x</span>
           <input
@@ -1231,21 +1237,18 @@
         </div>
       </div>
 
-      <!-- CROP & EDIT PAGE VIEW -->
       <div id="scannerCropEditorWrap" class="hidden relative w-full h-full flex-col items-center justify-center p-3 bg-slate-950">
         <div id="scannerCropStage" class="relative inline-block max-w-full max-h-[72vh]">
           <canvas id="scannerEditSourceCanvas" class="block max-w-full max-h-[72vh] rounded border border-slate-700"></canvas>
           <svg id="scannerCropPolygonSvg" class="absolute inset-0 w-full h-full pointer-events-none">
             <polygon id="scannerCropPolygon" fill="rgba(37, 99, 235, 0.22)" stroke="#3b82f6" stroke-width="2.5"></polygon>
           </svg>
-          <!-- 4 Draggable Corner Handles -->
           <div id="cropHandle0" data-corner="0" class="scanner-corner-handle"></div>
           <div id="cropHandle1" data-corner="1" class="scanner-corner-handle"></div>
           <div id="cropHandle2" data-corner="2" class="scanner-corner-handle"></div>
           <div id="cropHandle3" data-corner="3" class="scanner-corner-handle"></div>
         </div>
 
-        <!-- Editor Toolbar -->
         <div class="flex flex-wrap items-center justify-center gap-2 mt-3">
           <button
             type="button"
@@ -1296,14 +1299,11 @@
       </div>
     </div>
 
-    <!-- Bottom Bar: Page Thumbnails, Capture Button, Finish Button -->
     <div class="px-4 py-3 bg-slate-900 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
-      <!-- Scanned Pages Thumbnails Strip -->
       <div class="flex items-center gap-2 overflow-x-auto max-w-[42%] sm:max-w-[38%] py-1" id="scannerThumbnailsStrip">
         <span class="text-xs text-slate-400">გვერდები: 0</span>
       </div>
 
-      <!-- Manual Shutter Button -->
       <div class="flex items-center justify-center">
         <button
           id="scannerShutterBtn"
@@ -1316,7 +1316,6 @@
         </button>
       </div>
 
-      <!-- Finish Scanning Button -->
       <div class="flex items-center justify-end min-w-[140px]">
         <button
           id="finishScanningBtn"
@@ -1348,32 +1347,6 @@
           <span id="incomingReqDevice" class="font-semibold text-slate-800 text-right truncate max-w-[210px]"></span>
         </div>
       </div>
-
-      <div class="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onclick="respondToAuthRequest('rejected')"
-          class="inline-flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-600 border border-rose-200 text-rose-700 hover:text-white font-semibold py-2.5 px-4 rounded-xl transition cursor-pointer"
-        >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-          <span>უარყოფა</span>
-        </button>
-        <button
-          type="button"
-          onclick="respondToAuthRequest('approved')"
-          class="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition cursor-pointer"
-        >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-          <span>დადასტურება</span>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <script>
     if (window.pdfjsLib) {
@@ -2180,34 +2153,45 @@
       waitingPollInterval = setInterval(() => checkPendingRequestStatus(reqId), 2000);
     }
 
-    // 4. გასწორებული startTrustedDeviceRequestWatcher — ამოწმებს ყველა სვეტს რეგისტრის მიუხედავად
+const handledAuthRequestIds = new Set();
+
+    // 4. გასწორებული startTrustedDeviceRequestWatcher
     function startTrustedDeviceRequestWatcher() {
       if (trustedPollInterval) clearInterval(trustedPollInterval);
       trustedPollInterval = setInterval(async () => {
         const trusted = await isDeviceTrusted(CURRENT_DEVICE_ID);
         if (!trusted) return;
 
-        // ჯერ ვამოწმებთ Bucket-ის JSON-ს
+        const decidedIds = new Set(handledAuthRequestIds);
+
+        // 1) ვამოწმებთ Bucket-ის JSON-ს
         const authState = await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH);
         if (authState && Array.isArray(authState.requests)) {
+          for (const rawReq of authState.requests) {
+            const norm = normalizeLoginRequestRow(rawReq);
+            if (norm && norm.status !== 'pending') {
+              decidedIds.add(norm.id);
+            }
+          }
           const pendingFromBucket = authState.requests
             .map(normalizeLoginRequestRow)
-            .filter((r) => r && r.status === 'pending' && r.device_id !== CURRENT_DEVICE_ID)
+            .filter((r) => r && r.status === 'pending' && r.device_id !== CURRENT_DEVICE_ID && !decidedIds.has(r.id))
             .sort((a, b) => b.timestamp - a.timestamp);
+
           if (pendingFromBucket.length > 0) {
             showIncomingRequestPopup(pendingFromBucket[0]);
             return;
           }
         }
 
-        // შემდეგ ვამოწმებთ ცხრილს .eq('status') ფილტრის გარეშე (Case-sensitivity პრობლემის ასარიდებლად)
+        // 2) ვამოწმებთ ცხრილს და ვაიგნორებთ უკვე დადასტურებულ/უარყოფილ მოთხოვნებს
         if (supabaseClient) {
           try {
             const { data, error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).select('*');
             if (!error && Array.isArray(data) && data.length > 0) {
               const pendingList = data
                 .map(normalizeLoginRequestRow)
-                .filter((r) => r && r.status === 'pending' && r.device_id !== CURRENT_DEVICE_ID)
+                .filter((r) => r && r.status === 'pending' && r.device_id !== CURRENT_DEVICE_ID && !decidedIds.has(r.id))
                 .sort((a, b) => b.timestamp - a.timestamp);
               if (pendingList.length > 0) {
                 showIncomingRequestPopup(pendingList[0]);
@@ -2219,12 +2203,19 @@
       }, 2000);
     }
 
-    // 5. გასწორებული respondToAuthRequest — აერთიანებს სანდო მოწყობილობის დამატებას და სტატუსის განახლებას
+    // 5. ერთადერთი და სრული respondToAuthRequest
     async function respondToAuthRequest(decisionStatus) {
       if (!currentActiveRequest) return;
       const reqObj = currentActiveRequest;
       const reqId = reqObj.id;
       reqObj.status = decisionStatus;
+      handledAuthRequestIds.add(reqId);
+
+      // მომენტალურად ვხურავთ მოთხოვნის ფანჯარას
+      const modal = document.getElementById('incomingAuthRequestModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      currentActiveRequest = null;
 
       showGlobalLoading('მიმდინარეობს დამუშავება...');
       try {
@@ -2236,37 +2227,55 @@
           );
         }
 
-        // ვკითხულობთ უკვე განახლებულ authState-ს და ვუცვლით სტატუსს მოთხოვნას
-        const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedDevices: [], requests: [] };
+        // ვანახლებთ სტატუსს Bucket-ის JSON ფაილში
+        const existingTrusted = await getTrustedDevicesList();
+        const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || {
+          trustedMaster: existingTrusted[0] || null,
+          trustedDevices: existingTrusted,
+          explicitlyCleared: false,
+          requests: []
+        };
+
         if (Array.isArray(authState.requests)) {
           authState.requests = authState.requests.map((r) =>
-            (r.id === reqId || r.device_id === reqObj.device_id) ? { ...r, status: decisionStatus } : r
+            (r && (r.id === reqId || r.ID === reqId || r.device_id === reqObj.device_id))
+              ? { ...r, id: reqId, status: decisionStatus }
+              : r
           );
+        } else {
+          authState.requests = [{ ...reqObj, id: reqId, status: decisionStatus }];
         }
         await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
 
-        if (supabaseClient) {
-          try {
-            let { error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).update({ status: decisionStatus }).eq('ID', reqId);
-            if (error) {
-              await supabaseClient.from(TABLE_LOGIN_REQUESTS).update({ status: decisionStatus }).eq('id', reqId);
-            }
-          } catch (_) {}
+        // ვანახლებთ ან ვშლით/ვწერთ Supabase-ის ცხრილში
+        await supabaseUpsertLoginRequest({
+          ID: reqId,
+          device_id: reqObj.device_id,
+          usename: reqObj.usename || `${reqObj.country}, ${reqObj.city} | ${reqObj.device_name}`,
+          ip: reqObj.ip || '0.0.0.0',
+          timestamp: reqObj.timestamp || Date.now(),
+          status: decisionStatus
+        });
+
+        if (syncChannel) {
+          syncChannel.postMessage({ type: 'AUTH_REQUEST_DECISION', reqId, status: decisionStatus });
         }
 
-        if (syncChannel) syncChannel.postMessage({ type: 'AUTH_REQUEST_DECISION', reqId, status: decisionStatus });
-
-        const modal = document.getElementById('incomingAuthRequestModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        currentActiveRequest = null;
         await updateTrustedDeviceSettingsUI();
+        showBottomRightNotification(
+          decisionStatus === 'approved' ? 'მოწყობილობა დადასტურდა!' : 'მოთხოვნა უარყოფილია.',
+          decisionStatus === 'approved' ? 'success' : 'error'
+        );
+      } catch (err) {
+        console.error('Auth decision error:', err);
+        showBottomRightNotification('დაფიქსირდა შეცდომა სტატუსის განახლებისას.', 'error');
       } finally {
         hideGlobalLoading();
       }
     }
 
     function showIncomingRequestPopup(reqObj) {
+      if (!reqObj || handledAuthRequestIds.has(reqObj.id)) return;
       if (currentActiveRequest && currentActiveRequest.id === reqObj.id) return;
       currentActiveRequest = reqObj;
       document.getElementById('incomingReqLocation').textContent = `${reqObj.country || 'უცნობი'}, ${reqObj.city || 'უცნობი'}`;
@@ -2276,31 +2285,6 @@
       const modal = document.getElementById('incomingAuthRequestModal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-    }
-
-    async function respondToAuthRequest(decisionStatus) {
-      if (!currentActiveRequest) return;
-      const reqObj = currentActiveRequest;
-      const reqId = reqObj.id;
-      reqObj.status = decisionStatus;
-
-      if (decisionStatus === 'approved') {
-        await addTrustedDeviceRecord(
-          reqObj.device_id,
-          reqObj.device_name || reqObj.usename || 'Approved Device',
-          { country: reqObj.country || 'საქართველო', city: reqObj.city || 'თბილისი', ip: reqObj.ip || '0.0.0.0' }
-        );
-      }
-
-      await supabaseUpdateLoginRequestStatus(reqId, decisionStatus);
-
-      if (syncChannel) syncChannel.postMessage({ type: 'AUTH_REQUEST_DECISION', reqId, status: decisionStatus });
-
-      const modal = document.getElementById('incomingAuthRequestModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-      currentActiveRequest = null;
-      await updateTrustedDeviceSettingsUI();
     }
 
     if (syncChannel) {
@@ -4372,7 +4356,7 @@ const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
         hideGlobalLoading();
       }
     }
-    
+
     window.onload = function () {
       if (window.particlesJS) {
         window.particlesJS('particles-js', {
