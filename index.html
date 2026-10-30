@@ -18,7 +18,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://unpkg.com/docx-preview@0.1.20/dist/docx-preview.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --bg-primary: #f8fafc;
@@ -430,6 +430,27 @@
         overflow: visible !important;
       }
     }
+
+    /* SCANNER STYLES */
+    .scanner-corner-handle {
+      width: 26px;
+      height: 26px;
+      border-radius: 9999px;
+      background: rgba(37, 99, 235, 0.9);
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+      position: absolute;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      touch-action: none;
+      z-index: 30;
+    }
+    .scanner-corner-handle:active {
+      cursor: grabbing;
+      transform: translate(-50%, -50%) scale(1.25);
+      background: #1d4ed8;
+    }
+
   </style>
 </head>
 <body>
@@ -730,22 +751,37 @@
                 ></div>
               </div>
 
-              <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">ფაილის არჩევა</label>
-                <label
-                  for="uploadFileInput"
-                  class="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 hover:border-blue-600 bg-white rounded-xl p-5 cursor-pointer transition text-center"
-                >
-                  <svg class="w-8 h-8 text-blue-600 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="12" y1="18" x2="12" y2="12"></line>
-                    <line x1="9" y1="15" x2="15" y2="15"></line>
-                  </svg>
-                  <span id="selectedFileNameLabel" class="text-sm font-semibold text-slate-700">აირჩიეთ</span>
-                  <span id="selectedFileSizeLabel" class="text-xs text-slate-500 mt-1">ნებისმიერი ფორმატის ფაილი</span>
-                  <input id="uploadFileInput" type="file" onchange="handleFileSelectionForPreview(event)" class="hidden" />
-                </label>
+<div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">ფაილის არჩევა ან დასკანერება</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label
+                    for="uploadFileInput"
+                    class="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 hover:border-blue-600 bg-white rounded-xl p-4 cursor-pointer transition text-center"
+                  >
+                    <svg class="w-7 h-7 text-blue-600 mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="12" y1="18" x2="12" y2="12"></line>
+                      <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    <span id="selectedFileNameLabel" class="text-xs font-semibold text-slate-700 truncate max-w-full px-2">აირჩიეთ ფაილი</span>
+                    <span id="selectedFileSizeLabel" class="text-[11px] text-slate-500 mt-0.5">ნებისმიერი ფორმატი</span>
+                    <input id="uploadFileInput" type="file" onchange="handleFileSelectionForPreview(event)" class="hidden" />
+                  </label>
+
+                  <button
+                    type="button"
+                    onclick="openDocumentScannerModal()"
+                    class="flex flex-col items-center justify-center border-2 border-dashed border-emerald-300 hover:border-emerald-600 bg-emerald-50/40 hover:bg-emerald-50 rounded-xl p-4 cursor-pointer transition text-center"
+                  >
+                    <svg class="w-7 h-7 text-emerald-600 mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <span class="text-xs font-semibold text-emerald-800">დასკანერება</span>
+                    <span class="text-[11px] text-emerald-600 mt-0.5">კამერით (მრავალგვერდიანი)</span>
+                  </button>
+                </div>
               </div>
 
               <div id="uploadProgressWrapper" class="hidden space-y-1.5 bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
@@ -1438,38 +1474,6 @@
       }
     }
 
-    async function readBucketJsonFile(storagePath) {
-      try {
-        const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
-        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_BUCKET}/${encodedPath}?t=${Date.now()}`;
-        const res = await fetch(publicUrl, { cache: 'no-store' });
-        if (res.ok) return await res.json();
-      } catch (_) {}
-      return null;
-    }
-
-    async function writeBucketJsonFileStrict(storagePath, jsonData) {
-      const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
-      const endpoint = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${encodedPath}`;
-      const blob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
-
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'apikey': SUPABASE_KEY,
-          'x-upsert': 'true',
-          'Content-Type': 'application/json'
-        },
-        body: blob
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Bucket write failed (${res.status}): ${errText}`);
-      }
-      return true;
-    }
 
     async function writeBucketJsonFile(storagePath, jsonData) {
       try {
@@ -1509,23 +1513,6 @@
         } catch (err) {
           console.warn('login_requests table insert warning:', err);
         }
-      }
-    }
-
-    async function supabaseUpdateLoginRequestStatus(reqId, newStatus) {
-      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedMaster: null, requests: [] };
-      if (Array.isArray(authState.requests)) {
-        authState.requests = authState.requests.map((r) => (r.id === reqId ? { ...r, status: newStatus } : r));
-        await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
-      }
-
-      if (supabaseClient) {
-        try {
-          let { error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).update({ status: newStatus }).eq('ID', reqId);
-          if (error) {
-            await supabaseClient.from(TABLE_LOGIN_REQUESTS).update({ status: newStatus }).eq('id', reqId);
-          }
-        } catch (_) {}
       }
     }
 
@@ -1820,48 +1807,6 @@
       }
     }
 
-    async function initiateWaitingForTrustedApproval() {
-      document.getElementById('loginBoxCard').classList.add('hidden');
-      document.getElementById('waitingApprovalBox').classList.remove('hidden');
-
-      const geo = await fetchClientGeoIpInfo();
-      const devName = getReadableDeviceName();
-
-      document.getElementById('waitLocText').textContent = `${geo.country}, ${geo.city}`;
-      document.getElementById('waitIpText').textContent = geo.ip;
-      document.getElementById('waitDevText').textContent = devName;
-
-      const reqId = 'req_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
-      const dbPayload = {
-        ID: reqId,
-        device_id: CURRENT_DEVICE_ID,
-        usename: `${geo.country}, ${geo.city} | ${devName}`,
-        ip: geo.ip,
-        timestamp: Date.now(),
-        status: 'pending'
-      };
-
-      const normalizedReq = normalizeLoginRequestRow(dbPayload);
-      localStorage.setItem('shogi_pending_auth_request', JSON.stringify(normalizedReq));
-
-      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedDevices: [], requests: [] };
-      const existingReqs = Array.isArray(authState.requests) ? authState.requests.filter((r) => r.device_id !== CURRENT_DEVICE_ID) : [];
-      existingReqs.unshift(normalizedReq);
-      authState.requests = existingReqs;
-      await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
-
-      try {
-        await supabaseUpsertLoginRequest(dbPayload);
-      } catch (err) {
-        console.warn('Supabase login_requests insert error:', err);
-      }
-
-      if (syncChannel) syncChannel.postMessage({ type: 'NEW_AUTH_REQUEST', request: normalizedReq });
-
-      if (waitingPollInterval) clearInterval(waitingPollInterval);
-      waitingPollInterval = setInterval(() => checkPendingRequestStatus(reqId), 2000);
-    }
-
     async function checkPendingRequestStatus(reqId) {
       const authState = await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH);
       if (authState) {
@@ -1928,15 +1873,121 @@
       document.getElementById('authCodeInput').value = '';
     }
 
+    // 1. გასწორებული readBucketJsonFile — კითხულობს პირდაპირ REST API-დან CDN ქეშის გარეშე
+    async function readBucketJsonFile(storagePath) {
+      try {
+        const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
+        const authUrl = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${encodedPath}?t=${Date.now()}`;
+        const res = await fetch(authUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'apikey': SUPABASE_KEY,
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          },
+          cache: 'no-store'
+        });
+        if (res.ok) return await res.json();
+      } catch (_) {}
+      return null;
+    }
+
+    // 2. გასწორებული writeBucketJsonFileStrict — აგზავნის no-cache ჰედერით
+    async function writeBucketJsonFileStrict(storagePath, jsonData) {
+      const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
+      const endpoint = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${encodedPath}`;
+      const blob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'apikey': SUPABASE_KEY,
+          'x-upsert': 'true',
+          'cache-control': 'no-cache, no-store, must-revalidate',
+          'Content-Type': 'application/json'
+        },
+        body: blob
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Bucket write failed (${res.status}): ${errText}`);
+      }
+      return true;
+    }
+
+    // 3. გასწორებული initiateWaitingForTrustedApproval — არ შლის არსებულ trustedDevices სიას
+    async function initiateWaitingForTrustedApproval() {
+      document.getElementById('loginBoxCard').classList.add('hidden');
+      document.getElementById('waitingApprovalBox').classList.remove('hidden');
+
+      const geo = await fetchClientGeoIpInfo();
+      const devName = getReadableDeviceName();
+
+      document.getElementById('waitLocText').textContent = `${geo.country}, ${geo.city}`;
+      document.getElementById('waitIpText').textContent = geo.ip;
+      document.getElementById('waitDevText').textContent = devName;
+
+      const reqId = 'req_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+      const dbPayload = {
+        ID: reqId,
+        device_id: CURRENT_DEVICE_ID,
+        usename: `${geo.country}, ${geo.city} | ${devName}`,
+        ip: geo.ip,
+        timestamp: Date.now(),
+        status: 'pending'
+      };
+
+      const normalizedReq = normalizeLoginRequestRow(dbPayload);
+      localStorage.setItem('shogi_pending_auth_request', JSON.stringify(normalizedReq));
+
+      const existingTrusted = await getTrustedDevicesList();
+      const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || {
+        trustedMaster: existingTrusted[0] || null,
+        trustedDevices: existingTrusted,
+        explicitlyCleared: false,
+        requests: []
+      };
+
+      if (!Array.isArray(authState.trustedDevices) || authState.trustedDevices.length === 0) {
+        authState.trustedDevices = existingTrusted;
+        authState.trustedMaster = existingTrusted[0] || null;
+      }
+
+      const existingReqs = Array.isArray(authState.requests)
+        ? authState.requests.filter((r) => r && r.device_id !== CURRENT_DEVICE_ID)
+        : [];
+      existingReqs.unshift(normalizedReq);
+      authState.requests = existingReqs;
+
+      await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
+
+      try {
+        await supabaseUpsertLoginRequest(dbPayload);
+      } catch (err) {
+        console.warn('Supabase login_requests insert error:', err);
+      }
+
+      if (syncChannel) syncChannel.postMessage({ type: 'NEW_AUTH_REQUEST', request: normalizedReq });
+
+      if (waitingPollInterval) clearInterval(waitingPollInterval);
+      waitingPollInterval = setInterval(() => checkPendingRequestStatus(reqId), 2000);
+    }
+
+    // 4. გასწორებული startTrustedDeviceRequestWatcher — ამოწმებს ყველა სვეტს რეგისტრის მიუხედავად
     function startTrustedDeviceRequestWatcher() {
       if (trustedPollInterval) clearInterval(trustedPollInterval);
       trustedPollInterval = setInterval(async () => {
         const trusted = await isDeviceTrusted(CURRENT_DEVICE_ID);
         if (!trusted) return;
 
+        // ჯერ ვამოწმებთ Bucket-ის JSON-ს
         const authState = await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH);
         if (authState && Array.isArray(authState.requests)) {
           const pendingFromBucket = authState.requests
+            .map(normalizeLoginRequestRow)
             .filter((r) => r && r.status === 'pending' && r.device_id !== CURRENT_DEVICE_ID)
             .sort((a, b) => b.timestamp - a.timestamp);
           if (pendingFromBucket.length > 0) {
@@ -1945,13 +1996,14 @@
           }
         }
 
+        // შემდეგ ვამოწმებთ ცხრილს .eq('status') ფილტრის გარეშე (Case-sensitivity პრობლემის ასარიდებლად)
         if (supabaseClient) {
           try {
-            const { data, error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).select('*').eq('status', 'pending');
+            const { data, error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).select('*');
             if (!error && Array.isArray(data) && data.length > 0) {
               const pendingList = data
                 .map(normalizeLoginRequestRow)
-                .filter((r) => r && r.device_id !== CURRENT_DEVICE_ID)
+                .filter((r) => r && r.status === 'pending' && r.device_id !== CURRENT_DEVICE_ID)
                 .sort((a, b) => b.timestamp - a.timestamp);
               if (pendingList.length > 0) {
                 showIncomingRequestPopup(pendingList[0]);
@@ -1960,7 +2012,54 @@
             }
           } catch (_) {}
         }
-      }, 2500);
+      }, 2000);
+    }
+
+    // 5. გასწორებული respondToAuthRequest — აერთიანებს სანდო მოწყობილობის დამატებას და სტატუსის განახლებას
+    async function respondToAuthRequest(decisionStatus) {
+      if (!currentActiveRequest) return;
+      const reqObj = currentActiveRequest;
+      const reqId = reqObj.id;
+      reqObj.status = decisionStatus;
+
+      showGlobalLoading('მიმდინარეობს დამუშავება...');
+      try {
+        if (decisionStatus === 'approved') {
+          await addTrustedDeviceRecord(
+            reqObj.device_id,
+            reqObj.device_name || reqObj.usename || 'Approved Device',
+            { country: reqObj.country || 'საქართველო', city: reqObj.city || 'თბილისი', ip: reqObj.ip || '0.0.0.0' }
+          );
+        }
+
+        // ვკითხულობთ უკვე განახლებულ authState-ს და ვუცვლით სტატუსს მოთხოვნას
+        const authState = (await readBucketJsonFile(SYSTEM_AUTH_STATE_PATH)) || { trustedDevices: [], requests: [] };
+        if (Array.isArray(authState.requests)) {
+          authState.requests = authState.requests.map((r) =>
+            (r.id === reqId || r.device_id === reqObj.device_id) ? { ...r, status: decisionStatus } : r
+          );
+        }
+        await writeBucketJsonFile(SYSTEM_AUTH_STATE_PATH, authState);
+
+        if (supabaseClient) {
+          try {
+            let { error } = await supabaseClient.from(TABLE_LOGIN_REQUESTS).update({ status: decisionStatus }).eq('ID', reqId);
+            if (error) {
+              await supabaseClient.from(TABLE_LOGIN_REQUESTS).update({ status: decisionStatus }).eq('id', reqId);
+            }
+          } catch (_) {}
+        }
+
+        if (syncChannel) syncChannel.postMessage({ type: 'AUTH_REQUEST_DECISION', reqId, status: decisionStatus });
+
+        const modal = document.getElementById('incomingAuthRequestModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        currentActiveRequest = null;
+        await updateTrustedDeviceSettingsUI();
+      } finally {
+        hideGlobalLoading();
+      }
     }
 
     function showIncomingRequestPopup(reqObj) {
