@@ -3266,24 +3266,26 @@ const handledAuthRequestIds = new Set();
     // ============================================================
     // FIX: PDF renderer — always use arrayBuffer, not URL
     // ============================================================
-    async function renderPdfInCustomViewer(doc, container) {
-      // ✅ Always fetch via arrayBuffer (avoids PDF.js Range request 400)
+async function renderPdfInCustomViewer(doc, container) {
       const buf = await fetchDocumentArrayBuffer(doc);
+      // ვინახავთ სრულ ასლს (.slice(0)) გადმოწერისა და ბეჭდვისთვის, 
+      // რადგან PDF.js-ის Worker-ს გადაცემული ბუფერი უქმდება (Detached ArrayBuffer)
+      currentOpenFileArrayBuffer = buf.slice(0);
+
       const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(buf) });
+      const pdf = await loadingTask.promise;
+      currentViewerPdfDoc = pdf;
+      currentViewerTotalPages = pdf.numPages;
 
-const pdf = await loadingTask.promise;
-currentViewerPdfDoc = pdf;
-currentViewerTotalPages = pdf.numPages;
+      const viewportContainer = document.getElementById('viewerScrollViewport');
+      const availableWidth = Math.max(320, (viewportContainer?.clientWidth || 900) - 64);
 
-const viewportContainer = document.getElementById('viewerScrollViewport');
-const availableWidth = Math.max(320, (viewportContainer?.clientWidth || 900) - 64);
-
-const firstPage = await pdf.getPage(1);
-const naturalViewport = firstPage.getViewport({ scale: 1.0 });
-const baseScale = Math.min(1.0, availableWidth / naturalViewport.width);
-const defaultViewport = firstPage.getViewport({ scale: baseScale });
-const defaultW = Math.floor(defaultViewport.width);
-const defaultH = Math.floor(defaultViewport.height);
+      const firstPage = await pdf.getPage(1);
+      const naturalViewport = firstPage.getViewport({ scale: 1.0 });
+      const baseScale = Math.min(1.0, availableWidth / naturalViewport.width);
+      const defaultViewport = firstPage.getViewport({ scale: baseScale });
+      const defaultW = Math.floor(defaultViewport.width);
+      const defaultH = Math.floor(defaultViewport.height);
 
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const pageWrap = document.createElement('div');
@@ -3651,38 +3653,117 @@ const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
       content.style.transform = `scale(${currentViewerZoom / 100})`;
     }
 
-    function printCurrentOpenFile() {
+// დამხმარე ფუნქცია სწორი MIME ტიპის მისანიჭებლად
+    function getMimeByExtension(ext = '') {
+      const clean = ext.toUpperCase();
+      const map = {
+        'PDF': 'application/pdf',
+        'DOC': 'application/msword',
+        'DOCX': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'XLS': 'application/vnd.ms-excel',
+        'XLSX': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'CSV': 'text/csv',
+        'PNG': 'image/png',
+        'JPG': 'image/jpeg',
+        'JPEG': 'image/jpeg',
+        'GIF': 'image/gif',
+        'WEBP': 'image/webp',
+        'SVG': 'image/svg+xml',
+        'TXT': 'text/plain'
+      };
+      return map[clean] || 'application/octet-stream';
+    }
+
+    async function printCurrentOpenFile() {
       if (!currentOpenDocument) return;
+      const ext = (currentOpenDocument.file_ext || '').toUpperCase();
+
+      // თუ ფაილი PDF-ია, ვბეჭდავთ ნამდვილ PDF ფაილს ფარული iframe-ით, 
+      // რომ ყველა გვერდი სრულად და სუფთად დაიბეჭდოს
+      if (ext === 'PDF') {
+        showGlobalLoading('მზადდება დასაბეჭდად...');
+        try {
+          let buf = currentOpenFileArrayBuffer;
+          if (!buf || buf.byteLength === 0) {
+            buf = await fetchDocumentArrayBuffer(currentOpenDocument);
+            currentOpenFileArrayBuffer = buf.slice(0);
+          }
+
+          const pdfBlob = new Blob([buf], { type: 'application/pdf' });
+          const blobUrl = URL.createObjectURL(pdfBlob);
+
+          let printIframe = document.getElementById('hiddenPdfPrintFrame');
+          if (printIframe) printIframe.remove();
+
+          printIframe = document.createElement('iframe');
+          printIframe.id = 'hiddenPdfPrintFrame';
+          printIframe.style.position = 'fixed';
+          printIframe.style.right = '0';
+          printIframe.style.bottom = '0';
+          printIframe.style.width = '0';
+          printIframe.style.height = '0';
+          printIframe.style.border = '0';
+          printIframe.src = blobUrl;
+
+          printIframe.onload = () => {
+            hideGlobalLoading();
+            setTimeout(() => {
+              try {
+                printIframe.contentWindow.focus();
+                printIframe.contentWindow.print();
+              } catch (_) {
+                window.open(blobUrl, '_blank');
+              }
+            }, 300);
+          };
+
+          document.body.appendChild(printIframe);
+        } catch (err) {
+          hideGlobalLoading();
+          showBottomRightNotification('ბეჭდვისას დაფიქსირდა შეცდომა.', 'error');
+        }
+        return;
+      }
+
+      // სხვა ფორმატებისთვის (სურათი, DOCX, Excel)
       window.print();
     }
 
     async function downloadCurrentOpenFile() {
       if (!currentOpenDocument) return;
+      showGlobalLoading('მიმდინარეობს გადმოწერა...');
       try {
-        let downloadHref = currentOpenDocument.url;
-        let tempObjectUrl = null;
+        let buf = currentOpenFileArrayBuffer;
 
-        if (currentOpenFileArrayBuffer) {
-          const blob = new Blob([currentOpenFileArrayBuffer]);
-          tempObjectUrl = URL.createObjectURL(blob);
-          downloadHref = tempObjectUrl;
-        } else if (!downloadHref.startsWith('data:')) {
-          const res = await fetch(downloadHref);
-          const blob = await res.blob();
-          tempObjectUrl = URL.createObjectURL(blob);
-          downloadHref = tempObjectUrl;
+        // თუ ბუფერი ცარიელია ან განულებულია, ვიწერთ fetchDocumentArrayBuffer-ით (რომელსაც აქვს Supabase SDK Fallback)
+        if (!buf || buf.byteLength === 0) {
+          buf = await fetchDocumentArrayBuffer(currentOpenDocument);
+          currentOpenFileArrayBuffer = buf.slice(0);
+        }
+
+        const mimeType = getMimeByExtension(currentOpenDocument.file_ext);
+        const blob = new Blob([buf], { type: mimeType });
+        const tempObjectUrl = URL.createObjectURL(blob);
+
+        let fileName = currentOpenDocument.file_name || currentOpenDocument.title || 'document';
+        const extLower = (currentOpenDocument.file_ext || '').toLowerCase();
+        if (extLower && !fileName.toLowerCase().endsWith('.' + extLower)) {
+          fileName += '.' + extLower;
         }
 
         const a = document.createElement('a');
-        a.href = downloadHref;
-        a.download = currentOpenDocument.file_name || 'document';
+        a.href = tempObjectUrl;
+        a.download = fileName;
         document.body.appendChild(a);
         a.click();
         a.remove();
 
-        if (tempObjectUrl) setTimeout(() => URL.revokeObjectURL(tempObjectUrl), 3000);
-      } catch (_) {
-        window.open(currentOpenDocument.url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(tempObjectUrl), 10000);
+      } catch (err) {
+        console.error('Download error:', err);
+        showBottomRightNotification('ფაილის გადმოწერა ვერ მოხერხდა.', 'error');
+      } finally {
+        hideGlobalLoading();
       }
     }
 
